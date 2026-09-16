@@ -1,23 +1,20 @@
 name: Apply Compact Bracket Fix
 
-on:
-  push:
-  workflow_dispatch:
+on: push
 
 permissions:
   contents: write
 
 jobs:
   fix:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Patch bracket generation
-        shell: python
         run: |
+          python3 - <<'PY'
           from pathlib import Path
 
           path = Path('src/main.tsx')
@@ -31,63 +28,57 @@ jobs:
 
           old_make = "function makeBracket(names:string[]):Fixture[]{const size=nextPowerOfTwo(Math.max(2,names.length));const slots=[...names];while(slots.length<size)slots.push('BYE');const out:Fixture[]=[];for(let r=0;r<Math.log2(size);r++){const count=size/Math.pow(2,r+1);for(let p=0;p<count;p++){const f:Fixture={id:Date.now()+r*10000+p,roundIndex:r,round:roundName(size,r),position:p};if(r===0){f.player1=slots[p*2];f.player2=slots[p*2+1];if(f.player1==='BYE')f.player1=undefined;if(f.player2==='BYE')f.player2=undefined;if(f.player1&&!f.player2)f.winner=f.player1;if(!f.player1&&f.player2)f.winner=f.player2}out.push(f)}}return cascadeByes(out)}"
           new_make = """function makeBracket(names:string[]):Fixture[]{
-            const clean=names.map(x=>x.trim()).filter(Boolean);
-            const n=clean.length;
-            const bracketSize=nextPowerOfTwo(Math.max(2,n));
-            const hasPlayIn=n<bracketSize;
-            const mainField=hasPlayIn?bracketSize/2:bracketSize;
-            const playInCount=hasPlayIn?n-mainField:0;
-            const out:Fixture[]=[];
-            const stamp=Date.now();
-            let roundIndex=0;
-            if(playInCount>0){
-              for(let p=0;p<playInCount;p++){
-                const f:Fixture={id:stamp+p,roundIndex:0,round:'Play-In',position:p,player1:clean[p*2],player2:clean[p*2+1]};
-                out.push(f);
-              }
-              roundIndex=1;
-            }
-            const direct=clean.slice(playInCount*2);
-            const mainSlots:(string|undefined)[]=Array.from({length:mainField},(_,i)=>i<playInCount?undefined:direct[i-playInCount]);
-            for(let p=0;p<mainField/2;p++){
-              const a=p*2,b=a+1;
-              const f:Fixture={id:stamp+roundIndex*10000+p,roundIndex,round:roundName(mainField,0),position:p};
-              if(a<playInCount)f.pending1=true;else f.player1=mainSlots[a];
-              if(b<playInCount)f.pending2=true;else f.player2=mainSlots[b];
-              out.push(f);
-            }
-            for(let r=1;r<Math.log2(mainField);r++){
-              const count=mainField/Math.pow(2,r+1);
-              for(let p=0;p<count;p++)out.push({id:stamp+(roundIndex+r)*10000+p,roundIndex:roundIndex+r,round:roundName(mainField,r),position:p});
-            }
-            return out;
+          const clean=names.map(x=>x.trim()).filter(Boolean);
+          const n=clean.length;
+          const bracketSize=nextPowerOfTwo(Math.max(2,n));
+          const hasPlayIn=n<bracketSize;
+          const mainField=hasPlayIn?bracketSize/2:bracketSize;
+          const playInCount=hasPlayIn?n-mainField:0;
+          const out:Fixture[]=[];
+          const stamp=Date.now();
+          let roundIndex=0;
+          if(playInCount>0){
+            for(let p=0;p<playInCount;p++)out.push({id:stamp+p,roundIndex:0,round:'Play-In',position:p,player1:clean[p*2],player2:clean[p*2+1]});
+            roundIndex=1;
+          }
+          const direct=clean.slice(playInCount*2);
+          for(let p=0;p<mainField/2;p++){
+            const a=p*2,b=a+1;
+            const f:Fixture={id:stamp+roundIndex*10000+p,roundIndex,round:roundName(mainField,0),position:p};
+            if(a<playInCount)f.pending1=true;else f.player1=direct[a-playInCount];
+            if(b<playInCount)f.pending2=true;else f.player2=direct[b-playInCount];
+            out.push(f);
+          }
+          for(let r=1;r<Math.log2(mainField);r++){
+            const count=mainField/Math.pow(2,r+1);
+            for(let p=0;p<count;p++)out.push({id:stamp+(roundIndex+r)*10000+p,roundIndex:roundIndex+r,round:roundName(mainField,r),position:p});
+          }
+          return out;
           }"""
           if old_make not in s:
               raise SystemExit('makeBracket pattern not found')
           s = s.replace(old_make, new_make, 1)
 
           old_save = """ const saveFixture=(id:number,f:Fixture)=>setTournaments(ts=>ts.map(t=>{
-  if(t.id!==id)return t;
-  const fixtures=t.fixtures.map(x=>x.id===f.id?f:{...x});
-  if(f.winner){
-   const next=fixtures.find(x=>x.roundIndex===f.roundIndex+1&&x.position===Math.floor(f.position/2));
-   if(next){if(f.position%2===0)next.player1=f.winner;else next.player2=f.winner;if(next.player1&&!next.player2&&!next.winner)next.winner=next.player1;if(!next.player1&&next.player2&&!next.winner)next.winner=next.player2;}
-  }
-  const final=fixtures.find(x=>x.round==='Final');
-  return {...t,fixtures,status:final?.winner?'Completed':'Live'};
- }));"""
+          if(t.id!==id)return t;
+          const fixtures=t.fixtures.map(x=>x.id===f.id?f:{...x});
+          if(f.winner){
+           const next=fixtures.find(x=>x.roundIndex===f.roundIndex+1&&x.position===Math.floor(f.position/2));
+           if(next){if(f.position%2===0)next.player1=f.winner;else next.player2=f.winner;if(next.player1&&!next.player2&&!next.winner)next.winner=next.player1;if(!next.player1&&next.player2&&!next.winner)next.winner=next.player2;}
+          }
+          const final=fixtures.find(x=>x.round==='Final');
+          return {...t,fixtures,status:final?.winner?'Completed':'Live'};
+         }));"""
           new_save = """ const saveFixture=(id:number,f:Fixture)=>setTournaments(ts=>ts.map(t=>{
-  if(t.id!==id)return t;
-  const fixtures=t.fixtures.map(x=>x.id===f.id?f:{...x});
-  if(f.winner){
-   const next=fixtures.find(x=>x.roundIndex===f.roundIndex+1&&x.position===Math.floor(f.position/2));
-   if(next){
-    if(f.position%2===0){next.player1=f.winner;next.pending1=false}else{next.player2=f.winner;next.pending2=false}
-   }
-  }
-  const final=fixtures.find(x=>x.round==='Final');
-  return {...t,fixtures,status:final?.winner?'Completed':'Live'};
- }));"""
+          if(t.id!==id)return t;
+          const fixtures=t.fixtures.map(x=>x.id===f.id?f:{...x});
+          if(f.winner){
+           const next=fixtures.find(x=>x.roundIndex===f.roundIndex+1&&x.position===Math.floor(f.position/2));
+           if(next){if(f.position%2===0){next.player1=f.winner;next.pending1=false}else{next.player2=f.winner;next.pending2=false}}
+          }
+          const final=fixtures.find(x=>x.round==='Final');
+          return {...t,fixtures,status:final?.winner?'Completed':'Live'};
+         }));"""
           if old_save not in s:
               raise SystemExit('saveFixture pattern not found')
           s = s.replace(old_save, new_save, 1)
@@ -98,14 +89,13 @@ jobs:
 """
           s = s[:start] + new_match + s[end:]
           path.write_text(s)
+          PY
 
-      - name: Commit changes and remove temporary workflow
+      - name: Commit fixed source
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/main.tsx .github/workflows/fix-compact-bracket.yml
-          git commit -m "fix: generate compact brackets from participant count" || exit 0
-          git push
-          git rm .github/workflows/fix-compact-bracket.yml
-          git commit -m "chore: remove temporary bracket fix workflow"
+          git add src/main.tsx
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: generate compact brackets from participant count"
           git push
