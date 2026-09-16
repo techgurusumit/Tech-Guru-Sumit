@@ -1,0 +1,38 @@
+name: Apply Direct Inline Score Entry
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update bracket match UI
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          path=Path('src/main.tsx')
+          s=path.read_text()
+          start=s.index('function BracketMatch(')
+          end=s.index('function Reports(', start)
+          new='''function BracketMatch({fixture,onSave}:{fixture:Fixture;onSave:(f:Fixture)=>void}){const[p1,setP1]=React.useState(String(fixture.score1??''));const[p2,setP2]=React.useState(String(fixture.score2??''));const save=()=>{const a=p1===''?undefined:Number(p1),b=p2===''?undefined:Number(p2);if(a===undefined||b===undefined||a===b)return;const winner=a>b?fixture.player1:fixture.player2;if(!winner)return;onSave({...fixture,score1:a,score2:b,winner});};const waiting=Boolean(fixture.pending1||fixture.pending2||!fixture.player1||!fixture.player2);const p1Winner=Boolean(fixture.winner&&fixture.player1&&fixture.winner===fixture.player1);const p2Winner=Boolean(fixture.winner&&fixture.player2&&fixture.winner===fixture.player2);return <div className={`bracket-match ${fixture.winner?'won':''} ${waiting?'bye':''}`}><div className="match-head"><span>{fixture.round} · Game {fixture.position+1}</span><span>{fixture.dateTime?<><Clock3 size={11}/> {fixture.dateTime}</>:''}</span></div><div className={`player-line ${p1Winner?'winner':''}`}><b>{fixture.player1||'TBD'}</b>{!fixture.winner&&fixture.player1&&fixture.player2?<input className="inline-score-input" type="number" min="0" value={p1} onChange={e=>setP1(e.target.value)} placeholder="0"/>:<span>{fixture.score1??''}</span>}</div><div className={`player-line ${p2Winner?'winner':''}`}><b>{fixture.player2||'TBD'}</b>{!fixture.winner&&fixture.player1&&fixture.player2?<input className="inline-score-input" type="number" min="0" value={p2} onChange={e=>setP2(e.target.value)} placeholder="0"/>:<span>{fixture.score2??''}</span>}</div>{fixture.winner?<div className="winner-line"><CheckCircle2 size={12}/> {fixture.winner} advances</div>:waiting?<div className="winner-line">WAITING FOR OPPONENT</div>:<button className="inline-save-btn" onClick={save}>Save</button>}</div>}\n'''
+          s=s[:start]+new+s[end:]
+          path.write_text(s)
+      - name: Commit and remove workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/main.tsx
+          git commit -m "fix: use direct inline score entry" || exit 0
+          git push
+          git rm .github/workflows/inline-score-entry.yml
+          git commit -m "chore: remove temporary score entry workflow"
+          git push
