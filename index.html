@@ -9,6 +9,73 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function(){
+        const STORAGE = window.localStorage;
+        const legacyKey = 'tgs_tournaments';
+        const accountKey = (email) => `tgs_tournaments::${String(email || '').trim().toLowerCase()}`;
+        const getSessionEmail = () => {
+          try {
+            const session = JSON.parse(STORAGE.getItem('tgs_session') || 'null');
+            return session?.email || '';
+          } catch { return ''; }
+        };
+        const isDemo = (value) => {
+          try {
+            const data = JSON.parse(value || 'null');
+            if (!Array.isArray(data) || data.length !== 3) return false;
+            const names = data.map(x => x?.name).sort().join('|');
+            return names === ['Death Race: Chapter 4','TGS Clash #2','TGS Community Cup'].sort().join('|') && data.every(x => Array.isArray(x?.fixtures) && x.fixtures.length === 0);
+          } catch { return false; }
+        };
+        const originalGet = Storage.prototype.getItem;
+        const originalSet = Storage.prototype.setItem;
+        const originalRemove = Storage.prototype.removeItem;
+        const migrateLegacy = (email) => {
+          const key = accountKey(email);
+          const existing = originalGet.call(STORAGE, key);
+          if (existing !== null) return existing;
+          const legacy = originalGet.call(STORAGE, legacyKey);
+          if (legacy && !isDemo(legacy)) {
+            originalSet.call(STORAGE, key, legacy);
+            originalRemove.call(STORAGE, legacyKey);
+            return legacy;
+          }
+          return null;
+        };
+        Storage.prototype.getItem = function(key){
+          if (this === STORAGE && key === legacyKey) {
+            const email = getSessionEmail();
+            if (!email) return '[]';
+            const migrated = migrateLegacy(email);
+            return migrated ?? originalGet.call(this, accountKey(email)) ?? '[]';
+          }
+          return originalGet.call(this, key);
+        };
+        Storage.prototype.setItem = function(key,value){
+          if (this === STORAGE && key === legacyKey) {
+            const email = getSessionEmail();
+            if (email) return originalSet.call(this, accountKey(email), value);
+            return;
+          }
+          originalSet.call(this, key, value);
+          if (this === STORAGE && key === 'tgs_session') {
+            setTimeout(() => window.location.reload(), 0);
+          }
+        };
+        Storage.prototype.removeItem = function(key){
+          if (this === STORAGE && key === legacyKey) {
+            const email = getSessionEmail();
+            if (email) return originalRemove.call(this, accountKey(email));
+            return originalRemove.call(this, key);
+          }
+          originalRemove.call(this, key);
+          if (this === STORAGE && key === 'tgs_session') {
+            setTimeout(() => window.location.reload(), 0);
+          }
+        };
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
     <script type="module" src="/src/scorecard-modal.js"></script>
   </body>
