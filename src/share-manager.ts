@@ -36,7 +36,7 @@ async function syncLink(link:ShareLink,tournament:Tournament){
   if(error){console.error('TGS live share update failed',error);return}
   lastSnapshot.set(key,snapshot);
   const channel=supabase.channel(`tgs-share-${link.publicToken}`);
-  await channel.send({type:'broadcast',event:'refresh',payload:{updated_at:new Date().toISOString()}}).catch(()=>{});
+  await channel.httpSend('refresh',{updated_at:new Date().toISOString()}).catch(()=>{});
   setTimeout(()=>supabase?.removeChannel(channel),500);
 }
 
