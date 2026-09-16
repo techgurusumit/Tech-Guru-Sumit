@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Trophy, Users, Swords, BarChart3, Settings, Plus, ArrowRight, CalendarDays, Gamepad2, Crown, LogIn, LogOut, Moon, Sun, X, Trash2, Pencil, GitBranch, Lock, ChevronDown, Search, Clock3, CheckCircle2 } from 'lucide-react';
 import './styles.css';
+import './score-modern.css';
 
 type Fixture={id:number;roundIndex:number;round:string;position:number;player1?:string;player2?:string;pending1?:boolean;pending2?:boolean;score1?:number;score2?:number;winner?:string;dateTime?:string};
 type Tournament={id:number;name:string;game:string;format:string;players:number;playerNames:string[];status:'Live'|'Upcoming'|'Completed';date:string;password:string;passwordEnabled:boolean;fixtures:Fixture[]};
