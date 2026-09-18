@@ -519,3 +519,73 @@
  .bracket-toolbar-right .bracket-note{order:3}
  .fullscreen-btn{flex:1}
 }
+
+/* =========================================================
+   BROADCAST BRANDING: larger logos + designation labels
+   and 50% translucent fixture background
+   ========================================================= */
+.bracket-shell{
+  position:relative;
+  isolation:isolate;
+  background-image:
+    linear-gradient(rgba(7,11,18,.50),rgba(7,11,18,.50)),
+    var(--tgs-custom-background),
+    radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 28%),
+    radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 26%),
+    linear-gradient(135deg,#090e19 0%,#0d1626 48%,#080d17 100%);
+  background-size:cover,cover,auto,auto,auto;
+  background-position:center,center,center,center,center;
+}
+.bracket-branding{gap:14px}
+.logo-brand-group{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  flex:0 0 auto;
+}
+.logo-brand-group small{
+  color:#aeb9cc;
+  font-size:7px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  text-shadow:0 1px 3px rgba(0,0,0,.5);
+}
+.logo-slot{
+  width:58px;
+  height:58px;
+  border-radius:12px;
+}
+.organizer-slot{
+  width:66px;
+  height:66px;
+  border-radius:13px;
+}
+.sponsor-slot{
+  width:58px;
+  height:58px;
+}
+.logo-slot img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:6px;
+}
+.sponsor-slots{gap:12px}
+.bracket-toolbar-right{gap:14px}
+@media(max-width:900px){
+ .organizer-slot{width:58px;height:58px}
+ .logo-slot,.sponsor-slot{width:52px;height:52px}
+ .logo-brand-group small{font-size:6px}
+}
+@media(max-width:600px){
+ .bracket-branding{width:100%}
+ .bracket-toolbar-right{width:100%}
+ .sponsor-slots{margin-left:auto}
+ .logo-slot,.sponsor-slot{width:48px;height:48px}
+ .organizer-slot{width:52px;height:52px}
+}
