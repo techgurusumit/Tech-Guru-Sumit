@@ -765,3 +765,49 @@
  .bracket-shell:fullscreen .bracket-toolbar{min-height:118px!important}
  .bracket-shell:fullscreen .bracket-scroll{height:calc(100vh - 118px)!important;max-height:calc(100vh - 118px)!important}
 }
+
+/* FINAL BRACKET ALIGNMENT
+   Keep each elimination round centered between the two feeder matches.
+   Visual-only CSS; fixture/scoring logic is untouched. */
+.bracket{
+  align-items:flex-start!important;
+  gap:44px!important;
+}
+.bracket-round:nth-child(1) .round-matches{
+  padding-top:0!important;
+  gap:18px!important;
+}
+.bracket-round:nth-child(2) .round-matches{
+  padding-top:77px!important;
+  gap:172px!important;
+}
+.bracket-round:nth-child(3) .round-matches{
+  padding-top:231px!important;
+  gap:480px!important;
+}
+.bracket-round:nth-child(4) .round-matches{
+  padding-top:539px!important;
+  gap:0!important;
+}
+.bracket-round:nth-child(n+5) .round-matches{
+  padding-top:560px!important;
+  gap:0!important;
+}
+/* connector lines stay attached to the exact vertical center */
+.bracket-shell .bracket-match::after{
+  top:50%!important;
+}
+@media(max-width:1100px){
+  .bracket{gap:34px!important}
+  .bracket-round:nth-child(1) .round-matches{gap:18px!important}
+  .bracket-round:nth-child(2) .round-matches{padding-top:66px!important;gap:150px!important}
+  .bracket-round:nth-child(3) .round-matches{padding-top:205px!important;gap:420px!important}
+  .bracket-round:nth-child(4) .round-matches{padding-top:470px!important}
+}
+@media(max-width:760px){
+  .bracket{gap:26px!important}
+  .bracket-round:nth-child(1) .round-matches{gap:18px!important}
+  .bracket-round:nth-child(2) .round-matches{padding-top:55px!important;gap:118px!important}
+  .bracket-round:nth-child(3) .round-matches{padding-top:160px!important;gap:330px!important}
+  .bracket-round:nth-child(4) .round-matches{padding-top:370px!important}
+}
