@@ -1,20 +1,6 @@
 {
   "rewrites": [
-    {
-      "source": "/terms",
-      "destination": "/"
-    },
-    {
-      "source": "/terms/",
-      "destination": "/"
-    },
-    {
-      "source": "/privacy",
-      "destination": "/"
-    },
-    {
-      "source": "/privacy/",
-      "destination": "/"
-    }
+    { "source": "/terms", "destination": "/terms.html" },
+    { "source": "/privacy", "destination": "/privacy.html" }
   ]
 }
