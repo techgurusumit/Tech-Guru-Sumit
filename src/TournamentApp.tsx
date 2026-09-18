@@ -321,7 +321,7 @@ function CreateModal({close,save}:{close:()=>void;save:(t:Omit<Tournament,'id'>)
  },[players]);
 
  const applyBulk=()=>{
-  const parsed=bulk.split(/\\r?\\n|,/).map(x=>x.trim()).filter(Boolean);
+  const parsed=bulk.split(/\r?\n|,/).map(x=>x.trim()).filter(Boolean);
   if(!parsed.length){setError('Paste at least 2 player names.');return}
   const next=parsed.slice(0,players);
   while(next.length<players)next.push('Player '+(next.length+1));
@@ -368,7 +368,7 @@ function CreateModal({close,save}:{close:()=>void;save:(t:Omit<Tournament,'id'>)
      <button type="button" className="secondary-btn" onClick={applyBulk}>Apply Names</button>
     </div>
     <div className="player-entry-grid">
-     {playerNames.map((player,i)=><label key={i}><span>#${i+1}</span><input value={player} onChange={e=>setPlayerNames(a=>a.map((x,j)=>j===i?e.target.value:x))} placeholder={"Player "+(i+1)}/></label>)}
+     {playerNames.map((player,i)=><label key={i}><span>#{i+1}</span><input value={player} onChange={e=>setPlayerNames(a=>a.map((x,j)=>j===i?e.target.value:x))} placeholder={"Player "+(i+1)}/></label>)}
     </div>
    </div>
 
