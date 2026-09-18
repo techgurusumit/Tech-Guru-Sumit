@@ -26,8 +26,8 @@
       }
       .tgs-scorecard-toolbar-btn:hover { background:rgba(90,105,255,.15); transform:translateY(-1px); }
       [data-theme='dark'] .tgs-scorecard-toolbar-btn { background:rgba(113,128,255,.10); border-color:rgba(113,128,255,.3); color:#aeb8ff; }
-      .tgs-scorecard-overlay { position:fixed; inset:0; z-index:100000; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(4,8,18,.66); backdrop-filter:blur(9px); }
-      .tgs-scorecard-dialog { width:min(760px,96vw); max-height:88vh; overflow:auto; border:1px solid rgba(92,105,255,.22); border-radius:20px; padding:22px; background:#fff; box-shadow:0 30px 90px rgba(0,0,0,.35); }
+      .tgs-scorecard-overlay { position:absolute; inset:0; z-index:2147483647; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(4,8,18,.66); backdrop-filter:blur(9px); }
+      :fullscreen .tgs-scorecard-overlay { position:absolute !important; z-index:2147483647 !important; }\n      .tgs-scorecard-dialog { width:min(760px,96vw); max-height:88vh; overflow:auto; border:1px solid rgba(92,105,255,.22); border-radius:20px; padding:22px; background:#fff; box-shadow:0 30px 90px rgba(0,0,0,.35); }
       [data-theme='dark'] .tgs-scorecard-dialog { background:#151b2b; border-color:#39446e; color:#fff; }
       .tgs-scorecard-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; margin-bottom:18px; }
       .tgs-scorecard-kicker { font-size:9px; text-transform:uppercase; letter-spacing:.14em; font-weight:900; color:#6674d8; }
@@ -126,7 +126,7 @@
     overlay.querySelector('.tgs-scorecard-close').addEventListener('click', closeModal);
     overlay.querySelector('.tgs-scorecard-footer button').addEventListener('click', closeModal);
     overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-    document.body.appendChild(overlay);
+    const fullscreenHost = document.fullscreenElement;\n    (fullscreenHost || document.body).appendChild(overlay);
   }
 
   function addInlineSave(match) {
