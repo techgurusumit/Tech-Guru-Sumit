@@ -172,3 +172,18 @@ body::before{
 
 @media(max-width:900px){.gaming-theme-grid{grid-template-columns:1fr 1fr}.settings-appearance-grid{grid-template-columns:1fr}.appearance-panel{grid-column:auto}}
 @media(max-width:600px){.gaming-theme-grid{grid-template-columns:1fr}.mode-row{align-items:flex-start;flex-direction:column}}
+
+/* Light sidebar requested — independent from bracket theme */
+.sidebar{
+  background:linear-gradient(180deg,#ffffff 0%,#f3f6fb 100%)!important;
+  border-right:1px solid rgba(20,35,60,.10)!important;
+  box-shadow:12px 0 36px rgba(15,23,42,.08)!important;
+}
+.sidebar .brand strong,.sidebar .nav-item,.sidebar .profile-mini strong{color:#172033!important}
+.sidebar .brand span,.sidebar .nav-item,.sidebar .profile-mini span,.sidebar .side-section-title{color:#68758c!important}
+.sidebar .nav-item:hover{background:rgba(109,124,255,.07)!important;color:#172033!important}
+:root[data-gaming-theme='crimson'] .sidebar .nav-item.active{box-shadow:inset 3px 0 0 #ff4059!important}
+:root[data-gaming-theme='toxic'] .sidebar .nav-item.active{box-shadow:inset 3px 0 0 #72e52e!important}
+:root[data-gaming-theme='purple'] .sidebar .nav-item.active{box-shadow:inset 3px 0 0 #a855f7!important}
+:root[data-gaming-theme='ice'] .sidebar .nav-item.active{box-shadow:inset 3px 0 0 #38d8ff!important}
+:root[data-gaming-theme='championship'] .sidebar .nav-item.active{box-shadow:inset 3px 0 0 #e5b94c!important}
