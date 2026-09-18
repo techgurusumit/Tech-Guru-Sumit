@@ -126,7 +126,8 @@
     overlay.querySelector('.tgs-scorecard-close').addEventListener('click', closeModal);
     overlay.querySelector('.tgs-scorecard-footer button').addEventListener('click', closeModal);
     overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-    const fullscreenHost = document.fullscreenElement;\n    (fullscreenHost || document.body).appendChild(overlay);
+    const fullscreenHost = document.fullscreenElement;
+    (fullscreenHost || document.body).appendChild(overlay);
   }
 
   function addInlineSave(match) {
