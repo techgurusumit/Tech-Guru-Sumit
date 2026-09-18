@@ -683,3 +683,85 @@
 }
 .bracket-shell .bracket-scroll,
 .bracket-shell .bracket{background:transparent!important}
+
+/* FINAL VISIBILITY + FULLSCREEN FIX */
+.bracket-shell .player-line b,
+.bracket-shell .player-line span{
+  color:#f4f7fb!important;
+  opacity:1!important;
+  visibility:visible!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.35);
+}
+.bracket-shell .match-head span{
+  color:#d8e1ef!important;
+  opacity:1!important;
+}
+.bracket-shell .winner-line{
+  color:#cbd6e7!important;
+  opacity:1!important;
+}
+/* All three branding slots are exactly the same size. No artificial dark box behind transparent logos. */
+.bracket-shell .organizer-slot,
+.bracket-shell .sponsor-slot,
+.bracket-shell .logo-slot{
+  width:72px!important;
+  height:72px!important;
+  min-width:72px!important;
+  min-height:72px!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+}
+.bracket-shell .logo-slot img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  padding:0!important;
+  background:transparent!important;
+  mix-blend-mode:normal!important;
+}
+.bracket-shell .logo-brand-group small{
+  color:#fff!important;
+  opacity:1!important;
+  visibility:visible!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  text-shadow:0 1px 4px rgba(0,0,0,.85)!important;
+}
+/* Fullscreen: compact header so match score cards remain visible in the viewport. */
+.bracket-shell:fullscreen{
+  width:100vw!important;
+  height:100vh!important;
+  max-height:100vh!important;
+  overflow:hidden!important;
+}
+.bracket-shell:fullscreen .bracket-toolbar{
+  flex:0 0 auto!important;
+  min-height:96px!important;
+  padding:10px 18px!important;
+}
+.bracket-shell:fullscreen .bracket-scroll{
+  display:block!important;
+  height:calc(100vh - 96px)!important;
+  max-height:calc(100vh - 96px)!important;
+  min-height:0!important;
+  overflow:auto!important;
+  padding:16px 22px 30px!important;
+}
+.bracket-shell:fullscreen .bracket{
+  min-height:100%!important;
+}
+@media(max-width:900px){
+ .bracket-shell .organizer-slot,
+ .bracket-shell .sponsor-slot,
+ .bracket-shell .logo-slot{width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important}
+}
+@media(max-width:600px){
+ .bracket-shell .organizer-slot,
+ .bracket-shell .sponsor-slot,
+ .bracket-shell .logo-slot{width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important}
+ .bracket-shell:fullscreen .bracket-toolbar{min-height:118px!important}
+ .bracket-shell:fullscreen .bracket-scroll{height:calc(100vh - 118px)!important;max-height:calc(100vh - 118px)!important}
+}
