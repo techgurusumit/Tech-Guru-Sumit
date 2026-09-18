@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, Users, Swords, BarChart3, Settings, Plus, ArrowRight, CalendarDays, Gamepad2, Crown, LogIn, LogOut, Moon, Sun, X, Trash2, Pencil, GitBranch, Lock, ChevronDown, Search, Clock3, CheckCircle2, Upload, RotateCcw } from 'lucide-react';
+import { Trophy, Users, Swords, BarChart3, Settings, Plus, ArrowRight, CalendarDays, Gamepad2, Crown, LogIn, LogOut, Moon, Sun, X, Trash2, Pencil, GitBranch, Lock, ChevronDown, Search, Clock3, CheckCircle2, Upload, RotateCcw, Maximize2, Minimize2 } from 'lucide-react';
 import './tournament-formats.css';
 import { supabase } from './share-config';
 
@@ -205,7 +205,36 @@ function Stat({label,value,helper,icon,onClick}:{label:string;value:string;helpe
 function PlayersPage({tournaments,onEdit}:{tournaments:Tournament[];onEdit:(t:Tournament)=>void}){const[q,setQ]=React.useState('');return <section className="section-block"><div className="section-head"><div><h3>Active Players</h3><p>Manage player names for each tournament before creating fixtures.</p></div><div className="search-box"><Search size={15}/><input placeholder="Search player" value={q} onChange={e=>setQ(e.target.value)}/></div></div>{tournaments.length===0?<Empty title="No players yet" text="Create a tournament first." icon={<Users size={34}/>}/>:<div className="players-groups">{tournaments.map(t=>{const names=t.playerNames.map((p,i)=>({p,i})).filter(x=>x.p.toLowerCase().includes(q.toLowerCase()));return <div className="panel" key={t.id}><div className="section-head"><div><h3>{t.name}</h3><p>{t.game} · {t.format} · {t.playerNames.length} players</p></div><button className="secondary-btn" onClick={()=>onEdit(t)}><Pencil size={15}/> Edit Players</button></div><div className="list-grid">{names.map(x=><div className="list-row" key={`${t.id}-${x.i}`}><span><b>#{x.i+1}</b> {x.p}</span><small className="muted">{t.status}</small></div>)}</div></div>})}</div>}</section>}
 function PlayersModal({tournament,close,save}:{tournament:Tournament;close:()=>void;save:(t:Tournament)=>void}){const[names,setNames]=React.useState(tournament.playerNames);const[error,setError]=React.useState('');const submit=(e:React.FormEvent)=>{e.preventDefault();const clean=names.map(x=>x.trim());if(clean.some(x=>!x))return setError('Every player name is required.');save({...tournament,playerNames:clean,players:clean.length,fixtures:[]})};return <Modal title="Edit Players" subtitle={`Enter players for ${tournament.name}. Fixtures reset when names change.`} close={close}><form onSubmit={submit}><div className="player-editor">{names.map((n,i)=><label key={i}>Player {i+1}<input value={n} onChange={e=>setNames(a=>a.map((x,j)=>j===i?e.target.value:x))}/></label>)}</div>{error&&<div className="form-error">{error}</div>}<div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button className="primary-btn">Save Players</button></div></form></Modal>}
 function MatchesPage({tournaments,onUpdate}:{tournaments:Tournament[];onUpdate:(id:number,f:Fixture)=>void}){const[selected,setSelected]=React.useState(tournaments.find(t=>t.fixtures.length)?.id||tournaments[0]?.id||0);const current=tournaments.find(t=>t.id===selected);return <section className="section-block"><div className="section-head"><div><h3>{current?.format||'Tournament Fixtures'}</h3><p>Fixtures are generated from the tournament format and participant count.</p></div><div className="select-wrap"><ChevronDown size={15}/><select value={selected} onChange={e=>setSelected(Number(e.target.value))}>{tournaments.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</select></div></div>{!current||!current.fixtures.length?<Empty title="No fixtures yet" text="Go to Tournaments → Create Fixtures after entering player names." icon={<Swords size={34}/>}/>:<><Bracket fixtures={current.fixtures} tournament={current} onUpdate={onUpdate}/>{current.format!=='Single Elimination'&&current.format!=='Double Elimination'&&<Standings tournament={current}/>}</>}</section>}
-function Bracket({fixtures,tournament,onUpdate}:{fixtures:Fixture[];tournament:Tournament;onUpdate:(id:number,f:Fixture)=>void}){const rounds=Array.from(new Set(fixtures.map(f=>f.roundIndex))).sort((a,b)=>a-b);return <div className="bracket-shell"><div className="bracket-toolbar"><div><strong>{tournament.name}</strong><span>{tournament.game} · {tournament.playerNames.length} players · {fixtures.length} total matches</span></div><span className="bracket-note"><CheckCircle2 size={14}/> {tournament.format==='Swiss System'?'Next round unlocks after the current round':'Winner tracking enabled'}</span></div><div className="bracket-scroll"><div className="bracket">{rounds.map(r=><div className="bracket-round" key={r}><div className="round-title">{fixtures.find(f=>f.roundIndex===r)?.round||''}<span>{fixtures.filter(f=>f.roundIndex===r).length} matches</span></div><div className="round-matches">{fixtures.filter(f=>f.roundIndex===r).map(f=><BracketMatch key={f.id} fixture={f} onSave={nf=>onUpdate(tournament.id,nf)}/>)}</div></div>)}</div></div></div>}
+function Bracket({fixtures,tournament,onUpdate}:{fixtures:Fixture[];tournament:Tournament;onUpdate:(id:number,f:Fixture)=>void}){
+ const shellRef=React.useRef<HTMLDivElement>(null);
+ const[fullscreen,setFullscreen]=React.useState(false);
+ const[logos,setLogos]=React.useState<{organizer:string;sponsor:string;coSponsor:string}>(()=>{try{return JSON.parse(localStorage.getItem(\`tgs_branding_\${tournament.id}\`)||'{"organizer":"","sponsor":"","coSponsor":""}')}catch{return {organizer:'',sponsor:'',coSponsor:''}}});
+ React.useEffect(()=>{try{localStorage.setItem(\`tgs_branding_\${tournament.id}\`,JSON.stringify(logos))}catch{}},[logos,tournament.id]);
+ React.useEffect(()=>{const onChange=()=>setFullscreen(Boolean(document.fullscreenElement));document.addEventListener('fullscreenchange',onChange);return()=>document.removeEventListener('fullscreenchange',onChange)},[]);
+ const toggleFullscreen=async()=>{if(!shellRef.current)return;if(document.fullscreenElement){await document.exitFullscreen()}else{await shellRef.current.requestFullscreen()}};
+ const uploadLogo=(key:'organizer'|'sponsor'|'coSponsor')=>(e:React.ChangeEvent<HTMLInputElement>)=>{
+  const file=e.target.files?.[0];if(!file||!file.type.startsWith('image/'))return;
+  const reader=new FileReader();reader.onload=()=>setLogos(x=>({...x,[key]:String(reader.result)}));reader.readAsDataURL(file);
+ };
+ const rounds=Array.from(new Set(fixtures.map(f=>f.roundIndex))).sort((a,b)=>a-b);
+ return <div ref={shellRef} className={\`bracket-shell \${fullscreen?'is-fullscreen':''}\`}>
+  <div className="bracket-toolbar">
+   <div className="bracket-branding">
+    <label className="logo-slot organizer-slot" title="Upload Organizer Logo">{logos.organizer?<img src={logos.organizer} alt="Organizer"/>:<span>ORG</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('organizer')} hidden/></label>
+    <div><strong>{tournament.name}</strong><span>{tournament.game} · {tournament.playerNames.length} players · {fixtures.length} total matches</span></div>
+   </div>
+   <div className="bracket-toolbar-right">
+    <div className="sponsor-slots">
+     <label className="logo-slot" title="Upload Sponsor Logo">{logos.sponsor?<img src={logos.sponsor} alt="Sponsor"/>:<span>SP</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('sponsor')} hidden/></label>
+     <label className="logo-slot" title="Upload Co-Sponsor Logo">{logos.coSponsor?<img src={logos.coSponsor} alt="Co-Sponsor"/>:<span>CO</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('coSponsor')} hidden/></label>
+    </div>
+    <span className="bracket-note"><CheckCircle2 size={14}/> {tournament.format==='Swiss System'?'Next round unlocks after the current round':'Winner tracking enabled'}</span>
+    <button type="button" className="fullscreen-btn" onClick={toggleFullscreen}>{fullscreen?<Minimize2 size={15}/>:<Maximize2 size={15}/>}<span>{fullscreen?'Exit Fullscreen':'Full Screen'}</span></button>
+   </div>
+  </div>
+  <div className="bracket-scroll"><div className="bracket">{rounds.map(r=><div className="bracket-round" key={r}><div className="round-title">{fixtures.find(f=>f.roundIndex===r)?.round||''}<span>{fixtures.filter(f=>f.roundIndex===r).length} matches</span></div><div className="round-matches">{fixtures.filter(f=>f.roundIndex===r).map(f=><BracketMatch key={f.id} fixture={f} onSave={nf=>onUpdate(tournament.id,nf)}/>)}</div></div>)}</div></div>
+ </div>
+}
 function BracketMatch({fixture,onSave}:{fixture:Fixture;onSave:(f:Fixture)=>void}){
  const[p1,setP1]=React.useState(String(fixture.score1??''));
  const[p2,setP2]=React.useState(String(fixture.score2??''));
