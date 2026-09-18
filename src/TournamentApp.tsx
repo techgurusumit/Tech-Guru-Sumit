@@ -208,8 +208,8 @@ function MatchesPage({tournaments,onUpdate}:{tournaments:Tournament[];onUpdate:(
 function Bracket({fixtures,tournament,onUpdate}:{fixtures:Fixture[];tournament:Tournament;onUpdate:(id:number,f:Fixture)=>void}){
  const shellRef=React.useRef<HTMLDivElement>(null);
  const[fullscreen,setFullscreen]=React.useState(false);
- const[logos,setLogos]=React.useState<{organizer:string;sponsor:string;coSponsor:string}>(()=>{try{return JSON.parse(localStorage.getItem(\`tgs_branding_\${tournament.id}\`)||'{"organizer":"","sponsor":"","coSponsor":""}')}catch{return {organizer:'',sponsor:'',coSponsor:''}}});
- React.useEffect(()=>{try{localStorage.setItem(\`tgs_branding_\${tournament.id}\`,JSON.stringify(logos))}catch{}},[logos,tournament.id]);
+ const[logos,setLogos]=React.useState<{organizer:string;sponsor:string;coSponsor:string}>(()=>{try{return JSON.parse(localStorage.getItem(`tgs_branding_${tournament.id}`)||'{"organizer":"","sponsor":"","coSponsor":""}')}catch{return {organizer:'',sponsor:'',coSponsor:''}}});
+ React.useEffect(()=>{try{localStorage.setItem(`tgs_branding_${tournament.id}`,JSON.stringify(logos))}catch{}},[logos,tournament.id]);
  React.useEffect(()=>{const onChange=()=>setFullscreen(Boolean(document.fullscreenElement));document.addEventListener('fullscreenchange',onChange);return()=>document.removeEventListener('fullscreenchange',onChange)},[]);
  const toggleFullscreen=async()=>{if(!shellRef.current)return;if(document.fullscreenElement){await document.exitFullscreen()}else{await shellRef.current.requestFullscreen()}};
  const uploadLogo=(key:'organizer'|'sponsor'|'coSponsor')=>(e:React.ChangeEvent<HTMLInputElement>)=>{
@@ -217,7 +217,7 @@ function Bracket({fixtures,tournament,onUpdate}:{fixtures:Fixture[];tournament:T
   const reader=new FileReader();reader.onload=()=>setLogos(x=>({...x,[key]:String(reader.result)}));reader.readAsDataURL(file);
  };
  const rounds=Array.from(new Set(fixtures.map(f=>f.roundIndex))).sort((a,b)=>a-b);
- return <div ref={shellRef} className={\`bracket-shell \${fullscreen?'is-fullscreen':''}\`}>
+ return <div ref={shellRef} className={`bracket-shell ${fullscreen?'is-fullscreen':''}`}>
   <div className="bracket-toolbar">
    <div className="bracket-branding">
     <label className="logo-slot organizer-slot" title="Upload Organizer Logo">{logos.organizer?<img src={logos.organizer} alt="Organizer"/>:<span>ORG</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('organizer')} hidden/></label>
