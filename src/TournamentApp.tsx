@@ -220,13 +220,13 @@ function Bracket({fixtures,tournament,onUpdate}:{fixtures:Fixture[];tournament:T
  return <div ref={shellRef} className={`bracket-shell ${fullscreen?'is-fullscreen':''}`}>
   <div className="bracket-toolbar">
    <div className="bracket-branding">
-    <label className="logo-slot organizer-slot" title="Upload Organizer Logo">{logos.organizer?<img src={logos.organizer} alt="Organizer"/>:<span>ORG</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('organizer')} hidden/></label>
+    <div className="logo-brand-group"><label className="logo-slot organizer-slot" title="Upload Organizer Logo">{logos.organizer?<img src={logos.organizer} alt="Organizer"/>:<span>ORG</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('organizer')} hidden/></label><small>ORGANIZER</small></div>
     <div><strong>{tournament.name}</strong><span>{tournament.game} · {tournament.playerNames.length} players · {fixtures.length} total matches</span></div>
    </div>
    <div className="bracket-toolbar-right">
     <div className="sponsor-slots">
-     <label className="logo-slot" title="Upload Sponsor Logo">{logos.sponsor?<img src={logos.sponsor} alt="Sponsor"/>:<span>SP</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('sponsor')} hidden/></label>
-     <label className="logo-slot" title="Upload Co-Sponsor Logo">{logos.coSponsor?<img src={logos.coSponsor} alt="Co-Sponsor"/>:<span>CO</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('coSponsor')} hidden/></label>
+     <div className="logo-brand-group"><label className="logo-slot sponsor-slot" title="Upload Sponsor Logo">{logos.sponsor?<img src={logos.sponsor} alt="Sponsor"/>:<span>SP</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('sponsor')} hidden/></label><small>SPONSOR</small></div>
+     <div className="logo-brand-group"><label className="logo-slot sponsor-slot" title="Upload Co-Sponsor Logo">{logos.coSponsor?<img src={logos.coSponsor} alt="Co-Sponsor"/>:<span>CO</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('coSponsor')} hidden/></label><small>CO-SPONSOR</small></div>
     </div>
     <span className="bracket-note"><CheckCircle2 size={14}/> {tournament.format==='Swiss System'?'Next round unlocks after the current round':'Winner tracking enabled'}</span>
     <button type="button" className="fullscreen-btn" onClick={toggleFullscreen}>{fullscreen?<Minimize2 size={15}/>:<Maximize2 size={15}/>}<span>{fullscreen?'Exit Fullscreen':'Full Screen'}</span></button>
