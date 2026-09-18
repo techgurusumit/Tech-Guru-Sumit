@@ -63,3 +63,112 @@ body{
 .player-entry-grid label>span{display:grid;place-items:center;width:27px;height:29px;border-radius:7px;background:rgba(109,124,255,.08);color:#8d99ff;font-size:8px;font-weight:800}
 .player-entry-grid input{min-width:0!important;padding:8px 9px!important;border-radius:9px!important}
 @media(max-width:600px){.entry-section-head{align-items:flex-start;flex-direction:column}.player-entry-grid{grid-template-columns:1fr}.bulk-entry{grid-template-columns:1fr}.bulk-entry .secondary-btn{width:100%}}
+
+/* =========================================================
+   TGS GAMING THEME STUDIO
+   Visual-only layer: no tournament/data behavior changes.
+   ========================================================= */
+:root{--tgs-custom-background:none}
+body{
+ background-image:
+   linear-gradient(180deg,rgba(7,11,22,.12),rgba(7,11,22,.28)),
+   var(--tgs-custom-background),
+   radial-gradient(circle at 80% -20%,rgba(109,124,255,.15),transparent 35%);
+ background-size:cover,cover,auto;
+ background-position:center,center,center;
+ background-attachment:fixed,fixed,scroll;
+}
+body::before{
+ content:'';
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ z-index:-1;
+ background:linear-gradient(180deg,rgba(7,11,22,.16),rgba(7,11,22,.28));
+}
+.settings-appearance-grid{grid-template-columns:1.6fr 1fr}
+.appearance-panel{grid-column:1/-1}
+.settings-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px}
+.settings-title-row h3{margin:0 0 5px}
+.settings-title-row .muted{margin:0;max-width:680px}
+.settings-chip{
+ display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;
+ background:rgba(109,124,255,.09);border:1px solid rgba(109,124,255,.18);
+ color:var(--accent);font-size:8px;font-weight:900;letter-spacing:.08em;white-space:nowrap
+}
+.gaming-theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.gaming-theme-card{
+ position:relative;display:flex;align-items:center;gap:11px;width:100%;min-height:78px;
+ padding:10px;border:1px solid var(--line);border-radius:13px;background:var(--panel-2);
+ color:var(--text);text-align:left;overflow:hidden;transition:.2s;
+}
+.gaming-theme-card:hover{transform:translateY(-2px);border-color:rgba(109,124,255,.35);box-shadow:0 12px 28px rgba(0,0,0,.12)}
+.gaming-theme-card.selected{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 16%,transparent),0 12px 28px rgba(0,0,0,.13)}
+.theme-preview{
+ position:relative;flex:0 0 55px;width:55px;height:55px;border-radius:10px;overflow:hidden;
+ display:grid;place-items:center;border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.18)
+}
+.theme-preview i{position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.16),transparent 45%,rgba(0,0,0,.22))}
+.theme-preview b{position:relative;z-index:1;font-size:19px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+.theme-card-copy{min-width:0;display:grid;gap:4px}.theme-card-copy strong{font-size:10px}.theme-card-copy small{font-size:8px;line-height:1.35;color:var(--muted)}
+.theme-cyber .theme-preview{background:linear-gradient(135deg,#5668ff,#18d5df 55%,#8b4dff)}
+.theme-crimson .theme-preview{background:linear-gradient(135deg,#ff334f,#711326 55%,#090b12)}
+.theme-toxic .theme-preview{background:linear-gradient(135deg,#b7ef2b,#23a94f 50%,#07140e)}
+.theme-purple .theme-preview{background:linear-gradient(135deg,#b44cff,#6528c8 50%,#f22f9a)}
+.theme-ice .theme-preview{background:linear-gradient(135deg,#48e5ff,#2783c8 50%,#1b2f52)}
+.theme-championship .theme-preview{background:linear-gradient(135deg,#f7d76b,#a36b16 50%,#11100c)}
+.mode-row{
+ display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)
+}
+.mode-row strong,.mode-row small{display:block}.mode-row strong{font-size:10px}.mode-row small{margin-top:3px;color:var(--muted);font-size:8px}
+.background-panel{min-height:260px}
+.background-preview{
+ height:155px;border-radius:13px;border:1px solid var(--line);background-position:center;background-size:cover;
+ display:flex;align-items:flex-end;padding:12px;position:relative;overflow:hidden;margin:4px 0 12px
+}
+.background-preview::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,rgba(0,0,0,.72))}
+.background-preview>div{position:relative;z-index:1}.background-preview strong,.background-preview small{display:block;color:#fff}
+.background-preview strong{font-size:10px;overflow:hidden;text-overflow:ellipsis;max-width:100%}.background-preview small{margin-top:4px;font-size:8px;opacity:.75}
+.background-empty{
+ height:155px;border:1px dashed rgba(109,124,255,.28);border-radius:13px;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:7px;background:rgba(109,124,255,.035);color:var(--muted);margin:4px 0 12px
+}
+.background-empty strong{color:var(--text);font-size:10px}.background-empty small{font-size:8px}
+.background-actions{display:flex;gap:8px;flex-wrap:wrap}
+.upload-btn{cursor:pointer;font-size:10px!important}.upload-btn input{display:none!important}
+
+/* Gaming theme color systems */
+:root[data-gaming-theme='cyber']{--accent:#6d7cff;--accent-2:#22d3ee}
+:root[data-gaming-theme='crimson']{--accent:#ff4059;--accent-2:#ff8a3d}
+:root[data-gaming-theme='toxic']{--accent:#72e52e;--accent-2:#b8f532}
+:root[data-gaming-theme='purple']{--accent:#a855f7;--accent-2:#f04ccf}
+:root[data-gaming-theme='ice']{--accent:#38d8ff;--accent-2:#78a9ff}
+:root[data-gaming-theme='championship']{--accent:#e5b94c;--accent-2:#ffe29a}
+
+:root[data-gaming-theme='crimson'] .brand-mark{background:linear-gradient(135deg,#ff4059,#ff8a3d);color:#fff}
+:root[data-gaming-theme='toxic'] .brand-mark{background:linear-gradient(135deg,#72e52e,#16a85c)}
+:root[data-gaming-theme='purple'] .brand-mark{background:linear-gradient(135deg,#a855f7,#f04ccf);color:#fff}
+:root[data-gaming-theme='ice'] .brand-mark{background:linear-gradient(135deg,#38d8ff,#557dff);color:#07121c}
+:root[data-gaming-theme='championship'] .brand-mark{background:linear-gradient(135deg,#e5b94c,#fff0a8);color:#19140a}
+
+:root[data-gaming-theme='crimson'] .nav-item.active{box-shadow:inset 3px 0 0 #ff4059,0 10px 24px rgba(0,0,0,.1)}
+:root[data-gaming-theme='toxic'] .nav-item.active{box-shadow:inset 3px 0 0 #72e52e,0 10px 24px rgba(0,0,0,.1)}
+:root[data-gaming-theme='purple'] .nav-item.active{box-shadow:inset 3px 0 0 #a855f7,0 10px 24px rgba(0,0,0,.1)}
+:root[data-gaming-theme='ice'] .nav-item.active{box-shadow:inset 3px 0 0 #38d8ff,0 10px 24px rgba(0,0,0,.1)}
+:root[data-gaming-theme='championship'] .nav-item.active{box-shadow:inset 3px 0 0 #e5b94c,0 10px 24px rgba(0,0,0,.1)}
+
+:root[data-gaming-theme='crimson'] .primary-btn{background:linear-gradient(135deg,#ff4059,#ff8a3d);color:#fff}
+:root[data-gaming-theme='toxic'] .primary-btn{background:linear-gradient(135deg,#72e52e,#22b965);color:#06130b}
+:root[data-gaming-theme='purple'] .primary-btn{background:linear-gradient(135deg,#a855f7,#f04ccf);color:#fff}
+:root[data-gaming-theme='ice'] .primary-btn{background:linear-gradient(135deg,#38d8ff,#5c86ff);color:#06131b}
+:root[data-gaming-theme='championship'] .primary-btn{background:linear-gradient(135deg,#e5b94c,#ffe29a);color:#1a1407}
+
+/* Bracket follows the selected gaming accent without changing its mechanics */
+.bracket-shell{border-color:color-mix(in srgb,var(--accent) 24%,transparent)}
+.bracket-shell .round-title::before{background:linear-gradient(180deg,var(--accent),var(--accent-2));box-shadow:0 0 16px color-mix(in srgb,var(--accent) 35%,transparent)}
+.bracket-shell .bracket-match:hover{border-color:color-mix(in srgb,var(--accent) 48%,transparent)}
+.bracket-shell .inline-score-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+.bracket-shell .tgs-inline-save{background:linear-gradient(180deg,var(--accent),var(--accent-2))!important;box-shadow:0 10px 22px color-mix(in srgb,var(--accent) 24%,transparent)!important}
+
+@media(max-width:900px){.gaming-theme-grid{grid-template-columns:1fr 1fr}.settings-appearance-grid{grid-template-columns:1fr}.appearance-panel{grid-column:auto}}
+@media(max-width:600px){.gaming-theme-grid{grid-template-columns:1fr}.mode-row{align-items:flex-start;flex-direction:column}}
