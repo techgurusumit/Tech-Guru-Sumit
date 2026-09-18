@@ -15,7 +15,7 @@ function readLinks():ShareLink[]{try{return JSON.parse(localStorage.getItem(link
 function writeLinks(links:ShareLink[]){localStorage.setItem(linksKey(),JSON.stringify(links))}
 function readTournaments():Tournament[]{try{const value=JSON.parse(localStorage.getItem('tgs_tournaments')||'[]');return Array.isArray(value)?value:[]}catch{return []}}
 function token(bytes=32){const values=new Uint8Array(bytes);crypto.getRandomValues(values);return Array.from(values).map(v=>v.toString(16).padStart(2,'0')).join('')}
-function shareUrl(publicToken:string,viewType:ViewType){return `${window.location.origin}${window.location.pathname}?share=${encodeURIComponent(publicToken)}&view=${viewType}`}
+function shareUrl(publicToken:string,viewType:ViewType,stream=false){return `${window.location.origin}${window.location.pathname}?share=${encodeURIComponent(publicToken)}&view=${viewType}${stream?"&stream=1":""}`}
 function currentTournamentId(){const select=document.querySelector('.select-wrap select') as HTMLSelectElement|null;return select?.value?Number(select.value):0}
 function currentTournament():Tournament|undefined{const id=currentTournamentId();return readTournaments().find(t=>t.id===id)}
 
@@ -55,10 +55,20 @@ function closeModal(){document.querySelector('.tgs-share-overlay')?.remove()}
 function openShareModal(tournament:Tournament,links:ShareLink[]){
   closeModal();
   const overlay=document.createElement('div');overlay.className='tgs-share-overlay';
-  overlay.innerHTML=`<div class="tgs-share-dialog"><div class="tgs-share-head"><div><div class="tgs-share-kicker">LIVE SHARING</div><h2>${escapeHtml(tournament.name)}</h2><p>These links show only the selected fixture or scorecard area and update live.</p></div><button class="tgs-share-close">×</button></div><div class="tgs-share-grid">${links.map(link=>`<div class="tgs-share-item"><div><b>${link.viewType==='fixtures'?'Fixtures':'Scorecard'}</b><small>${link.viewType==='fixtures'?'Live match bracket / rounds':'Live standings / points table'}</small></div><input readonly value="${escapeHtml(link.url)}"><div class="tgs-share-actions"><button data-copy="${escapeHtml(link.url)}">Copy Link</button><button data-open="${escapeHtml(link.url)}">Open</button></div></div>`).join('')}</div><div class="tgs-share-obs"><b>OBS Browser Source</b><span>Use either link as an OBS Browser Source URL. The page contains only the fixtures or scorecard.</span></div><div class="tgs-share-copy-status"></div><button class="tgs-share-done">Done</button></div>`;
+  overlay.innerHTML=`<div class="tgs-share-dialog"><div class="tgs-share-head"><div><div class="tgs-share-kicker">LIVE SHARING</div><h2>${escapeHtml(tournament.name)}</h2><p>These links show only the selected fixture or scorecard area and update live.</p></div><button class="tgs-share-close">×</button></div><div class="tgs-share-grid">${links.map(link=>`<div class="tgs-share-item"><div><b>${link.viewType==='fixtures'?'Fixtures':'Scorecard'}</b><small>${link.viewType==='fixtures'?'Live match bracket / rounds':'Live standings / points table'}</small></div><input readonly value="${escapeHtml(link.url)}"><div class="tgs-share-actions"><button data-copy="${escapeHtml(link.url)}">Copy Link</button><button data-open="${escapeHtml(link.url)}">Open</button><button data-stream-copy="${escapeHtml(link.publicToken)}" data-stream-view="${link.viewType}">Copy OBS / Full Page</button><button data-stream-open="${escapeHtml(link.publicToken)}" data-stream-view="${link.viewType}">Open Full Page</button></div></div>`).join('')}</div><div class="tgs-share-obs"><b>OBS Browser Source</b><span>Use either link as an OBS Browser Source URL. The page contains only the fixtures or scorecard.</span></div><div class="tgs-share-copy-status"></div><button class="tgs-share-done">Done</button></div>`;
   overlay.querySelector('.tgs-share-close')?.addEventListener('click',closeModal);overlay.querySelector('.tgs-share-done')?.addEventListener('click',closeModal);
   overlay.querySelectorAll('[data-copy]').forEach(el=>el.addEventListener('click',()=>copy((el as HTMLElement).dataset.copy||'')));
   overlay.querySelectorAll('[data-open]').forEach(el=>el.addEventListener('click',()=>window.open((el as HTMLElement).dataset.open||'','_blank','noopener,noreferrer')));
+  overlay.querySelectorAll('[data-stream-copy]').forEach(el=>el.addEventListener('click',()=>{
+    const token=(el as HTMLElement).dataset.streamCopy||'';
+    const view=((el as HTMLElement).dataset.streamView||'fixtures') as ViewType;
+    copy(shareUrl(token,view,true));
+  }));
+  overlay.querySelectorAll('[data-stream-open]').forEach(el=>el.addEventListener('click',()=>{
+    const token=(el as HTMLElement).dataset.streamOpen||'';
+    const view=((el as HTMLElement).dataset.streamView||'fixtures') as ViewType;
+    window.open(shareUrl(token,view,true),'_blank','noopener,noreferrer');
+  }));
   overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal()});document.body.appendChild(overlay);
 }
 function escapeHtml(value:string){return value.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]||c))}
