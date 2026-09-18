@@ -220,11 +220,7 @@ function AuthScreen({mode,setMode,onLogin}:{mode:'login'|'register';setMode:(m:'
      });
      if(signUpError)throw signUpError;
      if(data.session&&data.user){
-      const u={name:name.trim(),email:normalizedEmail,password};
-      localStorage.setItem('tgs_users',JSON.stringify([
-       ...JSON.parse(localStorage.getItem('tgs_users')||'[]'),
-       u
-      ].filter((x,i,a)=>a.findIndex(y=>y.email.toLowerCase()===x.email.toLowerCase())===i)));
+      const u={name:name.trim(),email:normalizedEmail,password:''};
       onLogin(u);
      }else{
       setResetSent(true);
@@ -234,11 +230,7 @@ function AuthScreen({mode,setMode,onLogin}:{mode:'login'|'register';setMode:(m:'
      const {data,error:loginError}=await supabase.auth.signInWithPassword({email:normalizedEmail,password});
      if(loginError)throw loginError;
      const displayName=String(data.user?.user_metadata?.name||normalizedEmail.split('@')[0]);
-     const u={name:displayName,email:normalizedEmail,password};
-     localStorage.setItem('tgs_users',JSON.stringify([
-      ...JSON.parse(localStorage.getItem('tgs_users')||'[]'),
-      u
-     ].filter((x,i,a)=>a.findIndex(y=>y.email.toLowerCase()===x.email.toLowerCase())===i)));
+     const u={name:displayName,email:normalizedEmail,password:''};
      onLogin(u);
     }
    }else{
