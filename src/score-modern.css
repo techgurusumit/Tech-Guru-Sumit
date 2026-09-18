@@ -73,3 +73,23 @@
   font-weight:900!important;
   letter-spacing:.04em!important;
 }
+
+/* FINAL: exactly one score-save control, shown only when both scores are entered */
+.bracket-shell .score-match-body{width:calc(100% - 66px)!important}
+.bracket-shell .tgs-inline-save{
+  display:grid!important;place-items:center!important;
+  position:absolute!important;right:9px!important;top:50%!important;
+  transform:translateY(-50%)!important;
+  width:52px!important;height:50px!important;margin:0!important;padding:0!important;
+  border:1px solid rgba(109,124,255,.30)!important;border-radius:10px!important;
+  background:linear-gradient(180deg,#7785ff,#586bf0)!important;
+  color:#fff!important;font-size:8px!important;font-weight:950!important;
+  letter-spacing:.05em!important;text-transform:uppercase!important;
+  box-shadow:0 10px 22px rgba(72,86,220,.24)!important;z-index:30!important;
+}
+.bracket-shell .tgs-inline-save:hover{transform:translateY(-50%) scale(1.04)!important}
+.bracket-shell .tgs-inline-save:active{transform:translateY(-50%) scale(.98)!important}
+@media(max-width:760px){
+ .bracket-shell .score-match-body{width:calc(100% - 58px)!important}
+ .bracket-shell .tgs-inline-save{right:7px!important;width:46px!important;height:48px!important}
+}
