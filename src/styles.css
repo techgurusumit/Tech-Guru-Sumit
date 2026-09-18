@@ -187,3 +187,11 @@ body::before{
 :root[data-gaming-theme='purple'] .sidebar .nav-item.active{box-shadow:inset 3px 0 0 #a855f7!important}
 :root[data-gaming-theme='ice'] .sidebar .nav-item.active{box-shadow:inset 3px 0 0 #38d8ff!important}
 :root[data-gaming-theme='championship'] .sidebar .nav-item.active{box-shadow:inset 3px 0 0 #e5b94c!important}
+
+/* Profile uploader UI */
+.my-profile-photo>label,.player-avatar-upload{position:relative;overflow:hidden}
+.my-profile-photo>label::after,.player-avatar-upload::after{
+ content:'UPLOAD';position:absolute;inset:auto 0 0;padding:3px 0;background:rgba(0,0,0,.62);
+ color:#fff;font-size:6px;font-weight:900;letter-spacing:.08em;text-align:center;opacity:0;transition:.15s;
+}
+.my-profile-photo>label:hover::after,.player-avatar-upload:hover::after{opacity:1}
