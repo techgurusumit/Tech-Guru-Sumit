@@ -61,3 +61,15 @@
     font-size:8px!important;
   }
 }
+
+/* Remove legacy duplicate score controls. The only active control is .inline-save-btn. */
+.bracket-shell .score-editor,
+.bracket-shell .match-action{
+  display:none!important;
+}
+.bracket-shell .inline-save-btn{
+  padding:0!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.04em!important;
+}
