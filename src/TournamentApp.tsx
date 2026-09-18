@@ -132,13 +132,32 @@ export function generateFixtures(format:string,names:string[]):Fixture[]{
 }
 
 function resolveAutoFixtures(fixtures:Fixture[]){
- const out=fixtures.map(f=>({...f}));let changed=true;
- while(changed){changed=false;
+ const out=fixtures.map(f=>({...f}));
+ let changed=true;
+ while(changed){
+  changed=false;
   for(const f of out){
-   const set=(source?:SourceRef)=>{if(!source)return;const sourceFixture=out.find(x=>x.id===source.id);if(!sourceFixture)return;const value=source.result==='winner'?sourceFixture.winner:(sourceFixture.winner?(sourceFixture.player1===sourceFixture.winner?sourceFixture.player2:sourceFixture.player1):undefined);if(!value)return;if(f.source1?.id===source.id&&f.source1.result===source.result&&f.player1!==value){f.player1=value;f.pending1=false;changed=true}if(f.source2?.id===source.id&&f.source2.result===source.result&&f.player2!==value){f.player2=value;f.pending2=false;changed=true}};
+   const set=(source?:SourceRef)=>{
+    if(!source)return;
+    const sourceFixture=out.find(x=>x.id===source.id);
+    if(!sourceFixture||!sourceFixture.winner)return;
+    let value:string|undefined;
+    if(source.result==='winner'){
+      value=sourceFixture.winner;
+    }else{
+      if(!sourceFixture.player1||!sourceFixture.player2)return;
+      if(sourceFixture.score1===undefined||sourceFixture.score2===undefined)return;
+      value=sourceFixture.winner===sourceFixture.player1?sourceFixture.player2:sourceFixture.player1;
+    }
+    if(!value)return;
+    if(f.source1?.id===source.id&&f.source1.result===source.result&&f.player1!==value){f.player1=value;f.pending1=false;changed=true}
+    if(f.source2?.id===source.id&&f.source2.result===source.result&&f.player2!==value){f.player2=value;f.pending2=false;changed=true}
+   };
    set(f.source1);set(f.source2);
-   if(!f.winner&&f.player1&&!f.player2){f.winner=f.player1;f.bye=true;changed=true}
-   if(!f.winner&&f.player2&&!f.player1){f.winner=f.player2;f.bye=true;changed=true}
+   if(f.bye&&!f.winner){
+    if(f.player1&&!f.player2){f.winner=f.player1;changed=true}
+    else if(f.player2&&!f.player1){f.winner=f.player2;changed=true}
+   }
   }
  }
  return out;
