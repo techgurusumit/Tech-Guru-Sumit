@@ -10,13 +10,9 @@
     style.textContent = `
       /* Scores are always available directly on every fixture. */
       .bracket-match .inline-score-input { display:block !important; }
-      /* React's original Save is used internally; the visible Save appears only after scores are entered. */
+      /* React owns score saving. Do not create a second save button here. */
       .bracket-match .inline-save-btn { display:none !important; }
-      .tgs-inline-save {
-        width:100%; margin-top:8px; padding:8px 10px; border:0; border-radius:9px;
-        background:#5fce2b; color:#102008; font-size:10px; font-weight:900;
-        letter-spacing:.03em; cursor:pointer; transition:.18s;
-      }
+      .tgs-inline-save { display:none !important; }
       .tgs-inline-save:hover { filter:brightness(1.05); transform:translateY(-1px); }
       .tgs-inline-save:disabled { opacity:.45; cursor:not-allowed; transform:none; }
       .tgs-scorecard-toolbar-btn {
@@ -131,21 +127,9 @@
   }
 
   function addInlineSave(match) {
-    const inputs = [...match.querySelectorAll('.inline-score-input')];
-    if (inputs.length !== 2) return;
-    const hasPlayers = match.querySelectorAll('.player-line b').length === 2 && ![...match.querySelectorAll('.player-line b')].some(x => x.textContent?.trim() === 'TBD');
-    if (!hasPlayers || match.classList.contains('won')) return;
-    let button = match.querySelector('.tgs-inline-save');
-    if (!button) {
-      button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'tgs-inline-save';
-      button.textContent = 'Save Score';
-      button.addEventListener('click', () => match.querySelector('.inline-save-btn')?.click());
-      match.appendChild(button);
-    }
-    const ready = inputs.every(input => input.value.trim() !== '') && inputs[0].value !== inputs[1].value;
-    button.style.display = ready ? 'block' : 'none';
+    // Score saving is handled by the React BracketMatch component.
+    // This legacy DOM enhancer must never add a second Save Score button.
+    match.querySelectorAll('.tgs-inline-save').forEach(button => button.remove());
   }
 
   function addToolbarScorecard() {
