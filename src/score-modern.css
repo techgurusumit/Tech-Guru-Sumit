@@ -126,3 +126,6 @@
  .bracket-shell .tgs-inline-save{right:6px!important;width:44px!important;height:42px!important}
  .bracket-shell .score-match-body{width:calc(100% - 52px)!important}
 }
+
+/* Scorecard persistence table is driven by React tournament state; keep standalone table styling stable. */
+.scorecard-persist-placeholder{display:none!important}
