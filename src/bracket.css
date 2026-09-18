@@ -439,3 +439,83 @@
   .bracket-shell .inline-save-btn{right:7px!important;width:44px!important;height:54px!important}
   .bracket-shell .inline-score-input{flex-basis:40px;width:40px}
 }
+
+/* =========================================================
+   ESPORTS BROADCAST MODE + THEME-AWARE BRACKET BACKDROPS
+   ========================================================= */
+.bracket-shell{
+  background:
+    radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 28%),
+    radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 26%),
+    linear-gradient(135deg,#090e19 0%,#0d1626 48%,#080d17 100%);
+}
+:root[data-gaming-theme='crimson'] .bracket-shell{
+ background:
+  radial-gradient(circle at 10% 10%,rgba(255,64,89,.24),transparent 28%),
+  radial-gradient(circle at 88% 10%,rgba(255,138,61,.14),transparent 25%),
+  linear-gradient(135deg,#16070b,#210d13 50%,#090b11);
+}
+:root[data-gaming-theme='toxic'] .bracket-shell{
+ background:
+  radial-gradient(circle at 10% 10%,rgba(114,229,46,.18),transparent 28%),
+  radial-gradient(circle at 90% 12%,rgba(184,245,50,.10),transparent 25%),
+  linear-gradient(135deg,#07120c,#0c1b13 50%,#07100b);
+}
+:root[data-gaming-theme='purple'] .bracket-shell{
+ background:
+  radial-gradient(circle at 10% 10%,rgba(168,85,247,.23),transparent 28%),
+  radial-gradient(circle at 88% 10%,rgba(240,76,207,.14),transparent 25%),
+  linear-gradient(135deg,#100817,#180d25 50%,#0c0712);
+}
+:root[data-gaming-theme='ice'] .bracket-shell{
+ background:
+  radial-gradient(circle at 10% 10%,rgba(56,216,255,.22),transparent 28%),
+  radial-gradient(circle at 88% 10%,rgba(120,169,255,.14),transparent 25%),
+  linear-gradient(135deg,#06121a,#0a1b2a 50%,#07101b);
+}
+:root[data-gaming-theme='championship'] .bracket-shell{
+ background:
+  radial-gradient(circle at 10% 10%,rgba(229,185,76,.20),transparent 28%),
+  radial-gradient(circle at 88% 10%,rgba(255,226,154,.11),transparent 25%),
+  linear-gradient(135deg,#110e08,#1d170b 50%,#0b0a07);
+}
+.bracket-branding{display:flex;align-items:center;gap:12px;min-width:0}
+.bracket-branding>div{min-width:0}
+.bracket-toolbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.sponsor-slots{display:flex;align-items:center;gap:7px}
+.logo-slot{
+ width:42px;height:42px;display:grid;place-items:center;position:relative;overflow:hidden;
+ border:1px solid rgba(255,255,255,.14);border-radius:10px;
+ background:rgba(255,255,255,.06);cursor:pointer;flex:0 0 auto;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.logo-slot:hover{border-color:color-mix(in srgb,var(--accent) 65%,transparent);transform:translateY(-1px)}
+.logo-slot img{width:100%;height:100%;object-fit:contain;padding:5px}
+.logo-slot span{font-size:7px;font-weight:900;letter-spacing:.08em;color:#9ba8bd}
+.organizer-slot{width:48px;height:48px;border-radius:12px}
+.fullscreen-btn{
+ display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ height:38px;padding:0 12px;border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);
+ border-radius:9px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 18%,#101827),#0d1524);
+ color:#eef3fb;font-size:9px;font-weight:850;letter-spacing:.04em;text-transform:uppercase;
+ box-shadow:0 8px 18px rgba(0,0,0,.16);cursor:pointer;
+}
+.fullscreen-btn:hover{border-color:color-mix(in srgb,var(--accent) 65%,transparent);box-shadow:0 10px 24px color-mix(in srgb,var(--accent) 12%,transparent)}
+.bracket-shell:fullscreen{
+ width:100vw;height:100vh;max-width:none;margin:0;border-radius:0;
+ display:flex;flex-direction:column;background-color:#080d17;
+}
+.bracket-shell:fullscreen .bracket-toolbar{padding:16px 24px}
+.bracket-shell:fullscreen .bracket-scroll{flex:1;min-height:0;padding:26px 28px 40px}
+.bracket-shell:fullscreen .bracket{padding-bottom:50px}
+.bracket-shell:fullscreen .bracket-round,
+.bracket-shell:fullscreen .bracket-shell .bracket-match{width:300px}
+@media(max-width:900px){
+ .bracket-toolbar-right{justify-content:flex-start}
+ .bracket-toolbar{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:600px){
+ .bracket-toolbar-right{width:100%}
+ .bracket-toolbar-right .bracket-note{order:3}
+ .fullscreen-btn{flex:1}
+}
