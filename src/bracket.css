@@ -670,3 +670,16 @@
     radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 10%,transparent),transparent 26%),
     linear-gradient(135deg,#eef3f9,#f6f8fb)!important;
 }
+
+/* Final: bracket background shows through at 50% opacity */
+.bracket-shell{
+  background-image:
+    linear-gradient(rgba(10,15,27,.50),rgba(10,15,27,.50)),
+    var(--tgs-custom-background),
+    radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 28%),
+    radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 26%),
+    linear-gradient(135deg,#090e19 0%,#0d1626 48%,#080d17 100%)!important;
+  background-color:transparent!important;
+}
+.bracket-shell .bracket-scroll,
+.bracket-shell .bracket{background:transparent!important}
