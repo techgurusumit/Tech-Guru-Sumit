@@ -301,8 +301,84 @@ function AuthScreen({mode,setMode,onLogin}:{mode:'login'|'register';setMode:(m:'
  </div></div>;
 }
 function FormatCards({value,onChange}:{value:string;onChange:(v:string)=>void}){return <div className="format-picker">{FORMAT_OPTIONS.map(f=><button type="button" key={f.name} className={`format-option ${value===f.name?'selected':''}`} onClick={()=>onChange(f.name)}><span className="format-icon">{f.icon}</span><span><strong>{f.name}</strong><small>{f.description}</small></span><span className="format-radio">{value===f.name?'✓':'›'}</span></button>)}</div>}
-function CreateModal({close,save}:{close:()=>void;save:(t:Omit<Tournament,'id'>)=>void}){const[name,setName]=React.useState('');const[game,setGame]=React.useState('Asphalt Legends');const[format,setFormat]=React.useState('Single Elimination');const[players,setPlayers]=React.useState(16);const[password,setPassword]=React.useState('');const[confirm,setConfirm]=React.useState('');const[error,setError]=React.useState('');const submit=(e:React.FormEvent)=>{e.preventDefault();if(!name.trim())return setError('Tournament name is required.');if(players<2)return setError('At least 2 players are required.');if(password.length<4)return setError('Tournament password must be at least 4 characters.');if(password!==confirm)return setError('Passwords do not match.');save({name:name.trim(),game,format,players,playerNames:Array.from({length:players},(_,i)=>`Player ${i+1}`),status:'Upcoming',date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),password,passwordEnabled:true,fixtures:[]})};return <Modal title="Create New Tournament" subtitle="Choose the tournament nature first. Fixtures will use the selected format engine." close={close}><form onSubmit={submit}><label>Tournament Name<input value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. TGS Clash #3" autoFocus/></label><label>Game<select value={game} onChange={e=>setGame(e.target.value)}><option>Asphalt Legends</option><option>Subway Surfers</option><option>Hill Climb Racing</option><option>Roblox</option><option>Minecraft</option><option>Other</option></select></label><div className="format-label"><strong>Choose tournament type</strong><span>{format}</span></div><FormatCards value={format} onChange={setFormat}/><label>Number of Players<input type="number" min="2" value={players} onChange={e=>setPlayers(Math.max(2,Number(e.target.value)||2))}/></label><label><span className="password-label"><Lock size={13}/> Tournament Password *</span><input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Enter tournament password"/></label><label><span className="password-label"><Lock size={13}/> Confirm Password *</span><input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="Re-enter password"/></label>{error&&<div className="form-error">{error}</div>}<div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button type="submit" className="primary-btn"><Lock size={15}/> Create Tournament</button></div></form></Modal>}
-function EditModal({tournament,close,save}:{tournament:Tournament;close:()=>void;save:(t:Tournament)=>void}){const[name,setName]=React.useState(tournament.name);const[game,setGame]=React.useState(tournament.game);const[format,setFormat]=React.useState(tournament.format);const[error,setError]=React.useState('');const submit=(e:React.FormEvent)=>{e.preventDefault();if(!name.trim())return setError('Tournament name is required.');const changed=format!==tournament.format;save({...tournament,name:name.trim(),game,format,fixtures:changed?[]:tournament.fixtures,status:changed?'Upcoming':tournament.status})};return <Modal title="Update Tournament" subtitle="Changing the format resets existing fixtures so the new format can generate a fresh schedule." close={close}><form onSubmit={submit}><label>Tournament Name<input value={name} onChange={e=>setName(e.target.value)}/></label><label>Game<select value={game} onChange={e=>setGame(e.target.value)}><option>Asphalt Legends</option><option>Subway Surfers</option><option>Hill Climb Racing</option><option>Roblox</option><option>Minecraft</option><option>Other</option></select></label><div className="format-label"><strong>Tournament type</strong><span>{format}</span></div><FormatCards value={format} onChange={setFormat}/>{error&&<div className="form-error">{error}</div>}<div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button className="primary-btn"><Pencil size={15}/> Save Changes</button></div></form></Modal>}
+function CreateModal({close,save}:{close:()=>void;save:(t:Omit<Tournament,'id'>)=>void}){
+ const[name,setName]=React.useState('');
+ const[game,setGame]=React.useState('Asphalt Legends');
+ const[format,setFormat]=React.useState('Single Elimination');
+ const[players,setPlayers]=React.useState(16);
+ const[playerNames,setPlayerNames]=React.useState<string[]>(Array.from({length:16},(_,i)=>'Player '+(i+1)));
+ const[bulk,setBulk]=React.useState('');
+ const[password,setPassword]=React.useState('');
+ const[confirm,setConfirm]=React.useState('');
+ const[error,setError]=React.useState('');
+
+ React.useEffect(()=>{
+  setPlayerNames(prev=>{
+   const next=prev.slice(0,players);
+   while(next.length<players)next.push('Player '+(next.length+1));
+   return next;
+  });
+ },[players]);
+
+ const applyBulk=()=>{
+  const parsed=bulk.split(/\\r?\\n|,/).map(x=>x.trim()).filter(Boolean);
+  if(!parsed.length){setError('Paste at least 2 player names.');return}
+  const next=parsed.slice(0,players);
+  while(next.length<players)next.push('Player '+(next.length+1));
+  setPlayerNames(next);
+  setBulk('');
+  setError('');
+ };
+
+ const submit=(e:React.FormEvent)=>{
+  e.preventDefault();
+  if(!name.trim())return setError('Tournament name is required.');
+  if(players<2)return setError('At least 2 players are required.');
+  const clean=playerNames.map(x=>x.trim());
+  if(clean.some(x=>!x))return setError('Every player name is required.');
+  if(new Set(clean.map(x=>x.toLowerCase())).size!==clean.length)return setError('Player names must be unique.');
+  if(password.length<4)return setError('Tournament password must be at least 4 characters.');
+  if(password!==confirm)return setError('Passwords do not match.');
+  save({
+   name:name.trim(),game,format,players,playerNames:clean,status:'Upcoming',
+   date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),
+   password,passwordEnabled:true,fixtures:[]
+  });
+ };
+
+ return <Modal title="Create New Tournament" subtitle="Set the format, enter participants and protect tournament management with a password." close={close}>
+  <form onSubmit={submit}>
+   <label>Tournament Name<input value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. TGS Clash #3" autoFocus/></label>
+   <label>Game<select value={game} onChange={e=>setGame(e.target.value)}>
+    <option>Asphalt Legends</option><option>Subway Surfers</option><option>Hill Climb Racing</option><option>Roblox</option><option>Minecraft</option><option>Other</option>
+   </select></label>
+
+   <div className="format-label"><strong>Tournament type</strong><span>{format}</span></div>
+   <FormatCards value={format} onChange={setFormat}/>
+
+   <div className="entry-section">
+    <div className="entry-section-head">
+     <div><strong>Participants</strong><small>Enter player names now. These names are used to generate fixtures.</small></div>
+     <label className="player-count-label">Players
+      <input type="number" min="2" max="128" value={players} onChange={e=>setPlayers(Math.min(128,Math.max(2,Number(e.target.value)||2)))}/>
+     </label>
+    </div>
+    <div className="bulk-entry">
+     <textarea value={bulk} onChange={e=>setBulk(e.target.value)} placeholder="Optional bulk entry: paste one player per line (or comma separated)"/>
+     <button type="button" className="secondary-btn" onClick={applyBulk}>Apply Names</button>
+    </div>
+    <div className="player-entry-grid">
+     {playerNames.map((player,i)=><label key={i}><span>#${i+1}</span><input value={player} onChange={e=>setPlayerNames(a=>a.map((x,j)=>j===i?e.target.value:x))} placeholder={"Player "+(i+1)}/></label>)}
+    </div>
+   </div>
+
+   <label><span className="password-label"><Lock size={13}/> Tournament Password *</span><input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Enter tournament password"/></label>
+   <label><span className="password-label"><Lock size={13}/> Confirm Password *</span><input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="Re-enter password"/></label>
+   {error&&<div className="form-error">{error}</div>}
+   <div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button type="submit" className="primary-btn"><Trophy size={15}/> Create Tournament</button></div>
+  </form>
+ </Modal>
+}function EditModal({tournament,close,save}:{tournament:Tournament;close:()=>void;save:(t:Tournament)=>void}){const[name,setName]=React.useState(tournament.name);const[game,setGame]=React.useState(tournament.game);const[format,setFormat]=React.useState(tournament.format);const[error,setError]=React.useState('');const submit=(e:React.FormEvent)=>{e.preventDefault();if(!name.trim())return setError('Tournament name is required.');const changed=format!==tournament.format;save({...tournament,name:name.trim(),game,format,fixtures:changed?[]:tournament.fixtures,status:changed?'Upcoming':tournament.status})};return <Modal title="Update Tournament" subtitle="Changing the format resets existing fixtures so the new format can generate a fresh schedule." close={close}><form onSubmit={submit}><label>Tournament Name<input value={name} onChange={e=>setName(e.target.value)}/></label><label>Game<select value={game} onChange={e=>setGame(e.target.value)}><option>Asphalt Legends</option><option>Subway Surfers</option><option>Hill Climb Racing</option><option>Roblox</option><option>Minecraft</option><option>Other</option></select></label><div className="format-label"><strong>Tournament type</strong><span>{format}</span></div><FormatCards value={format} onChange={setFormat}/>{error&&<div className="form-error">{error}</div>}<div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button className="primary-btn"><Pencil size={15}/> Save Changes</button></div></form></Modal>}
 function PasswordModal({action,tournament,close,verify}:{action:'edit'|'delete'|'fixtures';tournament:Tournament;close:()=>void;verify:(p:string)=>void}){const[p,setP]=React.useState('');const title=action==='edit'?'Update Tournament':action==='delete'?'Delete Tournament':'Create Fixtures';return <Modal title={title} subtitle={`Password required for: ${tournament.name}`} close={close}><form onSubmit={e=>{e.preventDefault();verify(p)}}><label><span className="password-label"><Lock size={13}/> Tournament Password</span><input type="password" value={p} onChange={e=>setP(e.target.value)} placeholder="Enter tournament password" autoFocus/></label><div className="password-warning"><Lock size={15}/> Enter the password set for this tournament.</div><div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button type="submit" className={action==='delete'?'danger-btn':'primary-btn'}>{action==='delete'?<><Trash2 size={15}/> Confirm Delete</>:action==='edit'?<><Pencil size={15}/> Verify & Update</>:<><GitBranch size={15}/> Verify & Create</>}</button></div></form></Modal>}
 function Modal({title,subtitle,close,children}:{title:string;subtitle:string;close:()=>void;children:React.ReactNode}){return <div className="modal-backdrop" onMouseDown={e=>e.target===e.currentTarget&&close()}><div className="modal"><div className="modal-head"><div><h2>{title}</h2><p>{subtitle}</p></div><button className="icon-btn" onClick={close}><X size={18}/></button></div>{children}</div></div>}
 function Empty({title,text,icon}:{title:string;text:string;icon:React.ReactNode}){return <section className="empty-page"><div className="empty-icon">{icon}</div><h2>{title}</h2><p>{text}</p></section>}
