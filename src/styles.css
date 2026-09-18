@@ -47,3 +47,19 @@ body{
 .primary-btn{
   box-shadow:0 10px 22px rgba(84,102,230,.16),inset 0 1px 0 rgba(255,255,255,.20);
 }
+
+.entry-section{padding:14px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,rgba(109,124,255,.05),rgba(255,255,255,.015))}
+.entry-section-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:11px}
+.entry-section-head>div:first-child strong{display:block;color:var(--text);font-size:12px}
+.entry-section-head>div:first-child small{display:block;margin-top:3px;color:var(--muted);font-size:9px;line-height:1.4}
+.player-count-label{display:flex!important;align-items:center;gap:7px!important;color:var(--muted)!important;font-size:9px!important;white-space:nowrap}
+.player-count-label input{width:72px!important;text-align:center}
+.bulk-entry{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:11px}
+.bulk-entry textarea{width:100%;min-height:62px;resize:vertical;border:1px dashed rgba(109,124,255,.25);border-radius:10px;background:var(--input);color:var(--text);padding:10px;font-size:10px;outline:none}
+.bulk-entry textarea:focus{border-color:var(--accent)}
+.bulk-entry .secondary-btn{height:fit-content;align-self:stretch;padding-inline:12px}
+.player-entry-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:290px;overflow:auto;padding-right:2px}
+.player-entry-grid label{display:grid;grid-template-columns:27px 1fr;gap:6px;align-items:center;color:var(--muted);font-size:9px}
+.player-entry-grid label>span{display:grid;place-items:center;width:27px;height:29px;border-radius:7px;background:rgba(109,124,255,.08);color:#8d99ff;font-size:8px;font-weight:800}
+.player-entry-grid input{min-width:0!important;padding:8px 9px!important;border-radius:9px!important}
+@media(max-width:600px){.entry-section-head{align-items:flex-start;flex-direction:column}.player-entry-grid{grid-template-columns:1fr}.bulk-entry{grid-template-columns:1fr}.bulk-entry .secondary-btn{width:100%}}
