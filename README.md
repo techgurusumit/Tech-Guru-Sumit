@@ -16,3 +16,9 @@ A responsive tournament management web app for Tech Guru Sumit (TGS).
 ## Project status
 
 Initial project setup. The application will be built in phases with a responsive modern UI and a free-hosting-friendly architecture.
+
+
+## Legal
+
+- [Terms of Service](https://tgs-tournament-manager-pied.vercel.app/terms.html)
+- [Privacy Policy](https://tgs-tournament-manager-pied.vercel.app/privacy.html)
