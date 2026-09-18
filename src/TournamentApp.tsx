@@ -247,7 +247,7 @@ function SettingsPage({theme,setTheme,user,logout,gamingTheme,setGamingTheme}:{t
    const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
    const ctx=canvas.getContext('2d');if(!ctx)return;ctx.drawImage(img,0,0,canvas.width,canvas.height);
    const optimized=canvas.toDataURL('image/jpeg',.78);
-   try{localStorage.setItem('tgs_background',optimized);localStorage.setItem('tgs_background_name',file.name);setBg(optimized);setFileName(file.name);document.documentElement.style.setProperty('--tgs-custom-background',\`url("\${optimized}")\`)}catch{alert('This image is too large. Please choose a smaller image.')}
+   try{localStorage.setItem('tgs_background',optimized);localStorage.setItem('tgs_background_name',file.name);setBg(optimized);setFileName(file.name);document.documentElement.style.setProperty('--tgs-custom-background',`url("${optimized}")`)}catch{alert('This image is too large. Please choose a smaller image.')}
   };
   img.src=data;
  };
@@ -256,13 +256,13 @@ function SettingsPage({theme,setTheme,user,logout,gamingTheme,setGamingTheme}:{t
   <div className="panel appearance-panel">
    <div className="settings-title-row"><div><h3>Gaming Theme Studio</h3><p className="muted">Change the visual style only. Tournament logic and data stay unchanged.</p></div><span className="settings-chip">6 THEMES</span></div>
    <div className="gaming-theme-grid">
-    {GAMING_THEMES.map(t=><button type="button" key={t.id} className={\`gaming-theme-card \${gamingTheme===t.id?'selected':''} theme-\${t.id}\`} onClick={()=>setGamingTheme(t.id)}><span className="theme-preview"><i></i><b>{t.icon}</b></span><span className="theme-card-copy"><strong>{t.name}</strong><small>{t.desc}</small></span></button>)}
+    {GAMING_THEMES.map(t=><button type="button" key={t.id} className={`gaming-theme-card ${gamingTheme===t.id?'selected':''} theme-${t.id}`} onClick={()=>setGamingTheme(t.id)}><span className="theme-preview"><i></i><b>{t.icon}</b></span><span className="theme-card-copy"><strong>{t.name}</strong><small>{t.desc}</small></span></button>)}
    </div>
    <div className="mode-row"><div><strong>Interface mode</strong><small>Keep the existing light/dark option.</small></div><div className="theme-options"><button type="button" className={theme==='dark'?'selected':''} onClick={()=>setTheme('dark')}><Moon size={16}/> Dark</button><button type="button" className={theme==='light'?'selected':''} onClick={()=>setTheme('light')}><Sun size={16}/> Light</button></div></div>
   </div>
   <div className="panel background-panel">
    <div className="settings-title-row"><div><h3>Custom Background</h3><p className="muted">Upload a gaming image for the application background.</p></div><Upload size={18}/></div>
-   {bg?<div className="background-preview" style={{backgroundImage:\`url("\${bg}")\`}}><div><strong>{fileName||'Custom background'}</strong><small>Stored locally on this browser</small></div></div>:<div className="background-empty"><Upload size={26}/><strong>No custom background</strong><small>JPG, PNG or WEBP recommended · 16:9 works best</small></div>}
+   {bg?<div className="background-preview" style={{backgroundImage:`url("${bg}")`}}><div><strong>{fileName||'Custom background'}</strong><small>Stored locally on this browser</small></div></div>:<div className="background-empty"><Upload size={26}/><strong>No custom background</strong><small>JPG, PNG or WEBP recommended · 16:9 works best</small></div>}
    <div className="background-actions"><label className="primary-btn upload-btn"><Upload size={15}/>{bg?'Change Background':'Upload Background'}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={upload} hidden/></label>{bg&&<button type="button" className="secondary-btn" onClick={clearBg}><RotateCcw size={15}/> Reset Background</button>}</div>
   </div>
   <div className="panel account-panel"><h3>Account</h3><p className="muted">Signed in as <b>{user.name}</b></p><p className="muted">{user.email}</p><button type="button" className="danger-btn" onClick={logout}><LogOut size={16}/> Logout</button></div>
