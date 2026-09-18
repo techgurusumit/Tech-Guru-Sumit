@@ -589,3 +589,38 @@
  .logo-slot,.sponsor-slot{width:48px;height:48px}
  .organizer-slot{width:52px;height:52px}
 }
+
+/* FINAL REQUEST: 50% transparent bracket background + prominent 100% visible branding */
+.bracket-shell{
+  background-color:rgba(8,13,23,.50)!important;
+  background-blend-mode:normal!important;
+  backdrop-filter:blur(2px);
+}
+.bracket-shell::before{opacity:.18!important}
+.bracket-branding .logo-brand-group small,
+.bracket-toolbar-right .logo-brand-group small{
+  opacity:1!important;
+  visibility:visible!important;
+  color:#ffffff!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  text-shadow:0 1px 4px rgba(0,0,0,.75)!important;
+}
+.logo-slot{
+  width:66px!important;
+  height:66px!important;
+  opacity:1!important;
+  background:rgba(7,12,22,.82)!important;
+  border:1px solid rgba(255,255,255,.26)!important;
+}
+.organizer-slot{width:76px!important;height:76px!important}
+.sponsor-slot{width:66px!important;height:66px!important}
+.logo-slot img{
+  opacity:1!important;
+  visibility:visible!important;
+  filter:none!important;
+}
+.logo-brand-group{
+  opacity:1!important;
+  visibility:visible!important;
+}
