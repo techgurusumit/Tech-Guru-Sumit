@@ -19,7 +19,7 @@
 .bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)) .inline-score-input{
   margin-left:auto!important;
 }
-.bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)) .inline-save-btn{
+.bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)) .tgs-inline-save{
   display:grid!important;
   place-items:center!important;
   position:absolute!important;
@@ -36,14 +36,14 @@
   border-radius:11px!important;
   z-index:20!important;
 }
-.bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)) .inline-save-btn:hover{
+.bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)) .tgs-inline-save:hover{
   transform:translateY(-50%) scale(1.03)!important;
 }
 @media(max-width:1100px){
   .bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)){
     padding-right:72px!important;
   }
-  .bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)) .inline-save-btn{
+  .bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)) .tgs-inline-save{
     right:8px!important;
     width:54px!important;
     height:60px!important;
@@ -54,7 +54,7 @@
     padding-right:66px!important;
     min-height:106px!important;
   }
-  .bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)) .inline-save-btn{
+  .bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)) .tgs-inline-save{
     right:7px!important;
     width:50px!important;
     height:58px!important;
@@ -62,12 +62,12 @@
   }
 }
 
-/* Remove legacy duplicate score controls. The only active control is .inline-save-btn. */
+/* Remove legacy duplicate score controls. The only active control is .tgs-inline-save. */
 .bracket-shell .score-editor,
 .bracket-shell .match-action{
   display:none!important;
 }
-.bracket-shell .inline-save-btn{
+.bracket-shell .tgs-inline-save{
   padding:0!important;
   font-size:9px!important;
   font-weight:900!important;
