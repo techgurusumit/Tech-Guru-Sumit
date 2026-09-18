@@ -24,6 +24,7 @@ function PublicShareApp(){
   const params=new URLSearchParams(window.location.search);
   const token=params.get('share')||'';
   const requested=(params.get('view')||'fixtures') as ViewType;
+  const stream=params.get('stream')==='1';
   const [row,setRow]=React.useState<ShareRow|null>(null);
   const [error,setError]=React.useState('');
   const [live,setLive]=React.useState(false);
@@ -49,7 +50,7 @@ function PublicShareApp(){
     return()=>{supabase.removeChannel(channel)};
   },[token,load]);
 
-  if(!shareBackendConfigured)return <div className="public-share-shell"><div className="public-share-error"><b>Live sharing is not configured.</b><span>Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to the deployed app.</span></div></div>;
+  if(!shareBackendConfigured)return <div className={`public-share-shell ${stream?"public-stream":""} ${view==="scorecard"?"public-stream-scorecard":"public-stream-fixtures"}`}><div className="public-share-error"><b>Live sharing is not configured.</b><span>Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to the deployed app.</span></div></div>;
   if(error)return <div className="public-share-shell"><div className="public-share-error"><b>Unable to load live view</b><span>{error}</span><button onClick={load}>Retry</button></div></div>;
   if(!row)return <div className="public-share-shell"><div className="public-share-loading"><span className="live-dot"/> Connecting to live tournament…</div></div>;
 
