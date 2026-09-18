@@ -18,6 +18,8 @@ export default function ResetPasswordPage(){
   if(!supabase)return setError('Password reset is not configured.');
   setLoading(true);
   try{
+   const {data:sessionData}=await supabase.auth.getSession();
+   if(!sessionData.session)return setError('This reset link is invalid or has expired. Please request a new reset link.');
    const {error:updateError}=await supabase.auth.updateUser({password});
    if(updateError)throw updateError;
    setDone(true);
