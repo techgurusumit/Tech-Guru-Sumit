@@ -811,3 +811,35 @@
   .bracket-round:nth-child(3) .round-matches{padding-top:160px!important;gap:330px!important}
   .bracket-round:nth-child(4) .round-matches{padding-top:370px!important}
 }
+
+/* Fixture player-name editing + profile avatars */
+.bracket-shell .player-line{position:relative}
+.bracket-shell .player-line b{padding-right:20px}
+.bracket-shell .fixture-name-edit{
+ position:absolute;right:62px;top:50%;transform:translateY(-50%);
+ width:22px;height:22px;display:grid;place-items:center;padding:0;
+ border:0;border-radius:6px;background:rgba(255,255,255,.08);
+ color:#cbd6e7;cursor:pointer;z-index:5;
+}
+.bracket-shell .fixture-name-edit:hover{background:color-mix(in srgb,var(--accent) 24%,transparent);color:#fff}
+.bracket-shell .fixture-name-input{
+ width:calc(100% - 45px);height:28px;padding:0 8px;border-radius:7px;
+ border:1px solid var(--accent);background:rgba(8,14,24,.88);color:#fff;
+ font:inherit;font-weight:800;outline:none;
+}
+.bracket-shell .inline-score-input{position:relative;z-index:6}
+.player-profile-row{gap:10px}
+.player-avatar-upload{
+ width:38px;height:38px;min-width:38px;border-radius:50%;overflow:hidden;
+ display:grid;place-items:center;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+ color:#fff;font-weight:900;font-size:12px;border:2px solid rgba(255,255,255,.65);
+}
+.player-avatar-upload img{width:100%;height:100%;object-fit:cover}
+.my-profile-photo{display:flex;align-items:center;gap:12px;margin:12px 0}
+.my-profile-photo>label{
+ width:70px;height:70px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
+ cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-size:24px;font-weight:900;
+ border:3px solid rgba(255,255,255,.8);box-shadow:0 8px 24px rgba(0,0,0,.12);
+}
+.my-profile-photo img{width:100%;height:100%;object-fit:cover}
+.my-profile-photo strong{font-size:14px}
