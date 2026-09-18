@@ -1,6 +1,7 @@
 import React from 'react';
 import { Trophy, Users, Swords, BarChart3, Settings, Plus, ArrowRight, CalendarDays, Gamepad2, Crown, LogIn, LogOut, Moon, Sun, X, Trash2, Pencil, GitBranch, Lock, ChevronDown, Search, Clock3, CheckCircle2 } from 'lucide-react';
 import './tournament-formats.css';
+import { supabase } from './share-config';
 
 type ResultType='winner'|'loser';
 type SourceRef={id:number;result:ResultType};
@@ -190,7 +191,123 @@ function BracketMatch({fixture,onSave}:{fixture:Fixture;onSave:(f:Fixture)=>void
 function Standings({tournament}:{tournament:Tournament}){const rows=standings(tournament);return <div className="standings-panel"><div className="standings-head"><div><h3>Standings</h3><p>Points, wins and score difference update from recorded results.</p></div><span>{tournament.format}</span></div><div className="standings-table"><div className="standings-row standings-header"><b>#</b><b>Player</b><b>GP</b><b>W</b><b>L</b><b>Pts</b><b>Diff</b></div>{rows.map((r,i)=><div className="standings-row" key={r.name}><span>{i+1}</span><strong>{r.name}</strong><span>{r.played}</span><span>{r.wins}</span><span>{r.losses}</span><span>{r.points}</span><span>{r.for-r.against>0?'+':''}{r.for-r.against}</span></div>)}</div></div>}
 function Reports({tournaments}:{tournaments:Tournament[]}){return <section className="section-block"><div className="section-head"><div><h3>Tournament Reports</h3><p>Overview of players, format, fixtures and results.</p></div></div><div className="reports-grid">{tournaments.map(t=><div className="panel" key={t.id}><div className="section-head"><div><h3>{t.name}</h3><p>{t.game} · {t.format}</p></div></div><div className="report-stats"><div><b>{t.playerNames.length}</b><span>Players</span></div><div><b>{t.fixtures.length}</b><span>Fixtures</span></div><div><b>{t.fixtures.filter(f=>f.winner).length}</b><span>Results</span></div></div></div>)}</div></section>}
 function SettingsPage({theme,setTheme,user,logout}:{theme:'dark'|'light';setTheme:(x:'dark'|'light')=>void;user:User;logout:()=>void}){return <section className="settings-grid"><div className="panel"><h3>Appearance</h3><p className="muted">Change the dashboard theme instantly.</p><div className="theme-options"><button className={theme==='dark'?'selected':''} onClick={()=>setTheme('dark')}><Moon size={18}/> Dark</button><button className={theme==='light'?'selected':''} onClick={()=>setTheme('light')}><Sun size={18}/> Light</button></div></div><div className="panel"><h3>Account</h3><p className="muted">Signed in as <b>{user.name}</b></p><p className="muted">{user.email}</p><button className="danger-btn" onClick={logout}><LogOut size={16}/> Logout</button></div></section>}
-function AuthScreen({mode,setMode,onLogin}:{mode:'login'|'register';setMode:(m:'login'|'register')=>void;onLogin:(u:User)=>void}){const[name,setName]=React.useState('');const[email,setEmail]=React.useState('');const[password,setPassword]=React.useState('');const[error,setError]=React.useState('');const submit=(e:React.FormEvent)=>{e.preventDefault();const users:User[]=JSON.parse(localStorage.getItem('tgs_users')||'[]');if(!email||!password||(mode==='register'&&!name))return setError('Please fill all required fields.');if(mode==='register'){if(users.some(u=>u.email.toLowerCase()===email.toLowerCase()))return setError('Account already exists.');const u={name,email,password};localStorage.setItem('tgs_users',JSON.stringify([...users,u]));onLogin(u)}else{const u=users.find(x=>x.email.toLowerCase()===email.toLowerCase()&&x.password===password);if(!u)return setError('Invalid email or password.');onLogin(u)}};return <div className="auth-shell"><div className="auth-card"><div className="auth-brand"><div className="brand-mark">TGS</div><div><strong>TGS Tournament Manager</strong><span>Tech Guru Sumit</span></div></div><div className="auth-title"><h1>{mode==='login'?'Welcome back':'Create your account'}</h1><p>{mode==='login'?'Sign in to manage your tournaments.':'Register to start managing tournaments.'}</p></div><form onSubmit={submit}>{mode==='register'&&<label>Name<input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name"/></label>}<label>Email<input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com"/></label><label>Password<input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password"/></label>{error&&<div className="form-error">{error}</div>}<button className="primary-btn auth-submit" type="submit">{mode==='login'?<><LogIn size={17}/> Login</>:'Register'}</button></form><button className="switch-auth" onClick={()=>{setMode(mode==='login'?'register':'login');setError('')}}>{mode==='login'?"Don't have an account? Register":'Already have an account? Login'}</button></div></div>}
+function AuthScreen({mode,setMode,onLogin}:{mode:'login'|'register';setMode:(m:'login'|'register')=>void;onLogin:(u:User)=>void}){
+ const[name,setName]=React.useState('');
+ const[email,setEmail]=React.useState('');
+ const[password,setPassword]=React.useState('');
+ const[error,setError]=React.useState('');
+ const[loading,setLoading]=React.useState(false);
+ const[forgot,setForgot]=React.useState(false);
+ const[resetSent,setResetSent]=React.useState(false);
+
+ const submit=async(e:React.FormEvent)=>{
+  e.preventDefault();
+  setError('');
+  setLoading(true);
+  try{
+   const normalizedEmail=email.trim().toLowerCase();
+   if(!normalizedEmail||!password||(mode==='register'&&!name.trim())){
+    setError('Please fill all required fields.');
+    return;
+   }
+
+   if(supabase){
+    if(mode==='register'){
+     const {data,error:signUpError}=await supabase.auth.signUp({
+      email:normalizedEmail,
+      password,
+      options:{data:{name:name.trim()}}
+     });
+     if(signUpError)throw signUpError;
+     if(data.session&&data.user){
+      const u={name:name.trim(),email:normalizedEmail,password};
+      localStorage.setItem('tgs_users',JSON.stringify([
+       ...JSON.parse(localStorage.getItem('tgs_users')||'[]'),
+       u
+      ].filter((x,i,a)=>a.findIndex(y=>y.email.toLowerCase()===x.email.toLowerCase())===i)));
+      onLogin(u);
+     }else{
+      setResetSent(true);
+      setError('Registration successful. Check your email to confirm your account, then login.');
+     }
+    }else{
+     const {data,error:loginError}=await supabase.auth.signInWithPassword({email:normalizedEmail,password});
+     if(loginError)throw loginError;
+     const displayName=String(data.user?.user_metadata?.name||normalizedEmail.split('@')[0]);
+     const u={name:displayName,email:normalizedEmail,password};
+     localStorage.setItem('tgs_users',JSON.stringify([
+      ...JSON.parse(localStorage.getItem('tgs_users')||'[]'),
+      u
+     ].filter((x,i,a)=>a.findIndex(y=>y.email.toLowerCase()===x.email.toLowerCase())===i)));
+     onLogin(u);
+    }
+   }else{
+    const users:User[]=JSON.parse(localStorage.getItem('tgs_users')||'[]');
+    if(mode==='register'){
+     if(users.some(u=>u.email.toLowerCase()===normalizedEmail))return setError('Account already exists.');
+     const u={name:name.trim(),email:normalizedEmail,password};
+     localStorage.setItem('tgs_users',JSON.stringify([...users,u]));
+     onLogin(u);
+    }else{
+     const u=users.find(x=>x.email.toLowerCase()===normalizedEmail&&x.password===password);
+     if(!u)return setError('Invalid email or password.');
+     onLogin(u);
+    }
+   }
+  }catch(err){
+   setError(err instanceof Error?err.message:'Authentication failed. Please try again.');
+  }finally{
+   setLoading(false);
+  }
+ };
+
+ const sendReset=async(e:React.FormEvent)=>{
+  e.preventDefault();
+  setError('');
+  setResetSent(false);
+  const normalizedEmail=email.trim().toLowerCase();
+  if(!normalizedEmail)return setError('Enter your account email first.');
+  if(!supabase)return setError('Password reset email is not configured yet. Add the Supabase environment variables to the deployed app.');
+  setLoading(true);
+  try{
+   const redirectTo=window.location.origin+window.location.pathname;
+   const {error:resetError}=await supabase.auth.resetPasswordForEmail(normalizedEmail,{redirectTo});
+   if(resetError)throw resetError;
+   setResetSent(true);
+  }catch(err){
+   setError(err instanceof Error?err.message:'Could not send the password reset email.');
+  }finally{
+   setLoading(false);
+  }
+ };
+
+ if(forgot)return <div className="auth-shell"><div className="auth-card">
+  <div className="auth-brand"><div className="brand-mark">TGS</div><div><strong>TGS Tournament Manager</strong><span>Tech Guru Sumit</span></div></div>
+  <div className="auth-title"><h1>Forgot password?</h1><p>Enter your account email and we will send you a secure password reset link.</p></div>
+  <form onSubmit={sendReset}>
+   <label>Email<input type="email" value={email} onChange={e=>{setEmail(e.target.value);setResetSent(false)}} placeholder="you@example.com" autoFocus/></label>
+   {error&&<div className="form-error">{error}</div>}
+   {resetSent&&<div className="auth-success">Reset email sent. Check your inbox and follow the link to create a new password.</div>}
+   <button className="primary-btn auth-submit" type="submit" disabled={loading}>{loading?'Sending…':'Send Reset Link'}</button>
+  </form>
+  <button className="switch-auth" onClick={()=>{setForgot(false);setError('');setResetSent(false)}}>← Back to Login</button>
+ </div></div>;
+
+ return <div className="auth-shell"><div className="auth-card">
+  <div className="auth-brand"><div className="brand-mark">TGS</div><div><strong>TGS Tournament Manager</strong><span>Tech Guru Sumit</span></div></div>
+  <div className="auth-title"><h1>{mode==='login'?'Welcome back':'Create your account'}</h1><p>{mode==='login'?'Sign in to manage your tournaments.':'Register to start managing tournaments.'}</p></div>
+  <form onSubmit={submit}>
+   {mode==='register'&&<label>Name<input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name"/></label>}
+   <label>Email<input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com"/></label>
+   <label>Password<input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password"/></label>
+   {error&&<div className="form-error">{error}</div>}
+   {resetSent&&<div className="auth-success">{error||'Please check your email.'}</div>}
+   <button className="primary-btn auth-submit" type="submit" disabled={loading}>{loading?'Please wait…':mode==='login'?<><LogIn size={17}/> Login</>:'Register'}</button>
+  </form>
+  {mode==='login'&&<button className="switch-auth" onClick={()=>{setForgot(true);setError('');setResetSent(false)}}>Forgot password?</button>}
+  <button className="switch-auth" onClick={()=>{setMode(mode==='login'?'register':'login');setError('');setResetSent(false)}}>{mode==='login'?"Don't have an account? Register":'Already have an account? Login'}</button>
+ </div></div>;
+}
 function FormatCards({value,onChange}:{value:string;onChange:(v:string)=>void}){return <div className="format-picker">{FORMAT_OPTIONS.map(f=><button type="button" key={f.name} className={`format-option ${value===f.name?'selected':''}`} onClick={()=>onChange(f.name)}><span className="format-icon">{f.icon}</span><span><strong>{f.name}</strong><small>{f.description}</small></span><span className="format-radio">{value===f.name?'✓':'›'}</span></button>)}</div>}
 function CreateModal({close,save}:{close:()=>void;save:(t:Omit<Tournament,'id'>)=>void}){const[name,setName]=React.useState('');const[game,setGame]=React.useState('Asphalt Legends');const[format,setFormat]=React.useState('Single Elimination');const[players,setPlayers]=React.useState(16);const[password,setPassword]=React.useState('');const[confirm,setConfirm]=React.useState('');const[error,setError]=React.useState('');const submit=(e:React.FormEvent)=>{e.preventDefault();if(!name.trim())return setError('Tournament name is required.');if(players<2)return setError('At least 2 players are required.');if(password.length<4)return setError('Tournament password must be at least 4 characters.');if(password!==confirm)return setError('Passwords do not match.');save({name:name.trim(),game,format,players,playerNames:Array.from({length:players},(_,i)=>`Player ${i+1}`),status:'Upcoming',date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}),password,passwordEnabled:true,fixtures:[]})};return <Modal title="Create New Tournament" subtitle="Choose the tournament nature first. Fixtures will use the selected format engine." close={close}><form onSubmit={submit}><label>Tournament Name<input value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. TGS Clash #3" autoFocus/></label><label>Game<select value={game} onChange={e=>setGame(e.target.value)}><option>Asphalt Legends</option><option>Subway Surfers</option><option>Hill Climb Racing</option><option>Roblox</option><option>Minecraft</option><option>Other</option></select></label><div className="format-label"><strong>Choose tournament type</strong><span>{format}</span></div><FormatCards value={format} onChange={setFormat}/><label>Number of Players<input type="number" min="2" value={players} onChange={e=>setPlayers(Math.max(2,Number(e.target.value)||2))}/></label><label><span className="password-label"><Lock size={13}/> Tournament Password *</span><input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Enter tournament password"/></label><label><span className="password-label"><Lock size={13}/> Confirm Password *</span><input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="Re-enter password"/></label>{error&&<div className="form-error">{error}</div>}<div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button type="submit" className="primary-btn"><Lock size={15}/> Create Tournament</button></div></form></Modal>}
 function EditModal({tournament,close,save}:{tournament:Tournament;close:()=>void;save:(t:Tournament)=>void}){const[name,setName]=React.useState(tournament.name);const[game,setGame]=React.useState(tournament.game);const[format,setFormat]=React.useState(tournament.format);const[error,setError]=React.useState('');const submit=(e:React.FormEvent)=>{e.preventDefault();if(!name.trim())return setError('Tournament name is required.');const changed=format!==tournament.format;save({...tournament,name:name.trim(),game,format,fixtures:changed?[]:tournament.fixtures,status:changed?'Upcoming':tournament.status})};return <Modal title="Update Tournament" subtitle="Changing the format resets existing fixtures so the new format can generate a fresh schedule." close={close}><form onSubmit={submit}><label>Tournament Name<input value={name} onChange={e=>setName(e.target.value)}/></label><label>Game<select value={game} onChange={e=>setGame(e.target.value)}><option>Asphalt Legends</option><option>Subway Surfers</option><option>Hill Climb Racing</option><option>Roblox</option><option>Minecraft</option><option>Other</option></select></label><div className="format-label"><strong>Tournament type</strong><span>{format}</span></div><FormatCards value={format} onChange={setFormat}/>{error&&<div className="form-error">{error}</div>}<div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button className="primary-btn"><Pencil size={15}/> Save Changes</button></div></form></Modal>}
