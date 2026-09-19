@@ -822,3 +822,10 @@
     left:-26px!important;
   }
 }
+
+
+/* Vertical connector belongs only to rounds that feed another round.
+   The final has no outgoing vertical branch. */
+.bracket-shell .bracket-round:last-child .round-matches > .bracket-slot::before{
+  display:none!important;
+}
