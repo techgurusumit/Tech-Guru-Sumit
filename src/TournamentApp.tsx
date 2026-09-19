@@ -59,21 +59,42 @@ function ImageCropModal({editor,close}:{editor:ImageEditorState;close:()=>void})
  const[img,setImg]=React.useState<HTMLImageElement|null>(null);
  const[x,setX]=React.useState(50);const[y,setY]=React.useState(50);
  const[error,setError]=React.useState('');
- React.useEffect(()=>{readImage(editor.file).then(setImg).catch(err=>setError(err instanceof Error?err.message:'Could not load image.'))},[editor.file]);
+ const previewRef=React.useRef<HTMLCanvasElement|null>(null);
+ React.useEffect(()=>{
+   let cancelled=false;
+   readImage(editor.file).then(next=>{if(!cancelled)setImg(next)}).catch(err=>{if(!cancelled)setError(err instanceof Error?err.message:'Could not load image.')});
+   return()=>{cancelled=true};
+ },[editor.file]);
  const p=editor.shape==='wide'?{w:1280,h:720,label:'1280 × 720'}:{w:512,h:512,label:'512 × 512'};
- const preview=img?cropImage(img,x,y,400,Math.round(400*p.h/p.w),.9):'';
+ React.useEffect(()=>{
+   const canvas=previewRef.current;
+   if(!canvas||!img)return;
+   const rect=canvas.getBoundingClientRect();
+   const w=Math.max(1,Math.round(rect.width*window.devicePixelRatio));
+   const h=Math.max(1,Math.round(rect.height*window.devicePixelRatio));
+   canvas.width=w;canvas.height=h;
+   const ctx=canvas.getContext('2d');
+   if(!ctx)return;
+   ctx.clearRect(0,0,w,h);
+   const scale=Math.max(w/img.naturalWidth,h/img.naturalHeight);
+   const dw=img.naturalWidth*scale,dh=img.naturalHeight*scale;
+   const maxX=Math.max(0,dw-w),maxY=Math.max(0,dh-h);
+   ctx.imageSmoothingEnabled=true;
+   ctx.imageSmoothingQuality='high';
+   ctx.drawImage(img,(w-dw)/2-(x/100)*maxX,(h-dh)/2-(y/100)*maxY,dw,dh);
+ },[img,x,y]);
  const apply=()=>{try{if(!img)return;editor.onSave(cropImage(img,x,y,p.w,p.h));close()}catch(err){setError(err instanceof Error?err.message:'Could not process image.')}};
- return <div className="image-editor-backdrop"><div className="image-editor-modal" onMouseDown={e=>e.stopPropagation()}>
-  <div className="image-editor-head"><div><h3>{editor.title}</h3><p>Crop image to the required photo size · Output {p.label}</p></div><button type="button" className="icon-btn" onClick={close}><X size={18}/></button></div>
-  <div className="image-editor-grid">
-   <div className="image-editor-preview">{preview?<img src={preview} alt="Crop preview"/>:<div className="image-editor-loading">{error||'Loading image…'}</div>}</div>
-   <div className="image-editor-controls">
-    <label>Horizontal<input type="range" min="0" max="100" value={x} onChange={e=>setX(Number(e.target.value))}/></label>
-    <label>Vertical<input type="range" min="0" max="100" value={y} onChange={e=>setY(Number(e.target.value))}/></label>
-    <button type="button" className="secondary-btn" onClick={()=>{setX(50);setY(50)}}>Center Crop</button>
+ return <div className='image-editor-backdrop'><div className='image-editor-modal' onMouseDown={e=>e.stopPropagation()}>
+  <div className='image-editor-head'><div><h3>{editor.title}</h3><p>Crop image to the required photo size · Output {p.label}</p></div><button type='button' className='icon-btn' onClick={close}><X size={18}/></button></div>
+  <div className='image-editor-grid'>
+   <div className='image-editor-preview' style={{aspectRatio:(p.w+'/'+p.h)}}>{img?<canvas ref={previewRef} aria-label='Live crop preview'/>:<div className='image-editor-loading'>{error||'Loading image…'}</div>}</div>
+   <div className='image-editor-controls'>
+    <label>Horizontal<input type='range' min='0' max='100' value={x} onChange={e=>setX(Number(e.target.value))}/></label>
+    <label>Vertical<input type='range' min='0' max='100' value={y} onChange={e=>setY(Number(e.target.value))}/></label>
+    <button type='button' className='secondary-btn' onClick={()=>{setX(50);setY(50)}}>Center Crop</button>
    </div>
   </div>
-  <div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button type="button" className="primary-btn" onClick={apply} disabled={!img}>Apply Crop</button></div>
+  <div className='modal-actions'><button type='button' className='secondary-btn' onClick={close}>Cancel</button><button type='button' className='primary-btn' onClick={apply} disabled={!img}>Apply Crop</button></div>
  </div></div>;
 }
 
