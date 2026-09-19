@@ -843,3 +843,18 @@
 }
 .my-profile-photo img{width:100%;height:100%;object-fit:cover}
 .my-profile-photo strong{font-size:14px}
+
+/* No custom picture means no picture layer. Keep the normal bracket theme only. */
+.bracket-shell{
+  background-image:
+    radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 28%),
+    radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 26%),
+    linear-gradient(135deg,#090e19 0%,#0d1626 48%,#080d17 100%)!important;
+  background-size:auto,auto,auto!important;
+}
+:root[data-theme='light'] .bracket-shell{
+  background-image:
+    radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 28%),
+    radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 10%,transparent),transparent 26%),
+    linear-gradient(135deg,#eef3f9,#f6f8fb)!important;
+}
