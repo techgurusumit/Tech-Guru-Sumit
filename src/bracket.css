@@ -1222,3 +1222,161 @@
   .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(even)::before{right:-28px!important}
   .bracket-shell .bracket-round:nth-child(n+2) .round-matches > .bracket-slot::after{left:-28px!important}
 }
+
+
+/* PLAYER VISIBILITY FIX
+   Keep both player rows readable inside every bracket card.
+   Photo -> name -> score stays in its own non-overlapping columns. */
+.bracket-shell .score-match-body{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:3px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+
+.bracket-shell .player-line{
+  display:grid!important;
+  grid-template-columns:30px minmax(0,1fr) 40px!important;
+  align-items:center!important;
+  width:100%!important;
+  min-width:0!important;
+  height:31px!important;
+  min-height:31px!important;
+  box-sizing:border-box!important;
+  gap:7px!important;
+  margin:2px 0!important;
+  padding:2px 6px!important;
+  overflow:hidden!important;
+}
+
+.bracket-shell .player-line .fixture-player-avatar{
+  grid-column:1!important;
+  width:28px!important;
+  height:28px!important;
+  min-width:28px!important;
+  min-height:28px!important;
+  flex:none!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  border-radius:50%!important;
+  border:2px solid rgba(148,163,184,.30)!important;
+  background:linear-gradient(135deg,#1e293b,#334155)!important;
+  box-shadow:0 0 8px rgba(0,240,255,.12)!important;
+}
+
+.bracket-shell .player-line .fixture-player-avatar img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:100%!important;
+  min-height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  border-radius:50%!important;
+}
+
+.bracket-shell .player-line b{
+  grid-column:2!important;
+  display:block!important;
+  min-width:0!important;
+  width:100%!important;
+  max-width:none!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  color:#f8fbff!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  letter-spacing:.01em!important;
+  padding:0!important;
+  margin:0!important;
+  text-align:left!important;
+}
+
+.bracket-shell .player-line > .inline-score-input,
+.bracket-shell .player-line > span:last-child{
+  grid-column:3!important;
+  justify-self:end!important;
+  width:40px!important;
+  min-width:40px!important;
+  max-width:40px!important;
+  height:27px!important;
+  min-height:27px!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  text-align:center!important;
+}
+
+.bracket-shell .player-line .fixture-name-edit{
+  right:48px!important;
+  width:18px!important;
+  height:18px!important;
+  z-index:7!important;
+}
+
+/* Editable cards reserve a small strip for the pencil without covering names. */
+.bracket-shell .player-line:has(.fixture-name-edit) b{
+  padding-right:24px!important;
+}
+
+/* Winner rows remain readable and keep the photo visible. */
+.bracket-shell .player-line.winner{
+  border-left:3px solid var(--b-success)!important;
+}
+.bracket-shell .player-line.winner .fixture-player-avatar{
+  border-color:var(--b-success)!important;
+  box-shadow:0 0 10px rgba(0,255,102,.28)!important;
+}
+
+/* Do not let the status line push the second player out of the card. */
+.bracket-shell .winner-line{
+  min-height:11px!important;
+  line-height:11px!important;
+  margin-top:1px!important;
+  padding:1px 4px 0!important;
+}
+
+/* At smaller widths, keep the same visual hierarchy rather than shrinking names into invisibility. */
+@media(max-width:1100px){
+  .bracket-shell .player-line{
+    grid-template-columns:28px minmax(0,1fr) 38px!important;
+  }
+  .bracket-shell .player-line .fixture-player-avatar{
+    width:26px!important;
+    height:26px!important;
+    min-width:26px!important;
+  }
+  .bracket-shell .player-line b{
+    font-size:11px!important;
+  }
+  .bracket-shell .player-line > .inline-score-input,
+  .bracket-shell .player-line > span:last-child{
+    width:38px!important;
+    min-width:38px!important;
+    max-width:38px!important;
+  }
+}
+
+@media(max-width:760px){
+  .bracket-shell .player-line{
+    grid-template-columns:26px minmax(0,1fr) 34px!important;
+    gap:5px!important;
+  }
+  .bracket-shell .player-line .fixture-player-avatar{
+    width:24px!important;
+    height:24px!important;
+    min-width:24px!important;
+  }
+  .bracket-shell .player-line b{
+    font-size:10px!important;
+  }
+  .bracket-shell .player-line > .inline-score-input,
+  .bracket-shell .player-line > span:last-child{
+    width:34px!important;
+    min-width:34px!important;
+    max-width:34px!important;
+  }
+}
