@@ -35,7 +35,7 @@ function roundLabel(size:number,index:number){const left=size/Math.pow(2,index);
 function idFactory(){let n=Date.now()*1000;return()=>++n}
 function cleanNames(names:string[]){return names.map(x=>x.trim()).filter(Boolean)}
 type CropShape='square'|'wide'|'logo';
-type ImageEditorState={file:File;title:string;shape:CropShape;onSave:(data:string)=>void;preserveTransparency?:boolean};
+type ImageEditorState={file:File;title:string;shape:CropShape;onSave:(data:string)=>void};
 type OpenImageEditor=(editor:ImageEditorState)=>void;
 
 const readImage=(file:File)=>new Promise<HTMLImageElement>((resolve,reject)=>{
@@ -71,6 +71,7 @@ function ImageCropModal({editor,close}:{editor:ImageEditorState;close:()=>void})
    return()=>{cancelled=true};
  },[editor.file]);
  const p=editor.shape==='wide'?{w:1280,h:720,label:'1280 × 720'}:{w:512,h:512,label:'512 × 512'};
+ const preserveTransparency=editor.file.type==='image/png'||editor.file.type==='image/webp';
  React.useEffect(()=>{
    const canvas=previewRef.current;
    if(!canvas||!img)return;
@@ -280,7 +281,7 @@ function PlayersPage({tournaments,onEdit,openImageEditor}:{tournaments:Tournamen
  const[q,setQ]=React.useState('');
  const[profiles,setProfiles]=React.useState<Record<string,PlayerProfile>>(()=>{try{return JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}')}catch{return {}}});
  const[uploading,setUploading]=React.useState('');
- const uploadPhoto=(name:string)=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;if(file.size>500*1024){alert('Image is too large. Player profile photos must be 500 KB or smaller.');return;}openImageEditor({file,title:'Player Profile · '+name,shape:'square',preserveTransparency:file.type==='image/png'||file.type==='image/webp',onSave:photo=>{setProfiles(p=>({...p,[name.trim().toLowerCase()]:{photo}}));try{const current=JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}');current[name.trim().toLowerCase()]={photo};localStorage.setItem('tgs_player_profiles',JSON.stringify(current))}catch{setTimeout(()=>alert('Player photo could not be saved because browser storage is full. Please remove old stored images and try again.'),0)}}})};
+ const uploadPhoto=(name:string)=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;if(file.size>500*1024){alert('Image is too large. Player profile photos must be 500 KB or smaller.');return;}openImageEditor({file,title:'Player Profile · '+name,shape:'square',onSave:photo=>{setProfiles(p=>({...p,[name.trim().toLowerCase()]:{photo}}));try{const current=JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}');current[name.trim().toLowerCase()]={photo};localStorage.setItem('tgs_player_profiles',JSON.stringify(current))}catch{setTimeout(()=>alert('Player photo could not be saved because browser storage is full. Please remove old stored images and try again.'),0)}}})};
  return <section className="section-block"><div className="section-head"><div><h3>Active Players</h3><p>Manage player names and profile photos for each tournament.</p></div><div className="search-box"><Search size={15}/><input placeholder="Search player" value={q} onChange={e=>setQ(e.target.value)}/></div></div>{tournaments.length===0?<Empty title="No players yet" text="Create a tournament first." icon={<Users size={34}/>}/>:<div className="players-groups">{tournaments.map(t=>{const names=t.playerNames.map((p,i)=>({p,i})).filter(x=>x.p.toLowerCase().includes(q.toLowerCase()));return <div className="panel" key={t.id}><div className="section-head"><div><h3>{t.name}</h3><p>{t.game} · {t.format} · {t.playerNames.length} players</p></div><button className="secondary-btn" onClick={()=>onEdit(t)}><Pencil size={15}/> Edit Players</button></div><div className="list-grid">{names.map(x=>{const photo=profiles[x.p.trim().toLowerCase()]?.photo;return <div className="list-row player-profile-row" key={`${t.id}-${x.i}`}><label className="player-avatar-upload" title={uploading===x.p?'Processing image...':'Upload player profile photo'}>{photo?<img src={photo} alt={x.p}/>:<span>{uploading===x.p?'…':x.p[0]?.toUpperCase()}</span>}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={uploadPhoto(x.p)} hidden/></label><span><b>#{x.i+1}</b> {x.p}</span><small className="muted">{t.status}</small></div>})}</div></div>})}</div>}</section>
 }
 function PlayersModal({tournament,close,save}:{tournament:Tournament;close:()=>void;save:(t:Tournament)=>void}){
