@@ -367,8 +367,8 @@ function BracketMatch({fixture,profiles,onSave,onRename}:{fixture:Fixture;profil
  const[p1,setP1]=React.useState(String(fixture.score1??''));const[p2,setP2]=React.useState(String(fixture.score2??''));
  const[editing,setEditing]=React.useState<1|2|null>(null);const[editName,setEditName]=React.useState('');
  React.useEffect(()=>{setP1(String(fixture.score1??''));setP2(String(fixture.score2??''))},[fixture.score1,fixture.score2,fixture.id]);
- const save=React.useCallback(()=>{if(!fixture.player1||!fixture.player2||p1===''||p2===''||Number(p1)===Number(p2))return;const a=Number(p1),b=Number(p2);const winner=a>b?fixture.player1:fixture.player2;onSave({...fixture,score1:a,score2:b,winner})},[fixture,p1,p2,onSave]);
- React.useEffect(()=>{if(fixture.winner||!fixture.player1||!fixture.player2||p1===''||p2===''||Number(p1)===Number(p2))return;const timer=window.setTimeout(save,600);return()=>window.clearTimeout(timer)},[fixture.winner,fixture.player1,fixture.player2,p1,p2,save]);
+ const save=React.useCallback(()=>{if(!fixture.player1||!fixture.player2||p1===''||p2===''||!Number.isFinite(Number(p1))||!Number.isFinite(Number(p2))||Number(p1)===Number(p2))return;const a=Number(p1),b=Number(p2);const winner=a>b?fixture.player1:fixture.player2;onSave({...fixture,score1:a,score2:b,winner})},[fixture,p1,p2,onSave]);
+ React.useEffect(()=>{if(!fixture.player1||!fixture.player2||p1===''||p2===''||!Number.isFinite(Number(p1))||!Number.isFinite(Number(p2))||Number(p1)===Number(p2))return;const timer=window.setTimeout(save,600);return()=>window.clearTimeout(timer)},[fixture.player1,fixture.player2,p1,p2,save]);
  const startRename=(slot:1|2)=>{const current=slot===1?fixture.player1:fixture.player2;if(!current||current==='TBD')return;setEditing(slot);setEditName(current)};
  const commitRename=()=>{const oldName=editing===1?fixture.player1:fixture.player2;const next=editName.trim();if(editing&&oldName&&next&&next!==oldName)onRename(oldName,next);setEditing(null);setEditName('')};
  const waiting=Boolean(fixture.pending1||fixture.pending2||!fixture.player1||!fixture.player2);
