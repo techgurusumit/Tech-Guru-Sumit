@@ -983,3 +983,31 @@
   .bracket-shell .bracket{--match-h:82px;--r1-gap:16px;--col-gap:26px;gap:var(--col-gap)!important;min-width:calc(4 * 236px + 3 * var(--col-gap))!important}
   .bracket-shell .bracket-round{flex-basis:236px!important;width:236px!important}
 }
+
+/* FINAL GEOMETRY OVERRIDE: pair-centered knockout bracket */
+.bracket-shell .bracket{display:flex!important;align-items:flex-start!important;gap:44px!important}
+.bracket-shell .bracket-round{flex:0 0 292px!important;width:292px!important}
+.bracket-shell .round-matches{display:flex!important;flex-direction:column!important;gap:28px!important;padding-top:0!important;margin:0!important}
+.bracket-shell .bracket-match{height:92px!important;min-height:92px!important;margin:0!important;box-sizing:border-box!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches{padding-top:60px!important;gap:152px!important}
+.bracket-shell .bracket-round:nth-child(3) .round-matches{padding-top:181px!important;gap:400px!important}
+.bracket-shell .bracket-round:nth-child(4) .round-matches{padding-top:423px!important;gap:0!important}
+.bracket-shell .bracket-round:nth-child(n+5) .round-matches{padding-top:423px!important;gap:0!important}
+.bracket-shell .bracket-match::after{top:50%!important;right:-44px!important;width:44px!important;height:3px!important}
+@media(max-width:1100px){
+ .bracket-shell .bracket{gap:34px!important}
+ .bracket-shell .bracket-round{flex-basis:260px!important;width:260px!important}
+ .bracket-shell .bracket-round:nth-child(2) .round-matches{padding-top:54px!important;gap:132px!important}
+ .bracket-shell .bracket-round:nth-child(3) .round-matches{padding-top:167px!important;gap:350px!important}
+ .bracket-shell .bracket-round:nth-child(4) .round-matches{padding-top:385px!important}
+ .bracket-shell .bracket-match::after{right:-34px!important;width:34px!important}
+}
+@media(max-width:760px){
+ .bracket-shell .bracket{gap:26px!important;min-width:calc(4 * 236px + 3 * 26px)!important}
+ .bracket-shell .bracket-round{flex-basis:236px!important;width:236px!important}
+ .bracket-shell .bracket-round:nth-child(2) .round-matches{padding-top:49px!important;gap:116px!important}
+ .bracket-shell .bracket-round:nth-child(3) .round-matches{padding-top:147px!important;gap:300px!important}
+ .bracket-shell .bracket-round:nth-child(4) .round-matches{padding-top:339px!important}
+ .bracket-shell .bracket-match{height:82px!important;min-height:82px!important}
+ .bracket-shell .bracket-match::after{right:-26px!important;width:26px!important}
+}
