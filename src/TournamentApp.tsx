@@ -332,7 +332,7 @@ function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtur
     <button type="button" className="fullscreen-btn" onClick={toggleFullscreen}>{fullscreen?<Minimize2 size={15}/>:<Maximize2 size={15}/>}<span>{fullscreen?'Exit Fullscreen':'Full Screen'}</span></button>
    </div>
   </div>
-  <div className="bracket-scroll"><div className="bracket">{rounds.map(r=><div className="bracket-round" key={r}><div className="round-title">{fixtures.find(f=>f.roundIndex===r)?.round||''}<span>{fixtures.filter(f=>f.roundIndex===r).length} matches</span></div><div className="round-matches">{fixtures.filter(f=>f.roundIndex===r).map(f=><BracketMatch key={f.id} fixture={f} onSave={nf=>onUpdate(tournament.id,nf)} onRename={(oldName,newName)=>onRename(tournament.id,oldName,newName)}/>)}</div></div>)}</div></div>
+  <div className="bracket-scroll"><div className="bracket">{rounds.map(r=><div className="bracket-round" key={r}><div className="round-title">{fixtures.find(f=>f.roundIndex===r)?.round||''}<span>{fixtures.filter(f=>f.roundIndex===r).length} matches</span></div><div className="round-matches">{fixtures.filter(f=>f.roundIndex===r).map(f=><BracketMatch key={f.id} fixture={f} profiles={playerProfiles} onSave={nf=>onUpdate(tournament.id,nf)} onRename={(oldName,newName)=>onRename(tournament.id,oldName,newName)}/>)}</div></div>)}</div></div>
  </div>
 }
 function BracketMatch({fixture,profiles,onSave,onRename}:{fixture:Fixture;profiles:Record<string,PlayerProfile>;onSave:(f:Fixture)=>void;onRename:(oldName:string,newName:string)=>void}){
