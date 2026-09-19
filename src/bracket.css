@@ -1547,3 +1547,48 @@
     max-width:34px!important;
   }
 }
+
+
+/* GLOBAL THEME SYNC — bracket follows the same selected dashboard palette. */
+.bracket-shell{
+  --b-accent:var(--accent)!important;
+  --b-accent-2:var(--accent-2)!important;
+  --b-success:color-mix(in srgb,var(--accent) 45%,#00ff66)!important;
+}
+.bracket-shell .round-title{color:var(--accent)!important;text-shadow:0 0 10px color-mix(in srgb,var(--accent) 30%,transparent)!important}
+.bracket-shell .bracket-match:hover{border-color:color-mix(in srgb,var(--accent) 45%,transparent)!important}
+.bracket-shell .bracket-match.won{border-color:color-mix(in srgb,var(--accent) 38%,transparent)!important}
+.bracket-shell .bracket-round .round-matches > .bracket-slot::after{border-top-color:color-mix(in srgb,var(--accent-2) 58%,transparent)!important}
+.bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(odd)::before,
+.bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(even)::before{border-right-color:color-mix(in srgb,var(--accent-2) 58%,transparent)!important}
+.bracket-shell .bracket-round:nth-child(4) .bracket-match{
+  border-color:color-mix(in srgb,var(--accent) 42%,transparent)!important;
+  box-shadow:0 0 30px color-mix(in srgb,var(--accent) 16%,transparent),0 8px 32px rgba(0,0,0,.40)!important;
+}
+
+/* Light mode keeps the same selected accent but uses the light dashboard surfaces. */
+:root[data-theme='light'] .bracket-shell{
+  --b-bg:var(--bg)!important;
+  --b-card:var(--panel)!important;
+  --b-card-hover:var(--panel-2)!important;
+  --b-line:var(--line)!important;
+  --b-muted:var(--muted)!important;
+  color:var(--text)!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.76),rgba(244,247,251,.92))!important;
+  border-color:color-mix(in srgb,var(--accent) 22%,transparent)!important;
+}
+:root[data-theme='light'] .bracket-shell .bracket-match{
+  background:linear-gradient(145deg,var(--panel),var(--panel-2))!important;
+  border-color:var(--line)!important;
+  box-shadow:0 8px 24px rgba(15,23,42,.10)!important;
+}
+:root[data-theme='light'] .bracket-shell .player-line{
+  background:color-mix(in srgb,var(--panel-2) 86%,transparent)!important;
+  color:var(--text)!important;
+}
+:root[data-theme='light'] .bracket-shell .player-line b{color:var(--text)!important}
+:root[data-theme='light'] .bracket-shell .inline-score-input{
+  background:var(--input)!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+}
