@@ -247,3 +247,11 @@ body::before{
 :root[data-theme='dark'] .image-editor-preview{background:repeating-conic-gradient(#131a2b 0% 25%,#0d1424 0% 50%) 50%/24px 24px}
 .image-editor-preview canvas{display:block;width:100%;height:100%;border-radius:15px}
 @media(max-width:700px){.image-editor-preview{aspect-ratio:16/9}}
+
+/* Never add an artificial background behind an uploaded transparent profile image. */
+.player-avatar-upload:has(img){background:transparent!important}
+.player-avatar-upload:has(img) img{background:transparent!important;display:block}
+.my-profile-photo>label:has(img){background:transparent!important}
+.my-profile-photo>label:has(img) img{background:transparent!important;display:block}
+.sidebar .brand-avatar:has(img){background:transparent!important}
+.sidebar .brand-avatar:has(img) img{background:transparent!important;display:block}
