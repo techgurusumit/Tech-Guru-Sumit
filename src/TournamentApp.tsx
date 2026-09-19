@@ -39,10 +39,13 @@ type ImageEditorState={file:File;title:string;shape:CropShape;onSave:(data:strin
 type OpenImageEditor=(editor:ImageEditorState)=>void;
 
 const readImage=(file:File)=>new Promise<HTMLImageElement>((resolve,reject)=>{
-  const reader=new FileReader();
-  reader.onerror=()=>reject(new Error('Could not read image.'));
-  reader.onload=()=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('Could not load image.'));img.src=String(reader.result)};
-  reader.readAsDataURL(file);
+  if(!file.type.startsWith('image/')){reject(new Error('Please select a valid image file.'));return;}
+  const url=URL.createObjectURL(file);
+  const img=new Image();
+  const cleanup=()=>URL.revokeObjectURL(url);
+  img.onload=()=>{cleanup();resolve(img)};
+  img.onerror=()=>{cleanup();reject(new Error('Could not load image.'))};
+  img.src=url;
 });
 
 const cropImage=(img:HTMLImageElement,posX:number,posY:number,w:number,h:number,quality=.86)=>{
@@ -279,7 +282,7 @@ function PlayersPage({tournaments,onEdit,openImageEditor}:{tournaments:Tournamen
  const[q,setQ]=React.useState('');
  const[profiles,setProfiles]=React.useState<Record<string,PlayerProfile>>(()=>{try{return JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}')}catch{return {}}});
  const[uploading,setUploading]=React.useState('');
- const uploadPhoto=(name:string)=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;openImageEditor({file,title:'Player Profile · '+name,shape:'square',onSave:photo=>setProfiles(p=>{const next={...p,[name.trim().toLowerCase()]:{photo}};localStorage.setItem('tgs_player_profiles',JSON.stringify(next));return next})})};
+ const uploadPhoto=(name:string)=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;openImageEditor({file,title:'Player Profile · '+name,shape:'square',onSave:photo=>{setProfiles(p=>({...p,[name.trim().toLowerCase()]:{photo}}));try{const current=JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}');current[name.trim().toLowerCase()]={photo};localStorage.setItem('tgs_player_profiles',JSON.stringify(current))}catch{setTimeout(()=>alert('Player photo could not be saved because browser storage is full. Please remove old stored images and try again.'),0)}}})};
  return <section className="section-block"><div className="section-head"><div><h3>Active Players</h3><p>Manage player names and profile photos for each tournament.</p></div><div className="search-box"><Search size={15}/><input placeholder="Search player" value={q} onChange={e=>setQ(e.target.value)}/></div></div>{tournaments.length===0?<Empty title="No players yet" text="Create a tournament first." icon={<Users size={34}/>}/>:<div className="players-groups">{tournaments.map(t=>{const names=t.playerNames.map((p,i)=>({p,i})).filter(x=>x.p.toLowerCase().includes(q.toLowerCase()));return <div className="panel" key={t.id}><div className="section-head"><div><h3>{t.name}</h3><p>{t.game} · {t.format} · {t.playerNames.length} players</p></div><button className="secondary-btn" onClick={()=>onEdit(t)}><Pencil size={15}/> Edit Players</button></div><div className="list-grid">{names.map(x=>{const photo=profiles[x.p.trim().toLowerCase()]?.photo;return <div className="list-row player-profile-row" key={`${t.id}-${x.i}`}><label className="player-avatar-upload" title={uploading===x.p?'Processing image...':'Upload player profile photo'}>{photo?<img src={photo} alt={x.p}/>:<span>{uploading===x.p?'…':x.p[0]?.toUpperCase()}</span>}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={uploadPhoto(x.p)} hidden/></label><span><b>#{x.i+1}</b> {x.p}</span><small className="muted">{t.status}</small></div>})}</div></div>})}</div>}</section>
 }
 function PlayersModal({tournament,close,save}:{tournament:Tournament;close:()=>void;save:(t:Tournament)=>void}){
