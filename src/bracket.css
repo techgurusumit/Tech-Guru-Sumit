@@ -1209,3 +1209,84 @@
   .bracket-shell .bracket-round:nth-child(4) .round-matches,
   .bracket-shell .bracket-round:nth-child(n+5) .round-matches{padding-top:390px!important}
 }
+
+/* FINAL BRACKET ALIGNMENT — 8 R1 -> 4 QF -> 2 SF -> 1 FINAL
+   Only positioning is changed. Existing card design/content stays untouched. */
+.bracket-shell .bracket{
+  display:flex!important;
+  align-items:stretch!important;
+  gap:44px!important;
+  width:max-content!important;
+  min-width:max-content!important;
+}
+.bracket-shell .bracket-round{
+  flex:0 0 292px!important;
+  width:292px!important;
+  min-width:292px!important;
+  align-self:stretch!important;
+}
+.bracket-shell .bracket-round .round-matches{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:stretch!important;
+  align-items:stretch!important;
+  gap:0!important;
+  padding:0!important;
+  margin:0!important;
+}
+.bracket-shell .bracket-round:nth-child(1) .bracket-match{
+  flex:1 1 0!important;
+  min-height:0!important;
+  margin:0 0 18px 0!important;
+}
+.bracket-shell .bracket-round:nth-child(1) .bracket-match:last-child{
+  margin-bottom:0!important;
+}
+.bracket-shell .bracket-round:nth-child(2) .bracket-match{
+  flex:2 1 0!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+}
+.bracket-shell .bracket-round:nth-child(3) .bracket-match{
+  flex:4 1 0!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+}
+.bracket-shell .bracket-round:nth-child(4) .bracket-match{
+  flex:8 1 0!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+}
+.bracket-shell .bracket-round:nth-child(n+5) .bracket-match{
+  flex:8 1 0!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+}
+.bracket-shell .bracket-round:not(:first-child) .bracket-match::after{
+  right:-44px!important;
+  top:50%!important;
+}
+@media(max-width:1100px){
+  .bracket-shell .bracket{gap:32px!important}
+  .bracket-shell .bracket-round{flex-basis:260px!important;width:260px!important;min-width:260px!important}
+  .bracket-shell .bracket-round:nth-child(1) .bracket-match{margin-bottom:16px!important}
+  .bracket-shell .bracket-round:nth-child(1) .bracket-match:last-child{margin-bottom:0!important}
+  .bracket-shell .bracket-round:not(:first-child) .bracket-match::after{right:-32px!important}
+}
+@media(max-width:760px){
+  .bracket-shell .bracket{gap:24px!important}
+  .bracket-shell .bracket-round{flex-basis:236px!important;width:236px!important;min-width:236px!important}
+  .bracket-shell .bracket-round:nth-child(1) .bracket-match{margin-bottom:14px!important}
+  .bracket-shell .bracket-round:nth-child(1) .bracket-match:last-child{margin-bottom:0!important}
+  .bracket-shell .bracket-round:not(:first-child) .bracket-match::after{right:-24px!important}
+}
