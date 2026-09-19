@@ -854,10 +854,11 @@
   opacity:0!important;
 }
 
-/* Compact bracket layout: cards size to their own content; only feeder-to-round spacing remains. */
+/* Bracket tree alignment: each later-round match is centered between its two feeder matches.
+   No artificial top padding; vertical spacing comes from the actual feeder match heights. */
 .bracket-shell .bracket{
   align-items:flex-start!important;
-  gap:38px!important;
+  gap:44px!important;
 }
 .bracket-shell .bracket-round{
   width:292px!important;
@@ -867,15 +868,18 @@
 }
 .bracket-shell .round-matches{
   padding-top:0!important;
-  gap:8px!important;
+  gap:28px!important;
 }
-.bracket-shell .bracket-round:nth-child(2) .round-matches,
-.bracket-shell .bracket-round:nth-child(3) .round-matches,
+.bracket-shell .bracket-round:nth-child(2) .round-matches{
+  gap:calc(28px + 18px)!important;
+}
+.bracket-shell .bracket-round:nth-child(3) .round-matches{
+  gap:calc(28px + 18px)!important;
+}
 .bracket-shell .bracket-round:nth-child(4) .round-matches,
 .bracket-shell .bracket-round:nth-child(5) .round-matches,
 .bracket-shell .bracket-round:nth-child(n+6) .round-matches{
-  padding-top:0!important;
-  gap:8px!important;
+  gap:28px!important;
 }
 .bracket-shell .bracket-match{
   height:auto!important;
@@ -884,16 +888,15 @@
   margin:0!important;
   box-sizing:border-box!important;
 }
+.bracket-shell .match-head{
+  min-height:16px!important;
+  padding:0 3px 4px!important;
+}
 .bracket-shell .player-line{
   min-height:32px!important;
   height:32px!important;
   margin:2px 0!important;
   padding:2px 5px!important;
-  gap:5px!important;
-}
-.bracket-shell .match-head{
-  min-height:16px!important;
-  padding:0 3px 4px!important;
 }
 .bracket-shell .winner-line{
   padding:3px 3px 0!important;
@@ -902,57 +905,18 @@
   flex:0 0 24px!important;
   width:24px!important;
   height:24px!important;
-  border-radius:50%;
-  overflow:hidden;
-  display:grid;
-  place-items:center;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
 }
 .bracket-shell .fixture-player-avatar img{
   width:100%!important;
   height:100%!important;
-  display:block!important;
   object-fit:contain!important;
-  background:transparent!important;
 }
-
-/* Protected fixture editor: score boxes stay in one vertical column. */
-.bracket-shell .player-line{
-  display:grid!important;
-  grid-template-columns:28px minmax(0,1fr) 24px 46px!important;
-  align-items:center!important;
+.bracket-shell .bracket-match::after{
+  width:44px!important;
+  height:3px!important;
+  right:-44px!important;
+  top:50%!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,#7c83ff,#28d9ff)!important;
+  box-shadow:0 0 12px rgba(40,217,255,.35)!important;
 }
-.bracket-shell .fixture-player-avatar{grid-column:1}
-.bracket-shell .player-line b{grid-column:2;min-width:0}
-.bracket-shell .fixture-name-edit{
-  position:static!important;
-  grid-column:3!important;
-  width:24px!important;
-  height:24px!important;
-  margin-left:4px!important;
-  transform:none!important;
-}
-.bracket-shell .inline-score-input{
-  grid-column:4!important;
-  margin-left:auto!important;
-  justify-self:end!important;
-}
-.bracket-shell .player-line>span:not(.fixture-player-avatar){
-  grid-column:4!important;
-}
-
-/* Stable score column: every player score sits on exactly the same vertical line. */
-.bracket-shell .player-line{
-  display:grid!important;
-  grid-template-columns:28px minmax(80px,1fr) 24px 46px!important;
-  column-gap:6px!important;
-  align-items:center!important;
-}
-.bracket-shell .player-line .fixture-player-avatar{grid-column:1!important}
-.bracket-shell .player-line b{grid-column:2!important;min-width:0!important}
-.bracket-shell .player-line .fixture-name-edit{grid-column:3!important;justify-self:center!important}
-.bracket-shell .player-line .inline-score-input,
-.bracket-shell .player-line>span:not(.fixture-player-avatar){grid-column:4!important;justify-self:end!important;width:46px!important;box-sizing:border-box!important}
-.bracket-shell .player-line .inline-score-input{margin-left:0!important}
