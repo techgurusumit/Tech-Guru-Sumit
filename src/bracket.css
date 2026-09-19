@@ -569,3 +569,115 @@
     flex-basis:22px!important;
   }
 }
+
+
+/* FINAL BRACKET ALIGNMENT FIX
+   Position the actual .bracket-slot wrappers, not only the match cards.
+   This guarantees every feeder pair is centered:
+   R16(8) -> QF(4) -> SF(2) -> Final(1). */
+.bracket-shell .bracket-round .round-matches{
+  position:relative!important;
+}
+
+/* Editable bracket: each slot is the real vertical anchor for its match. */
+.bracket-shell .bracket-round .round-matches > .bracket-slot{
+  position:absolute!important;
+  left:0!important;
+  width:100%!important;
+  height:92px!important;
+  min-height:92px!important;
+  margin:0!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+}
+
+.bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  width:100%!important;
+  height:92px!important;
+  min-height:92px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+
+/* 8 R16 matches: 20px gap, 112px center-to-center. */
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(1){top:0!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(2){top:112px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(3){top:224px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(4){top:336px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(5){top:448px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(6){top:560px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(7){top:672px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(8){top:784px!important}
+
+/* 4 QF matches: each card is exactly centered between its two R16 feeders. */
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(1){top:56px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(2){top:280px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(3){top:504px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(4){top:728px!important}
+
+/* 2 SF matches: each card is exactly centered between its two QF feeders. */
+.bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(1){top:168px!important}
+.bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(2){top:616px!important}
+
+/* Final: exactly centered between the two SF feeders. */
+.bracket-shell .bracket-round:nth-child(4) .round-matches > .bracket-slot:nth-child(1){top:392px!important}
+.bracket-shell .bracket-round:nth-child(n+5) .round-matches > .bracket-slot:nth-child(1){top:392px!important}
+
+/* Responsive: 1100px and below. */
+@media(max-width:1100px){
+  .bracket-shell .bracket-round .round-matches > .bracket-slot{
+    height:88px!important;
+    min-height:88px!important;
+  }
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    height:88px!important;
+    min-height:88px!important;
+  }
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(1){top:0!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(2){top:106px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(3){top:212px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(4){top:318px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(5){top:424px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(6){top:530px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(7){top:636px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(8){top:742px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(1){top:53px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(2){top:265px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(3){top:477px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(4){top:689px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(1){top:159px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(2){top:583px!important}
+  .bracket-shell .bracket-round:nth-child(4) .round-matches > .bracket-slot:nth-child(1),
+  .bracket-shell .bracket-round:nth-child(n+5) .round-matches > .bracket-slot:nth-child(1){top:371px!important}
+}
+
+/* Mobile bracket geometry. */
+@media(max-width:760px){
+  .bracket-shell .bracket-round .round-matches > .bracket-slot{
+    height:82px!important;
+    min-height:82px!important;
+  }
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    height:82px!important;
+    min-height:82px!important;
+  }
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(1){top:0!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(2){top:98px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(3){top:196px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(4){top:294px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(5){top:392px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(6){top:490px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(7){top:588px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(8){top:686px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(1){top:49px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(2){top:245px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(3){top:441px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(4){top:637px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(1){top:147px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(2){top:539px!important}
+  .bracket-shell .bracket-round:nth-child(4) .round-matches > .bracket-slot:nth-child(1),
+  .bracket-shell .bracket-round:nth-child(n+5) .round-matches > .bracket-slot:nth-child(1){top:343px!important}
+}
