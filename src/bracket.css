@@ -1849,3 +1849,179 @@
   .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(even)::before{right:-28px!important;top:-50px!important;height:50px!important}
   .bracket-shell .bracket-round:nth-child(n+2) .round-matches > .bracket-slot::after{left:-28px!important}
 }
+
+
+/* PLAYER CARD FINAL FIX
+   Taller cards + centered player rows + no clipped player names.
+   Name column is flexible so the complete name has room before the score. */
+.bracket-shell .bracket-round .round-matches{
+  height:960px!important;
+  min-height:960px!important;
+}
+.bracket-shell .bracket-round .round-matches > .bracket-slot,
+.bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+  width:320px!important;
+  height:124px!important;
+  min-height:124px!important;
+}
+.bracket-shell .bracket-round .bracket-match{
+  overflow:hidden!important;
+  padding:8px!important;
+}
+.bracket-shell .score-match-body{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+}
+.bracket-shell .player-line{
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) 44px!important;
+  grid-template-rows:36px!important;
+  align-items:center!important;
+  width:100%!important;
+  height:36px!important;
+  min-height:36px!important;
+  margin:0!important;
+  padding:2px 7px!important;
+  gap:8px!important;
+  overflow:hidden!important;
+}
+.bracket-shell .player-line .fixture-player-avatar{
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  min-height:30px!important;
+}
+.bracket-shell .player-line b{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:12px!important;
+  line-height:36px!important;
+  color:#fff!important;
+}
+.bracket-shell .player-line > .inline-score-input,
+.bracket-shell .player-line > span:last-child{
+  width:44px!important;
+  min-width:44px!important;
+  max-width:44px!important;
+  height:30px!important;
+  min-height:30px!important;
+  margin:0!important;
+}
+.bracket-shell .fixture-name-edit{
+  right:4px!important;
+  width:20px!important;
+  height:20px!important;
+}
+
+/* Center the pair of player rows as one unit in every card. */
+.bracket-shell .bracket-match .score-match-body{
+  position:relative!important;
+  top:auto!important;
+}
+
+/* Updated vertical positions for the taller cards; each later round remains
+   exactly centered between the two feeder cards. */
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(1){top:0!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(2){top:128px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(3){top:256px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(4){top:384px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(5){top:512px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(6){top:640px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(7){top:768px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(8){top:896px!important}
+
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(1){top:64px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(2){top:320px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(3){top:576px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(4){top:832px!important}
+
+.bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(1){top:192px!important}
+.bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(2){top:704px!important}
+
+.bracket-shell .bracket-round:nth-child(4) .round-matches > .bracket-slot:nth-child(1){top:448px!important}
+
+/* Reference connectors follow the new 128px feeder spacing. */
+.bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(odd)::before{
+  top:50%!important;
+  height:64px!important;
+}
+.bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(even)::before{
+  top:-64px!important;
+  height:64px!important;
+}
+
+/* Responsive versions preserve the same centered relationships. */
+@media(max-width:1100px){
+  .bracket-shell .bracket-round .round-matches{height:920px!important;min-height:920px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    width:280px!important;height:108px!important;min-height:108px!important;
+  }
+  .bracket-shell .player-line{
+    grid-template-columns:30px minmax(0,1fr) 40px!important;
+    grid-template-rows:31px!important;height:31px!important;min-height:31px!important;
+  }
+  .bracket-shell .player-line .fixture-player-avatar{width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important}
+  .bracket-shell .player-line b{font-size:11.5px!important;line-height:31px!important}
+  .bracket-shell .player-line > .inline-score-input,
+  .bracket-shell .player-line > span:last-child{width:40px!important;min-width:40px!important;max-width:40px!important;height:28px!important;min-height:28px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(1){top:0!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(2){top:112px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(3){top:224px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(4){top:336px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(5){top:448px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(6){top:560px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(7){top:672px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(8){top:784px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(1){top:56px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(2){top:280px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(3){top:504px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(4){top:728px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(1){top:168px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(2){top:616px!important}
+  .bracket-shell .bracket-round:nth-child(4) .round-matches > .bracket-slot:nth-child(1){top:406px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(odd)::before{height:56px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(even)::before{top:-56px!important;height:56px!important}
+}
+@media(max-width:760px){
+  .bracket-shell .bracket-round .round-matches{height:820px!important;min-height:820px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    width:240px!important;height:94px!important;min-height:94px!important;
+  }
+  .bracket-shell .player-line{
+    grid-template-columns:26px minmax(0,1fr) 34px!important;
+    grid-template-rows:27px!important;height:27px!important;min-height:27px!important;
+  }
+  .bracket-shell .player-line .fixture-player-avatar{width:24px!important;height:24px!important;min-width:24px!important;min-height:24px!important}
+  .bracket-shell .player-line b{font-size:10.5px!important;line-height:27px!important}
+  .bracket-shell .player-line > .inline-score-input,
+  .bracket-shell .player-line > span:last-child{width:34px!important;min-width:34px!important;max-width:34px!important;height:24px!important;min-height:24px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(1){top:0!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(2){top:100px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(3){top:200px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(4){top:300px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(5){top:400px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(6){top:500px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(7){top:600px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(8){top:700px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(1){top:50px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(2){top:250px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(3){top:450px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(4){top:650px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(1){top:150px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(2){top:550px!important}
+  .bracket-shell .bracket-round:nth-child(4) .round-matches > .bracket-slot:nth-child(1){top:350px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(odd)::before{height:50px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(even)::before{top:-50px!important;height:50px!important}
+}
