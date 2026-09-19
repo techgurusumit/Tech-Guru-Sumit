@@ -317,8 +317,39 @@ function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtur
  const[logos,setLogos]=React.useState<{organizer:string;sponsor:string;coSponsor:string}>(()=>{try{const empty='{"organizer":"","sponsor":"","coSponsor":""}';const raw=localStorage.getItem(`tgs_branding_${tournament.id}`)||localStorage.getItem(`tgs_branding_${tournament.id}_backup`)||empty;return JSON.parse(raw)}catch{return {organizer:'',sponsor:'',coSponsor:''}}});
  const[playerProfiles,setPlayerProfiles]=React.useState<Record<string,PlayerProfile>>(()=>{try{return JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}')}catch{return {}}});
  React.useEffect(()=>{try{const value=JSON.stringify(logos);localStorage.setItem(`tgs_branding_${tournament.id}`,value);localStorage.setItem(`tgs_branding_${tournament.id}_backup`,value)}catch{}},[logos,tournament.id]);
- React.useEffect(()=>{const onChange=()=>setFullscreen(Boolean(document.fullscreenElement));document.addEventListener('fullscreenchange',onChange);return()=>document.removeEventListener('fullscreenchange',onChange)},[]);
- const toggleFullscreen=async()=>{if(!shellRef.current)return;try{if(document.fullscreenElement){await document.exitFullscreen()}else{await shellRef.current.requestFullscreen()}}catch{setFullscreen(false)}};
+ React.useEffect(()=>{
+  const onChange=()=>{
+    const active=Boolean(document.fullscreenElement);
+    setFullscreen(active);
+    const shell=shellRef.current;
+    if(!shell)return;
+    if(active){
+      const bg=localStorage.getItem('tgs_background');
+      shell.style.backgroundColor='transparent';
+      shell.style.backgroundImage=bg?'linear-gradient(180deg,rgba(7,11,22,.08),rgba(7,11,22,.16)),url("'+bg+'")':'none';
+      shell.style.backgroundSize='cover';
+      shell.style.backgroundPosition='center';
+      shell.style.backgroundRepeat='no-repeat';
+      shell.style.backgroundAttachment='scroll';
+    }else{
+      shell.style.removeProperty('background-color');
+      shell.style.removeProperty('background-image');
+      shell.style.removeProperty('background-size');
+      shell.style.removeProperty('background-position');
+      shell.style.removeProperty('background-repeat');
+      shell.style.removeProperty('background-attachment');
+    }
+  };
+  document.addEventListener('fullscreenchange',onChange);
+  return()=>document.removeEventListener('fullscreenchange',onChange)
+ },[]);
+ const toggleFullscreen=async()=>{
+   if(!shellRef.current)return;
+   try{
+     if(document.fullscreenElement){await document.exitFullscreen()}
+     else{await shellRef.current.requestFullscreen()}
+   }catch{setFullscreen(false)}
+ };
  const saveLogos=React.useCallback((next:{organizer:string;sponsor:string;coSponsor:string})=>{setLogos(next);try{localStorage.setItem(`tgs_branding_${tournament.id}`,JSON.stringify(next));localStorage.setItem(`tgs_branding_${tournament.id}_backup`,JSON.stringify(next))}catch{console.warn('Logo storage is full. Use smaller logo images.')}},[tournament.id]);
  const uploadLogo=(key:'organizer'|'sponsor'|'coSponsor')=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;openImageEditor({file,title:key==='organizer'?'Organizer Logo':key==='sponsor'?'Sponsor Logo':'Co-Sponsor Logo',shape:'logo',onSave:data=>saveLogos({...logos,[key]:data})})};
  const rounds=Array.from(new Set(fixtures.map(f=>f.roundIndex))).sort((a,b)=>a-b);
