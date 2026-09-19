@@ -36,28 +36,7 @@ function idFactory(){let n=Date.now()*1000;return()=>++n}
 function cleanNames(names:string[]){return names.map(x=>x.trim()).filter(Boolean)}
 type CropShape='square'|'wide'|'logo';
 type ImageEditorState={file:File;title:string;shape:CropShape;onSave:(data:string)=>void};
-
-const processUploadedImage=(file:File,maxWidth:number,maxHeight:number,quality=.82)=>new Promise<string>((resolve,reject)=>{
-  if(!file.type.startsWith('image/')){reject(new Error('Please select a valid image file.'));return;}
-  const reader=new FileReader();
-  reader.onerror=()=>reject(new Error('Could not read the selected image.'));
-  reader.onload=()=>{
-    const img=new Image();
-    img.onerror=()=>reject(new Error('Could not load the selected image.'));
-    img.onload=()=>{
-      const scale=Math.min(1,maxWidth/img.naturalWidth,maxHeight/img.naturalHeight);
-      const w=Math.max(1,Math.round(img.naturalWidth*scale));
-      const h=Math.max(1,Math.round(img.naturalHeight*scale));
-      const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
-      const ctx=canvas.getContext('2d');
-      if(!ctx){reject(new Error('Image processing is unavailable.'));return;}
-      ctx.drawImage(img,0,0,w,h);
-      resolve(canvas.toDataURL('image/jpeg',quality));
-    };
-    img.src=String(reader.result);
-  };
-  reader.readAsDataURL(file);
-});
+type OpenImageEditor=(editor:ImageEditorState)=>void;
 
 const readImage=(file:File)=>new Promise<HTMLImageElement>((resolve,reject)=>{
   const reader=new FileReader();
@@ -66,10 +45,10 @@ const readImage=(file:File)=>new Promise<HTMLImageElement>((resolve,reject)=>{
   reader.readAsDataURL(file);
 });
 
-const cropAndResizeImage=(img:HTMLImageElement,zoom:number,posX:number,posY:number,w:number,h:number,quality=.84)=>{
+const cropImage=(img:HTMLImageElement,posX:number,posY:number,w:number,h:number,quality=.86)=>{
   const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
   const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Image processing unavailable.');
-  const scale=Math.max(w/img.naturalWidth,h/img.naturalHeight)*Math.max(.55,zoom);
+  const scale=Math.max(w/img.naturalWidth,h/img.naturalHeight);
   const dw=img.naturalWidth*scale,dh=img.naturalHeight*scale;
   const maxX=Math.max(0,dw-w),maxY=Math.max(0,dh-h);
   ctx.drawImage(img,(w-dw)/2-(posX/100)*maxX,(h-dh)/2-(posY/100)*maxY,dw,dh);
@@ -78,20 +57,23 @@ const cropAndResizeImage=(img:HTMLImageElement,zoom:number,posX:number,posY:numb
 
 function ImageCropModal({editor,close}:{editor:ImageEditorState;close:()=>void}){
  const[img,setImg]=React.useState<HTMLImageElement|null>(null);
- const[zoom,setZoom]=React.useState(1);const[x,setX]=React.useState(50);const[y,setY]=React.useState(50);
+ const[x,setX]=React.useState(50);const[y,setY]=React.useState(50);
  const[error,setError]=React.useState('');
  React.useEffect(()=>{readImage(editor.file).then(setImg).catch(err=>setError(err instanceof Error?err.message:'Could not load image.'))},[editor.file]);
  const p=editor.shape==='wide'?{w:1280,h:720,label:'1280 × 720'}:{w:512,h:512,label:'512 × 512'};
- const preview=img?cropAndResizeImage(img,zoom,x,y,400,Math.round(400*p.h/p.w),.9):'';
- const apply=()=>{try{if(!img)return;const output=cropAndResizeImage(img,zoom,x,y,p.w,p.h);editor.onSave(output);close()}catch(err){setError(err instanceof Error?err.message:'Could not process image.')}};
+ const preview=img?cropImage(img,x,y,400,Math.round(400*p.h/p.w),.9):'';
+ const apply=()=>{try{if(!img)return;editor.onSave(cropImage(img,x,y,p.w,p.h));close()}catch(err){setError(err instanceof Error?err.message:'Could not process image.')}};
  return <div className="image-editor-backdrop"><div className="image-editor-modal" onMouseDown={e=>e.stopPropagation()}>
-  <div className="image-editor-head"><div><h3>{editor.title}</h3><p>Crop and resize before saving · Output {p.label}</p></div><button type="button" className="icon-btn" onClick={close}><X size={18}/></button></div>
-  <div className="image-editor-grid"><div className="image-editor-preview">{preview?<img src={preview} alt="Crop preview"/>:<div className="image-editor-loading">{error||'Loading image…'}</div>}</div>
-  <div className="image-editor-controls"><label>Zoom<input type="range" min="0.55" max="2.5" step="0.01" value={zoom} onChange={e=>setZoom(Number(e.target.value))}/><strong>{Math.round(zoom*100)}%</strong></label>
-  <label>Horizontal<input type="range" min="0" max="100" value={x} onChange={e=>setX(Number(e.target.value))}/></label>
-  <label>Vertical<input type="range" min="0" max="100" value={y} onChange={e=>setY(Number(e.target.value))}/></label>
-  <button type="button" className="secondary-btn" onClick={()=>{setZoom(1);setX(50);setY(50)}}>Reset Crop</button></div></div>
-  <div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button type="button" className="primary-btn" onClick={apply} disabled={!img}>Apply Crop & Resize</button></div>
+  <div className="image-editor-head"><div><h3>{editor.title}</h3><p>Crop image to the required photo size · Output {p.label}</p></div><button type="button" className="icon-btn" onClick={close}><X size={18}/></button></div>
+  <div className="image-editor-grid">
+   <div className="image-editor-preview">{preview?<img src={preview} alt="Crop preview"/>:<div className="image-editor-loading">{error||'Loading image…'}</div>}</div>
+   <div className="image-editor-controls">
+    <label>Horizontal<input type="range" min="0" max="100" value={x} onChange={e=>setX(Number(e.target.value))}/></label>
+    <label>Vertical<input type="range" min="0" max="100" value={y} onChange={e=>setY(Number(e.target.value))}/></label>
+    <button type="button" className="secondary-btn" onClick={()=>{setX(50);setY(50)}}>Center Crop</button>
+   </div>
+  </div>
+  <div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button type="button" className="primary-btn" onClick={apply} disabled={!img}>Apply Crop</button></div>
  </div></div>;
 }
 
@@ -238,6 +220,7 @@ function standings(t:Tournament){
 function App(){
  const [active,setActive]=React.useState('Dashboard');const [tournaments,setTournaments]=React.useState<Tournament[]>(loadTournaments);const [user,setUser]=React.useState<User|null>(()=>{try{const s=localStorage.getItem('tgs_session');return s?JSON.parse(s):null}catch{return null}});const [authMode,setAuthMode]=React.useState<'login'|'register'>('login');const [theme,setTheme]=React.useState<'dark'|'light'>((localStorage.getItem('tgs_theme') as any)||'dark');const [gamingTheme,setGamingTheme]=React.useState<GamingTheme>((localStorage.getItem('tgs_gaming_theme') as GamingTheme)||'cyber');const [create,setCreate]=React.useState(false);const [edit,setEdit]=React.useState<Tournament|null>(null);const [playersEdit,setPlayersEdit]=React.useState<Tournament|null>(null);const [guard,setGuard]=React.useState<{action:'edit'|'delete'|'fixtures';t:Tournament}|null>(null);const [toast,setToast]=React.useState('');
  const [imageEditor,setImageEditor]=React.useState<ImageEditorState|null>(null);
+ const openImageEditor=React.useCallback((editor:ImageEditorState)=>setImageEditor(editor),[]);
  React.useEffect(()=>{document.documentElement.dataset.theme=theme;localStorage.setItem('tgs_theme',theme)},[theme]);React.useEffect(()=>{document.documentElement.dataset.gamingTheme=gamingTheme;localStorage.setItem('tgs_gaming_theme',gamingTheme)},[gamingTheme]);React.useEffect(()=>{const bg=localStorage.getItem('tgs_background');document.documentElement.style.setProperty('--tgs-custom-background',bg?`url("${bg}")`:'none')},[]);React.useEffect(()=>{const serialized=JSON.stringify(tournaments);localStorage.setItem('tgs_tournaments',serialized);try{const session=JSON.parse(localStorage.getItem('tgs_session')||'null');if(session?.email)localStorage.setItem(`tgs_tournaments::${String(session.email).trim().toLowerCase()}`,serialized);localStorage.setItem('tgs_tournaments_backup',serialized)}catch{}},[tournaments]);
  const nav=[['Dashboard',BarChart3],['Tournaments',Trophy],['Players',Users],['Matches',Swords],['Reports',BarChart3]] as const;const logout=()=>{localStorage.removeItem('tgs_session');setUser(null);setAuthMode('login')};const updateTournament=(id:number,fn:(t:Tournament)=>Tournament)=>setTournaments(ts=>ts.map(t=>t.id===id?fn(t):t));
  const saveFixture=(id:number,fixture:Fixture)=>setTournaments(ts=>ts.map(t=>{if(t.id!==id)return t;let fixtures=t.fixtures.map(x=>x.id===fixture.id?fixture:{...x});fixtures=resolveAutoFixtures(fixtures);
@@ -250,7 +233,7 @@ function App(){
  if(!user)return <AuthScreen mode={authMode} setMode={setAuthMode} onLogin={u=>{setUser(u);localStorage.setItem('tgs_session',JSON.stringify(u))}}/>;
  const activePlayers=uniquePlayers(tournaments);const totalMatches=tournaments.reduce((n,t)=>n+t.fixtures.length,0);
  return <div className="app-shell"><aside className="sidebar"><div className="brand"><div className="brand-avatar">{user.photo?<img src={user.photo} alt={user.name}/>:<span>{user.name[0]?.toUpperCase()}</span>}</div><div><strong>Tournament Manager</strong><span>Tech Guru Sumit</span></div></div><div className="side-section-title">MANAGEMENT</div><nav>{nav.map(([label,Icon])=><button key={label} className={`nav-item ${active===label?'active':''}`} onClick={()=>{setActive(label);setToast('')}}><Icon size={18}/><span>{label}</span></button>)}</nav><div className="sidebar-spacer"/><button className={`nav-item ${active==='Settings'?'active':''}`} onClick={()=>setActive('Settings')}><Settings size={18}/><span>Settings</span></button></aside>
- <main className="main-content"><header className="topbar"><div><p className="eyebrow">TGS ESPORTS / CONTROL CENTER</p><h1>{active}</h1></div><div className="top-actions"><button className="theme-btn" onClick={()=>setTheme(theme==='dark'?'light':'dark')}>{theme==='dark'?<Sun size={17}/>:<Moon size={17}/>}<span>{theme==='dark'?'Light':'Dark'} theme</span></button><button className="primary-btn" onClick={()=>setCreate(true)}><Plus size={18}/> Create Tournament</button></div></header>{toast&&<div className="toast">{toast}</div>}{active==='Dashboard'&&<Dashboard tournaments={tournaments} players={activePlayers.length} matches={totalMatches} onNavigate={setActive}/>} {active==='Tournaments'&&<TournamentList tournaments={tournaments} onCreate={()=>setCreate(true)} onAction={handleAction}/>} {active==='Players'&&<PlayersPage tournaments={tournaments} onEdit={setPlayersEdit}/>} {active==='Matches'&&<MatchesPage tournaments={tournaments} onUpdate={saveFixture} onRename={renamePlayer}/>} {active==='Reports'&&<Reports tournaments={tournaments}/>} {active==='Settings'&&<SettingsPage theme={theme} setTheme={setTheme} user={user} logout={logout} updateUser={updateUser} gamingTheme={gamingTheme} setGamingTheme={setGamingTheme}/>}</main>
+ <main className="main-content"><header className="topbar"><div><p className="eyebrow">TGS ESPORTS / CONTROL CENTER</p><h1>{active}</h1></div><div className="top-actions"><button className="theme-btn" onClick={()=>setTheme(theme==='dark'?'light':'dark')}>{theme==='dark'?<Sun size={17}/>:<Moon size={17}/>}<span>{theme==='dark'?'Light':'Dark'} theme</span></button><button className="primary-btn" onClick={()=>setCreate(true)}><Plus size={18}/> Create Tournament</button></div></header>{toast&&<div className="toast">{toast}</div>}{active==='Dashboard'&&<Dashboard tournaments={tournaments} players={activePlayers.length} matches={totalMatches} onNavigate={setActive}/>} {active==='Tournaments'&&<TournamentList tournaments={tournaments} onCreate={()=>setCreate(true)} onAction={handleAction}/>} {active==='Players'&&<PlayersPage tournaments={tournaments} onEdit={setPlayersEdit} openImageEditor={openImageEditor}/>} {active==='Matches'&&<MatchesPage tournaments={tournaments} onUpdate={saveFixture} onRename={renamePlayer} openImageEditor={openImageEditor}/>} {active==='Reports'&&<Reports tournaments={tournaments}/>} {active==='Settings'&&<SettingsPage theme={theme} setTheme={setTheme} user={user} logout={logout} updateUser={updateUser} gamingTheme={gamingTheme} setGamingTheme={setGamingTheme} openImageEditor={openImageEditor}/>}</main>
  {imageEditor&&<ImageCropModal editor={imageEditor} close={()=>setImageEditor(null)}/>}
  {create&&<CreateModal close={()=>setCreate(false)} save={t=>{setTournaments(x=>[{...t,id:Date.now()},...x]);setCreate(false);setActive('Tournaments');setToast(`${t.format} tournament created.`)}}/>}{edit&&<EditModal tournament={edit} close={()=>setEdit(null)} save={t=>{setTournaments(x=>x.map(v=>v.id===t.id?t:v));setEdit(null);setToast('Tournament updated. Existing fixtures were reset if the format changed.')}}/>}{playersEdit&&<PlayersModal tournament={playersEdit} close={()=>setPlayersEdit(null)} save={t=>{setTournaments(x=>x.map(v=>v.id===t.id?t:v));setPlayersEdit(null);setToast('Player list updated.')}}/>}{guard&&<PasswordModal action={guard.action} tournament={guard.t} close={()=>setGuard(null)} verify={checkPassword}/>}</div>;
 }
@@ -267,11 +250,11 @@ function Dashboard({tournaments,players,matches,onNavigate}:{tournaments:Tournam
 function TournamentList({tournaments,onCreate,onAction}:{tournaments:Tournament[];onCreate:()=>void;onAction:(a:'edit'|'delete'|'fixtures',t:Tournament)=>void}){return <section className="section-block"><div className="section-head"><div><h3>All tournaments</h3><p>{tournaments.length} tournament records</p></div><button className="primary-btn" onClick={onCreate}><Plus size={17}/> New Tournament</button></div><div className="tournament-grid">{tournaments.map(t=><TournamentCard key={t.id} t={t} action={onAction}/>)}</div></section>}
 function TournamentCard({t,action}:{t:Tournament;action?:((a:'edit'|'delete'|'fixtures',t:Tournament)=>void)}){return <article className="tournament-card"><div className="card-top"><div className="game-icon"><Gamepad2 size={19}/></div><span className={`status ${t.status.toLowerCase()}`}>{t.status}</span></div><h4>{t.name}</h4><p className="muted">{t.game} · {t.format}</p><div className="meta-row"><span><Users size={15}/> {t.playerNames.length} players</span><span><Swords size={15}/> {t.fixtures.length} matches</span><span><CalendarDays size={15}/> {t.date}</span></div>{action?<div className="card-actions"><button onClick={()=>action('fixtures',t)}><GitBranch size={15}/> Create Fixtures</button><button onClick={()=>action('edit',t)}><Pencil size={15}/> Update</button><button className="delete-action" onClick={()=>action('delete',t)}><Trash2 size={15}/> Delete</button></div>:<span className="muted">Open Tournaments for management actions</span>}</article>}
 function Stat({label,value,helper,icon,onClick}:{label:string;value:string;helper:string;icon:React.ReactNode;onClick:()=>void}){return <button className="stat-card stat-clickable" onClick={onClick}><div className="stat-icon">{icon}</div><div><span>{label}</span><strong>{value}</strong><small>{helper}</small></div></button>}
-function PlayersPage({tournaments,onEdit}:{tournaments:Tournament[];onEdit:(t:Tournament)=>void}){
+function PlayersPage({tournaments,onEdit,openImageEditor}:{tournaments:Tournament[];onEdit:(t:Tournament)=>void;openImageEditor:OpenImageEditor}){
  const[q,setQ]=React.useState('');
  const[profiles,setProfiles]=React.useState<Record<string,PlayerProfile>>(()=>{try{return JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}')}catch{return {}}});
  const[uploading,setUploading]=React.useState('');
- const uploadPhoto=(name:string)=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;setImageEditor({file,title:'Player Profile · '+name,shape:'square',onSave:photo=>setProfiles(p=>{const next={...p,[name.trim().toLowerCase()]:{photo}};localStorage.setItem('tgs_player_profiles',JSON.stringify(next));return next})})};
+ const uploadPhoto=(name:string)=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;openImageEditor({file,title:'Player Profile · '+name,shape:'square',onSave:photo=>setProfiles(p=>{const next={...p,[name.trim().toLowerCase()]:{photo}};localStorage.setItem('tgs_player_profiles',JSON.stringify(next));return next})})};
  return <section className="section-block"><div className="section-head"><div><h3>Active Players</h3><p>Manage player names and profile photos for each tournament.</p></div><div className="search-box"><Search size={15}/><input placeholder="Search player" value={q} onChange={e=>setQ(e.target.value)}/></div></div>{tournaments.length===0?<Empty title="No players yet" text="Create a tournament first." icon={<Users size={34}/>}/>:<div className="players-groups">{tournaments.map(t=>{const names=t.playerNames.map((p,i)=>({p,i})).filter(x=>x.p.toLowerCase().includes(q.toLowerCase()));return <div className="panel" key={t.id}><div className="section-head"><div><h3>{t.name}</h3><p>{t.game} · {t.format} · {t.playerNames.length} players</p></div><button className="secondary-btn" onClick={()=>onEdit(t)}><Pencil size={15}/> Edit Players</button></div><div className="list-grid">{names.map(x=>{const photo=profiles[x.p.trim().toLowerCase()]?.photo;return <div className="list-row player-profile-row" key={`${t.id}-${x.i}`}><label className="player-avatar-upload" title={uploading===x.p?'Processing image...':'Upload player profile photo'}>{photo?<img src={photo} alt={x.p}/>:<span>{uploading===x.p?'…':x.p[0]?.toUpperCase()}</span>}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={uploadPhoto(x.p)} hidden/></label><span><b>#{x.i+1}</b> {x.p}</span><small className="muted">{t.status}</small></div>})}</div></div>})}</div>}</section>
 }
 function PlayersModal({tournament,close,save}:{tournament:Tournament;close:()=>void;save:(t:Tournament)=>void}){
@@ -296,15 +279,15 @@ function PlayersModal({tournament,close,save}:{tournament:Tournament;close:()=>v
   </form>
  </Modal>
 }
-function MatchesPage({tournaments,onUpdate,onRename}:{tournaments:Tournament[];onUpdate:(id:number,f:Fixture)=>void;onRename:(id:number,oldName:string,newName:string)=>void}){const[selected,setSelected]=React.useState(tournaments.find(t=>t.fixtures.length)?.id||tournaments[0]?.id||0);const current=tournaments.find(t=>t.id===selected);return <section className="section-block"><div className="section-head"><div><h3>{current?.format||'Tournament Fixtures'}</h3><p>Fixtures are generated from the tournament format and participant count.</p></div><div className="select-wrap"><ChevronDown size={15}/><select value={selected} onChange={e=>setSelected(Number(e.target.value))}>{tournaments.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</select></div></div>{!current||!current.fixtures.length?<Empty title="No fixtures yet" text="Go to Tournaments → Create Fixtures after entering player names." icon={<Swords size={34}/>}/>:<><Bracket fixtures={current.fixtures} tournament={current} onUpdate={onUpdate} onRename={onRename}/>{current.format!=='Single Elimination'&&current.format!=='Double Elimination'&&<Standings tournament={current}/>}</>}</section>}
-function Bracket({fixtures,tournament,onUpdate,onRename}:{fixtures:Fixture[];tournament:Tournament;onUpdate:(id:number,f:Fixture)=>void;onRename:(id:number,oldName:string,newName:string)=>void}){
+function MatchesPage({tournaments,onUpdate,onRename,openImageEditor}:{tournaments:Tournament[];onUpdate:(id:number,f:Fixture)=>void;onRename:(id:number,oldName:string,newName:string)=>void;openImageEditor:OpenImageEditor}){const[selected,setSelected]=React.useState(tournaments.find(t=>t.fixtures.length)?.id||tournaments[0]?.id||0);const current=tournaments.find(t=>t.id===selected);return <section className="section-block"><div className="section-head"><div><h3>{current?.format||'Tournament Fixtures'}</h3><p>Fixtures are generated from the tournament format and participant count.</p></div><div className="select-wrap"><ChevronDown size={15}/><select value={selected} onChange={e=>setSelected(Number(e.target.value))}>{tournaments.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</select></div></div>{!current||!current.fixtures.length?<Empty title="No fixtures yet" text="Go to Tournaments → Create Fixtures after entering player names." icon={<Swords size={34}/>}/>:<><Bracket fixtures={current.fixtures} tournament={current} onUpdate={onUpdate} onRename={onRename} openImageEditor={openImageEditor}/>{current.format!=='Single Elimination'&&current.format!=='Double Elimination'&&<Standings tournament={current}/>}</>}</section>}
+function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtures:Fixture[];tournament:Tournament;onUpdate:(id:number,f:Fixture)=>void;onRename:(id:number,oldName:string,newName:string)=>void;openImageEditor:OpenImageEditor}){
  const shellRef=React.useRef<HTMLDivElement>(null);
  const[fullscreen,setFullscreen]=React.useState(false);
  const[logos,setLogos]=React.useState<{organizer:string;sponsor:string;coSponsor:string}>(()=>{try{return JSON.parse(localStorage.getItem(`tgs_branding_${tournament.id}`)||'{"organizer":"","sponsor":"","coSponsor":""}')}catch{return {organizer:'',sponsor:'',coSponsor:''}}});
  React.useEffect(()=>{try{localStorage.setItem(`tgs_branding_${tournament.id}`,JSON.stringify(logos))}catch{}},[logos,tournament.id]);
  React.useEffect(()=>{const onChange=()=>setFullscreen(Boolean(document.fullscreenElement));document.addEventListener('fullscreenchange',onChange);return()=>document.removeEventListener('fullscreenchange',onChange)},[]);
  const toggleFullscreen=async()=>{if(!shellRef.current)return;if(document.fullscreenElement){await document.exitFullscreen()}else{await shellRef.current.requestFullscreen()}};
- const uploadLogo=(key:'organizer'|'sponsor'|'coSponsor')=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;setImageEditor({file,title:key==='organizer'?'Organizer Logo':key==='sponsor'?'Sponsor Logo':'Co-Sponsor Logo',shape:'logo',onSave:data=>setLogos(x=>({...x,[key]:data}))})};
+ const uploadLogo=(key:'organizer'|'sponsor'|'coSponsor')=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;openImageEditor({file,title:key==='organizer'?'Organizer Logo':key==='sponsor'?'Sponsor Logo':'Co-Sponsor Logo',shape:'logo',onSave:data=>setLogos(x=>({...x,[key]:data}))})};
  const rounds=Array.from(new Set(fixtures.map(f=>f.roundIndex))).sort((a,b)=>a-b);
  return <div ref={shellRef} className={`bracket-shell ${fullscreen?'is-fullscreen':''}`}>
   <div className="bracket-toolbar">
@@ -351,10 +334,10 @@ const GAMING_THEMES=[
 ] as const;
 type GamingTheme=typeof GAMING_THEMES[number]['id'];
 
-function SettingsPage({theme,setTheme,user,logout,updateUser,gamingTheme,setGamingTheme}:{theme:'dark'|'light';setTheme:(x:'dark'|'light')=>void;user:User;logout:()=>void;updateUser:(u:User)=>void;gamingTheme:GamingTheme;setGamingTheme:(x:GamingTheme)=>void}){
+function SettingsPage({theme,setTheme,user,logout,updateUser,gamingTheme,setGamingTheme,openImageEditor}:{theme:'dark'|'light';setTheme:(x:'dark'|'light')=>void;user:User;logout:()=>void;updateUser:(u:User)=>void;gamingTheme:GamingTheme;setGamingTheme:(x:GamingTheme)=>void;openImageEditor:OpenImageEditor}){
  const[bg,setBg]=React.useState(()=>localStorage.getItem('tgs_background')||'');
  const[fileName,setFileName]=React.useState(()=>localStorage.getItem('tgs_background_name')||'');
- const upload=(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;setImageEditor({file,title:'Custom Background',shape:'wide',onSave:data=>{try{localStorage.setItem('tgs_background',data);localStorage.setItem('tgs_background_name',file.name);setBg(data);setFileName(file.name);document.documentElement.style.setProperty('--tgs-custom-background','url("'+data+'")')}catch{alert('Background storage is full. Please use a smaller crop.')}}})};
+ const upload=(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;openImageEditor({file,title:'Custom Background',shape:'wide',onSave:data=>{try{localStorage.setItem('tgs_background',data);localStorage.setItem('tgs_background_name',file.name);setBg(data);setFileName(file.name);document.documentElement.style.setProperty('--tgs-custom-background','url("'+data+'")')}catch{alert('Background storage is full. Please use a smaller crop.')}}})};
  const clearBg=()=>{localStorage.removeItem('tgs_background');localStorage.removeItem('tgs_background_name');setBg('');setFileName('');document.documentElement.style.setProperty('--tgs-custom-background','none')};
  return <section className="settings-grid settings-appearance-grid">
   <div className="panel appearance-panel">
@@ -369,7 +352,7 @@ function SettingsPage({theme,setTheme,user,logout,updateUser,gamingTheme,setGami
    {bg?<div className="background-preview" style={{backgroundImage:`url("${bg}")`}}><div><strong>{fileName||'Custom background'}</strong><small>Stored locally on this browser</small></div></div>:<div className="background-empty"><Upload size={26}/><strong>No custom background</strong><small>JPG, PNG or WEBP recommended · 16:9 works best</small></div>}
    <div className="background-actions"><label className="primary-btn upload-btn"><Upload size={15}/>{bg?'Change Background':'Upload Background'}<input type="file" accept="image/*" onChange={upload} hidden/></label>{bg&&<button type="button" className="secondary-btn" onClick={clearBg}><RotateCcw size={15}/> Reset Background</button>}</div>
   </div>
-  <div className="panel account-panel"><h3>My Profile</h3><div className="my-profile-photo"><label title="Upload profile photo">{user.photo?<img src={user.photo} alt={user.name}/>:<span>{user.name[0]?.toUpperCase()}</span>}<input type="file" accept="image/*" onChange={e=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;setImageEditor({file,title:'My Profile Photo',shape:'square',onSave:photo=>updateUser({...user,photo})})}} hidden/></label><div><strong>{user.name}</strong><p className="muted">{user.email}</p></div></div><p className="muted">Click your photo to upload or change it.</p><button type="button" className="danger-btn" onClick={logout}><LogOut size={16}/> Logout</button></div>
+  <div className="panel account-panel"><h3>My Profile</h3><div className="my-profile-photo"><label title="Upload profile photo">{user.photo?<img src={user.photo} alt={user.name}/>:<span>{user.name[0]?.toUpperCase()}</span>}<input type="file" accept="image/*" onChange={e=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;openImageEditor({file,title:'My Profile Photo',shape:'square',onSave:photo=>updateUser({...user,photo})})}} hidden/></label><div><strong>{user.name}</strong><p className="muted">{user.email}</p></div></div><p className="muted">Click your photo to upload or change it.</p><button type="button" className="danger-btn" onClick={logout}><LogOut size={16}/> Logout</button></div>
  </section>
 }
 function AuthScreen({mode,setMode,onLogin}:{mode:'login'|'register';setMode:(m:'login'|'register')=>void;onLogin:(u:User)=>void}){
