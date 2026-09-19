@@ -1592,3 +1592,80 @@
   color:var(--text)!important;
   border-color:var(--line)!important;
 }
+
+
+/* BRACKET CARD HEIGHT FIX
+   Give every match enough vertical room for BOTH player rows (photo + full
+   name + score) and the winner/status line. Feeder centers stay aligned. */
+.bracket-shell .bracket-round .round-matches{
+  height:900px!important;
+  min-height:900px!important;
+}
+.bracket-shell .bracket-round .round-matches > .bracket-slot,
+.bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+  height:104px!important;
+  min-height:104px!important;
+}
+.bracket-shell .score-match-body{
+  gap:3px!important;
+}
+.bracket-shell .player-line{
+  height:32px!important;
+  min-height:32px!important;
+  grid-template-rows:32px!important;
+  margin:2px 0!important;
+}
+.bracket-shell .player-line .fixture-player-avatar{
+  width:28px!important;
+  height:28px!important;
+  min-width:28px!important;
+  min-height:28px!important;
+}
+.bracket-shell .player-line b{
+  line-height:32px!important;
+}
+.bracket-shell .winner-line{
+  min-height:12px!important;
+  line-height:12px!important;
+  padding-top:1px!important;
+}
+
+@media(max-width:1100px){
+  .bracket-shell .bracket-round .round-matches{
+    height:850px!important;
+    min-height:850px!important;
+  }
+  .bracket-shell .bracket-round .round-matches > .bracket-slot,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    height:96px!important;
+    min-height:96px!important;
+  }
+  .bracket-shell .player-line{
+    height:29px!important;
+    min-height:29px!important;
+    grid-template-rows:29px!important;
+  }
+  .bracket-shell .player-line b{
+    line-height:29px!important;
+  }
+}
+
+@media(max-width:760px){
+  .bracket-shell .bracket-round .round-matches{
+    height:800px!important;
+    min-height:800px!important;
+  }
+  .bracket-shell .bracket-round .round-matches > .bracket-slot,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    height:90px!important;
+    min-height:90px!important;
+  }
+  .bracket-shell .player-line{
+    height:27px!important;
+    min-height:27px!important;
+    grid-template-rows:27px!important;
+  }
+  .bracket-shell .player-line b{
+    line-height:27px!important;
+  }
+}
