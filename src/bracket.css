@@ -1380,3 +1380,170 @@
     max-width:34px!important;
   }
 }
+
+
+/* FINAL PLAYER NAME LAYOUT FIX
+   The name gets its own readable column and the edit icon no longer sits
+   on top of the text. Both player rows use the same alignment. */
+.bracket-shell .bracket-round .bracket-match{
+  overflow:hidden!important;
+}
+
+.bracket-shell .score-match-body{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:3px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+
+.bracket-shell .player-line{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:30px minmax(0,1fr) 42px!important;
+  grid-template-rows:31px!important;
+  align-items:center!important;
+  width:100%!important;
+  height:31px!important;
+  min-height:31px!important;
+  box-sizing:border-box!important;
+  margin:2px 0!important;
+  padding:2px 6px!important;
+  gap:7px!important;
+  overflow:hidden!important;
+}
+
+.bracket-shell .player-line .fixture-player-avatar{
+  grid-column:1!important;
+  grid-row:1!important;
+  width:28px!important;
+  height:28px!important;
+  min-width:28px!important;
+  min-height:28px!important;
+  margin:0!important;
+}
+
+.bracket-shell .player-line b{
+  grid-column:2!important;
+  grid-row:1!important;
+  align-self:center!important;
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  padding:0 28px 0 0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  text-align:left!important;
+  color:#ffffff!important;
+  font-size:12px!important;
+  line-height:31px!important;
+  font-weight:850!important;
+  letter-spacing:.01em!important;
+  z-index:1!important;
+}
+
+.bracket-shell .player-line .fixture-name-edit{
+  grid-column:2!important;
+  grid-row:1!important;
+  position:absolute!important;
+  right:4px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:20px!important;
+  height:20px!important;
+  min-width:20px!important;
+  padding:0!important;
+  margin:0!important;
+  display:grid!important;
+  place-items:center!important;
+  z-index:3!important;
+}
+
+.bracket-shell .player-line > .inline-score-input,
+.bracket-shell .player-line > span:last-child{
+  grid-column:3!important;
+  grid-row:1!important;
+  justify-self:end!important;
+  width:42px!important;
+  min-width:42px!important;
+  max-width:42px!important;
+  height:27px!important;
+  min-height:27px!important;
+  margin:0!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  text-align:center!important;
+  z-index:2!important;
+}
+
+.bracket-shell .player-line.winner b{
+  color:#ffffff!important;
+  text-shadow:0 0 8px rgba(0,255,102,.28)!important;
+}
+
+/* If a player name is long, show as much of it as the card allows. */
+.bracket-shell .player-line b[title]{
+  cursor:default!important;
+}
+
+@media(max-width:1100px){
+  .bracket-shell .player-line{
+    grid-template-columns:28px minmax(0,1fr) 40px!important;
+    grid-template-rows:29px!important;
+    height:29px!important;
+    min-height:29px!important;
+    gap:6px!important;
+  }
+  .bracket-shell .player-line .fixture-player-avatar{
+    width:26px!important;
+    height:26px!important;
+    min-width:26px!important;
+    min-height:26px!important;
+  }
+  .bracket-shell .player-line b{
+    font-size:11.5px!important;
+    line-height:29px!important;
+  }
+  .bracket-shell .player-line > .inline-score-input,
+  .bracket-shell .player-line > span:last-child{
+    width:40px!important;
+    min-width:40px!important;
+    max-width:40px!important;
+  }
+}
+
+@media(max-width:760px){
+  .bracket-shell .player-line{
+    grid-template-columns:26px minmax(0,1fr) 34px!important;
+    grid-template-rows:27px!important;
+    height:27px!important;
+    min-height:27px!important;
+    gap:5px!important;
+  }
+  .bracket-shell .player-line .fixture-player-avatar{
+    width:24px!important;
+    height:24px!important;
+    min-width:24px!important;
+    min-height:24px!important;
+  }
+  .bracket-shell .player-line b{
+    font-size:10.5px!important;
+    line-height:27px!important;
+    padding-right:24px!important;
+  }
+  .bracket-shell .player-line .fixture-name-edit{
+    width:18px!important;
+    height:18px!important;
+    min-width:18px!important;
+  }
+  .bracket-shell .player-line > .inline-score-input,
+  .bracket-shell .player-line > span:last-child{
+    width:34px!important;
+    min-width:34px!important;
+    max-width:34px!important;
+  }
+}
