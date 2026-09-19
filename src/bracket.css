@@ -2456,3 +2456,31 @@
     width:36px!important;min-width:36px!important;max-width:36px!important;height:25px!important;
   }
 }
+
+
+/* FULLSCREEN BACKGROUND — the fullscreen element is its own top layer, so the
+   page behind it cannot show through. Put the user's actual background image
+   directly on the fullscreen bracket shell instead of relying on body. */
+.bracket-shell.is-fullscreen,
+.bracket-shell:fullscreen,
+.bracket-shell:-webkit-full-screen{
+  background-color:transparent!important;
+  background-image:
+    linear-gradient(180deg,rgba(7,11,22,.08),rgba(7,11,22,.16)),
+    var(--tgs-custom-background)!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-attachment:scroll!important;
+}
+.bracket-shell.is-fullscreen .bracket-scroll,
+.bracket-shell:fullscreen .bracket-scroll,
+.bracket-shell:-webkit-full-screen .bracket-scroll{
+  background-color:transparent!important;
+  background-image:none!important;
+}
+.bracket-shell.is-fullscreen .bracket,
+.bracket-shell:fullscreen .bracket,
+.bracket-shell:-webkit-full-screen .bracket{
+  background:transparent!important;
+}
