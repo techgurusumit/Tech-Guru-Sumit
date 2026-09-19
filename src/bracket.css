@@ -2605,3 +2605,43 @@
   }
   .fullscreen-bg-control input[type="range"]{min-width:80px!important}
 }
+
+
+/* FINAL TRANSPARENCY CONTROL
+   The slider controls the actual uploaded image layer, not the cards/bracket. */
+.bracket-shell.is-fullscreen,
+.bracket-shell:fullscreen,
+.bracket-shell:-webkit-full-screen{
+  --fullscreen-bg-opacity:65;
+  background:transparent!important;
+}
+.bracket-shell.is-fullscreen::before,
+.bracket-shell:fullscreen::before,
+.bracket-shell:-webkit-full-screen::before{
+  content:''!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  opacity:calc(var(--fullscreen-bg-opacity) / 100)!important;
+  background-image:var(--tgs-custom-background)!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-attachment:scroll!important;
+}
+.bracket-shell.is-fullscreen>*,
+.bracket-shell:fullscreen>*,
+.bracket-shell:-webkit-full-screen>*{
+  position:relative!important;
+  z-index:1!important;
+}
+.bracket-shell::backdrop{
+  --fullscreen-bg-opacity:65;
+  background-color:rgb(0 0 0 / calc((100 - var(--fullscreen-bg-opacity)) * .0085))!important;
+  background-image:var(--tgs-custom-background)!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-attachment:fixed!important;
+}
