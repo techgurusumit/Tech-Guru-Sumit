@@ -2237,3 +2237,222 @@
   .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(odd)::before{height:53px!important}
   .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(even)::before{top:-53px!important;height:53px!important}
 }
+
+
+/* FINAL BRACKET / FULLSCREEN + PLAYER NAME VISIBILITY
+   Keep the user's custom page background visible behind the bracket in fullscreen.
+   Give each player row its own centered, unclipped layout. */
+.bracket-shell{
+  overflow:visible!important;
+}
+.bracket-shell:fullscreen,
+.bracket-shell:-webkit-full-screen{
+  width:100vw!important;
+  height:100vh!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  color:var(--text,#eef2ff)!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.bracket-shell:fullscreen::before,
+.bracket-shell:-webkit-full-screen::before{
+  display:none!important;
+}
+.bracket-shell:fullscreen .bracket-scroll,
+.bracket-shell:-webkit-full-screen .bracket-scroll{
+  width:100%!important;
+  height:calc(100vh - 78px)!important;
+  min-height:0!important;
+  max-height:none!important;
+  background:transparent!important;
+  background-image:none!important;
+  overflow:auto!important;
+}
+
+/* In fullscreen, the document background remains visible; the bracket itself
+   is deliberately transparent. */
+:fullscreen .bracket-shell,
+:-webkit-full-screen .bracket-shell{
+  background:transparent!important;
+}
+:fullscreen body,
+:-webkit-full-screen body{
+  background-color:var(--bg)!important;
+  background-image:
+    linear-gradient(180deg,rgba(7,11,22,.10),rgba(7,11,22,.24)),
+    var(--tgs-custom-background),
+    radial-gradient(circle at 80% -20%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 35%)!important;
+  background-size:cover,cover,auto!important;
+  background-position:center,center,center!important;
+  background-attachment:fixed,fixed,scroll!important;
+}
+
+/* Card content is centered as a block; no row can be clipped at the bottom. */
+.bracket-shell .bracket-round .bracket-match{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+}
+.bracket-shell .bracket-round .bracket-match .match-head{
+  flex:0 0 auto!important;
+}
+.bracket-shell .bracket-round .bracket-match .score-match-body{
+  flex:1 1 auto!important;
+  width:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:7px!important;
+  min-height:0!important;
+  padding:0 0 2px!important;
+}
+.bracket-shell .player-line{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:34px minmax(120px,1fr) 48px!important;
+  align-items:center!important;
+  width:100%!important;
+  height:40px!important;
+  min-height:40px!important;
+  max-height:40px!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  padding:3px 8px!important;
+  gap:9px!important;
+  overflow:hidden!important;
+}
+.bracket-shell .player-line .fixture-player-avatar{
+  grid-column:1!important;
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  min-height:30px!important;
+  margin:0!important;
+  justify-self:start!important;
+  align-self:center!important;
+}
+.bracket-shell .player-line b{
+  grid-column:2!important;
+  display:block!important;
+  width:100%!important;
+  min-width:120px!important;
+  max-width:none!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  text-align:left!important;
+  align-self:center!important;
+  font-size:13px!important;
+  line-height:1.3!important;
+  font-weight:850!important;
+  color:var(--text,#fff)!important;
+  margin:0!important;
+  padding:0!important;
+}
+.bracket-shell .player-line > .inline-score-input,
+.bracket-shell .player-line > span:last-child{
+  grid-column:3!important;
+  justify-self:end!important;
+  align-self:center!important;
+  width:48px!important;
+  min-width:48px!important;
+  max-width:48px!important;
+  height:30px!important;
+  min-height:30px!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+}
+.bracket-shell .fixture-name-edit{
+  position:absolute!important;
+  right:58px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:18px!important;
+  height:18px!important;
+  min-width:18px!important;
+  min-height:18px!important;
+  z-index:10!important;
+}
+
+/* Taller cards so both players sit completely inside the card. */
+.bracket-shell .bracket-round .round-matches > .bracket-slot,
+.bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+  height:148px!important;
+  min-height:148px!important;
+}
+.bracket-shell .bracket-round .round-matches{
+  height:1120px!important;
+  min-height:1120px!important;
+}
+
+/* Preserve exact feeder-centering with 148px cards + 12px gap. */
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(1){top:0!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(2){top:160px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(3){top:320px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(4){top:480px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(5){top:640px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(6){top:800px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(7){top:960px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(8){top:1120px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(1){top:80px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(2){top:400px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(3){top:720px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(4){top:1040px!important}
+.bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(1){top:240px!important}
+.bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(2){top:880px!important}
+.bracket-shell .bracket-round:nth-child(4) .round-matches > .bracket-slot:nth-child(1){top:560px!important}
+
+/* Do not let connector pseudo-elements become part of the clipped player area. */
+.bracket-shell .bracket-round .round-matches > .bracket-slot::before,
+.bracket-shell .bracket-round .round-matches > .bracket-slot::after{
+  pointer-events:none!important;
+  z-index:0!important;
+}
+
+/* Smaller screens still get increased vertical space. */
+@media(max-width:1100px){
+  .bracket-shell .bracket-round .round-matches{height:1040px!important;min-height:1040px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    height:128px!important;min-height:128px!important;
+  }
+  .bracket-shell .player-line{
+    grid-template-columns:30px minmax(100px,1fr) 42px!important;
+    height:34px!important;min-height:34px!important;max-height:34px!important;
+  }
+  .bracket-shell .player-line .fixture-player-avatar{
+    width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important;
+  }
+  .bracket-shell .player-line b{min-width:100px!important;font-size:11.5px!important}
+  .bracket-shell .player-line > .inline-score-input,
+  .bracket-shell .player-line > span:last-child{
+    width:42px!important;min-width:42px!important;max-width:42px!important;height:28px!important;
+  }
+}
+@media(max-width:760px){
+  .bracket-shell .bracket-round .round-matches{height:900px!important;min-height:900px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    height:112px!important;min-height:112px!important;
+  }
+  .bracket-shell .player-line{
+    grid-template-columns:26px minmax(90px,1fr) 36px!important;
+    height:29px!important;min-height:29px!important;max-height:29px!important;
+    gap:6px!important;
+  }
+  .bracket-shell .player-line .fixture-player-avatar{
+    width:24px!important;height:24px!important;min-width:24px!important;min-height:24px!important;
+  }
+  .bracket-shell .player-line b{min-width:90px!important;font-size:10.5px!important}
+  .bracket-shell .player-line > .inline-score-input,
+  .bracket-shell .player-line > span:last-child{
+    width:36px!important;min-width:36px!important;max-width:36px!important;height:25px!important;
+  }
+}
