@@ -917,3 +917,28 @@
   object-fit:contain!important;
   background:transparent!important;
 }
+
+/* Protected fixture editor: score boxes stay in one vertical column. */
+.bracket-shell .player-line{
+  display:grid!important;
+  grid-template-columns:28px minmax(0,1fr) 24px 46px!important;
+  align-items:center!important;
+}
+.bracket-shell .fixture-player-avatar{grid-column:1}
+.bracket-shell .player-line b{grid-column:2;min-width:0}
+.bracket-shell .fixture-name-edit{
+  position:static!important;
+  grid-column:3!important;
+  width:24px!important;
+  height:24px!important;
+  margin-left:4px!important;
+  transform:none!important;
+}
+.bracket-shell .inline-score-input{
+  grid-column:4!important;
+  margin-left:auto!important;
+  justify-self:end!important;
+}
+.bracket-shell .player-line>span:not(.fixture-player-avatar){
+  grid-column:4!important;
+}
