@@ -257,3 +257,79 @@ body::before{
 .my-profile-photo>label:has(img) img{background:transparent!important;display:block}
 .sidebar .brand-avatar:has(img){background:transparent!important}
 .sidebar .brand-avatar:has(img) img{background:transparent!important;display:block}
+
+
+/* UNIFIED 8-THEME PICKER */
+.theme-picker-wrap{position:relative;z-index:80}
+.theme-btn{min-width:108px}
+.theme-btn .theme-chevron{transition:transform .18s ease}
+.theme-btn .theme-chevron.open{transform:rotate(180deg)}
+.theme-picker-backdrop{position:fixed;inset:0;border:0;background:transparent;z-index:78;cursor:default}
+.theme-picker{
+  position:absolute;top:calc(100% + 10px);right:0;width:min(420px,calc(100vw - 30px));
+  padding:14px;border:1px solid var(--line);border-radius:16px;
+  background:color-mix(in srgb,var(--panel) 96%,transparent);
+  backdrop-filter:blur(18px);box-shadow:0 24px 70px rgba(0,0,0,.35);
+  z-index:81;
+}
+.theme-picker-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 2px 12px}
+.theme-picker-head strong{display:block;color:var(--text);font-size:13px}
+.theme-picker-head small{display:block;color:var(--muted);font-size:9px;margin-top:4px}
+.theme-picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.theme-picker-option{
+  position:relative;display:flex;align-items:center;gap:10px;width:100%;min-width:0;
+  padding:10px;border:1px solid var(--line);border-radius:12px;
+  background:rgba(255,255,255,.025);color:var(--text);text-align:left;
+  transition:.18s ease;
+}
+.theme-picker-option:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:var(--panel-2)}
+.theme-picker-option.selected{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 13%,transparent);background:color-mix(in srgb,var(--accent) 8%,var(--panel))}
+.theme-picker-swatch{
+  width:34px;height:34px;min-width:34px;border-radius:9px;display:grid;place-items:center;
+  position:relative;overflow:hidden;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#07101a;
+}
+.theme-picker-swatch i{position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18),transparent 55%)}
+.theme-picker-swatch b,.theme-picker-swatch svg{position:relative;z-index:1}
+.theme-picker-option>span:nth-child(2){min-width:0;flex:1}
+.theme-picker-option strong{display:block;font-size:10px;line-height:1.2}
+.theme-picker-option small{display:block;margin-top:3px;color:var(--muted);font-size:8px;line-height:1.25}
+.theme-picker-check{flex:0 0 auto;color:var(--accent);font-size:14px;font-weight:900}
+.theme-picker-swatch.light{background:linear-gradient(135deg,#f8fafc,#dbeafe);color:#1e3a8a}
+.theme-picker-swatch.dark{background:linear-gradient(135deg,#0b1220,#26324d);color:#fff}
+
+@media(max-width:760px){
+  .theme-picker{right:-2px;width:min(390px,calc(100vw - 30px))}
+  .theme-picker-grid{grid-template-columns:1fr}
+}
+
+/* Full dashboard palettes for the six esports themes. */
+:root[data-theme='dark'][data-gaming-theme='cyber']{
+  --bg:#070b16;--panel:#0e1424;--panel-2:#11192d;--line:rgba(255,255,255,.08);--muted:#8e9ab5;--text:#eef2ff;--accent:#6d7cff;--accent-2:#22d3ee;--input:#090f1e;
+}
+:root[data-theme='dark'][data-gaming-theme='crimson']{
+  --bg:#12080c;--panel:#1a0e14;--panel-2:#24121a;--line:rgba(255,110,130,.12);--muted:#b89aa2;--text:#fff0f3;--accent:#ff4059;--accent-2:#ff8a3d;--input:#10070b;
+}
+:root[data-theme='dark'][data-gaming-theme='toxic']{
+  --bg:#081109;--panel:#0e1b11;--panel-2:#132518;--line:rgba(114,229,46,.12);--muted:#91a98f;--text:#efffea;--accent:#72e52e;--accent-2:#b8f532;--input:#071009;
+}
+:root[data-theme='dark'][data-gaming-theme='purple']{
+  --bg:#0f0817;--panel:#171025;--panel-2:#211537;--line:rgba(168,85,247,.13);--muted:#a996ba;--text:#f8efff;--accent:#a855f7;--accent-2:#f04ccf;--input:#0d0714;
+}
+:root[data-theme='dark'][data-gaming-theme='ice']{
+  --bg:#071116;--panel:#0d1b24;--panel-2:#122632;--line:rgba(56,216,255,.13);--muted:#8eaab6;--text:#edfbff;--accent:#38d8ff;--accent-2:#78a9ff;--input:#061017;
+}
+:root[data-theme='dark'][data-gaming-theme='championship']{
+  --bg:#110d05;--panel:#1a1408;--panel-2:#241c0c;--line:rgba(229,185,76,.14);--muted:#b5a57d;--text:#fff9e9;--accent:#e5b94c;--accent-2:#ffe29a;--input:#0e0a04;
+}
+
+/* Let common dashboard surfaces inherit the selected palette instead of fixed blue accents. */
+:root[data-gaming-theme='crimson'] body{background:radial-gradient(circle at 80% -20%,rgba(255,64,89,.16),transparent 35%),var(--bg)}
+:root[data-gaming-theme='toxic'] body{background:radial-gradient(circle at 80% -20%,rgba(114,229,46,.13),transparent 35%),var(--bg)}
+:root[data-gaming-theme='purple'] body{background:radial-gradient(circle at 80% -20%,rgba(168,85,247,.15),transparent 35%),var(--bg)}
+:root[data-gaming-theme='ice'] body{background:radial-gradient(circle at 80% -20%,rgba(56,216,255,.14),transparent 35%),var(--bg)}
+:root[data-gaming-theme='championship'] body{background:radial-gradient(circle at 80% -20%,rgba(229,185,76,.14),transparent 35%),var(--bg)}
+:root[data-gaming-theme='crimson'] .hero-card{background:linear-gradient(135deg,rgba(255,64,89,.14),rgba(255,138,61,.04)),var(--panel)}
+:root[data-gaming-theme='toxic'] .hero-card{background:linear-gradient(135deg,rgba(114,229,46,.13),rgba(184,245,50,.04)),var(--panel)}
+:root[data-gaming-theme='purple'] .hero-card{background:linear-gradient(135deg,rgba(168,85,247,.14),rgba(240,76,207,.04)),var(--panel)}
+:root[data-gaming-theme='ice'] .hero-card{background:linear-gradient(135deg,rgba(56,216,255,.14),rgba(120,169,255,.04)),var(--panel)}
+:root[data-gaming-theme='championship'] .hero-card{background:linear-gradient(135deg,rgba(229,185,76,.14),rgba(255,226,154,.04)),var(--panel)}
