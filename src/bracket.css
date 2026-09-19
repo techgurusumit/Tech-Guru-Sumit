@@ -919,3 +919,306 @@
     min-width:34px!important;
   }
 }
+
+
+/* REFERENCE BRACKET STYLE + ALIGNMENT
+   Visual/layout update only. Tournament logic, player data and scoring are untouched.
+   Based on the supplied premium esports bracket reference. */
+.bracket-shell{
+  --b-bg:#050914;
+  --b-card:#0d1425;
+  --b-card-hover:#131c33;
+  --b-line:rgba(148,163,184,.15);
+  --b-accent:#00f0ff;
+  --b-accent-2:#b026ff;
+  --b-success:#00ff66;
+  --b-muted:#64748b;
+  background:
+    radial-gradient(circle at 15% 10%,rgba(176,38,255,.08),transparent 30%),
+    radial-gradient(circle at 85% 90%,rgba(0,240,255,.08),transparent 30%)!important;
+  border:1px solid rgba(0,240,255,.16)!important;
+  border-radius:14px!important;
+  box-shadow:0 18px 55px rgba(0,0,0,.38)!important;
+}
+
+.bracket-shell .bracket-scroll{
+  padding:24px 30px 34px!important;
+  background-image:
+    linear-gradient(rgba(148,163,184,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(148,163,184,.035) 1px,transparent 1px)!important;
+  background-size:40px 40px!important;
+}
+
+.bracket-shell .bracket{
+  grid-template-columns:repeat(var(--bracket-round-count),320px)!important;
+  column-gap:60px!important;
+  padding:8px 24px 42px!important;
+}
+
+/* Compact reference-style round headers. */
+.bracket-shell .round-title{
+  height:42px!important;
+  margin-bottom:12px!important;
+  padding:0 8px!important;
+  justify-content:center!important;
+  border:0!important;
+  border-bottom:1px solid rgba(148,163,184,.15)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--b-accent)!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  letter-spacing:.15em!important;
+  text-shadow:0 0 10px rgba(0,240,255,.30)!important;
+  box-shadow:none!important;
+}
+.bracket-shell .round-title::before{display:none!important}
+.bracket-shell .round-title span{
+  display:none!important;
+}
+
+/* Reference card styling. */
+.bracket-shell .bracket-round .bracket-match{
+  width:320px!important;
+  height:92px!important;
+  min-height:92px!important;
+  padding:4px!important;
+  border:1px solid rgba(148,163,184,.15)!important;
+  border-radius:12px!important;
+  background:linear-gradient(145deg,#0d1425,#0a101d)!important;
+  box-shadow:0 8px 32px rgba(0,0,0,.40)!important;
+}
+.bracket-shell .bracket-round .bracket-match:hover{
+  transform:translateY(-2px) scale(1.01)!important;
+  border-color:rgba(0,240,255,.40)!important;
+  background:linear-gradient(145deg,#131c33,#0d1425)!important;
+  box-shadow:0 12px 40px rgba(0,240,255,.10),inset 0 0 20px rgba(0,240,255,.05)!important;
+}
+
+/* Match header like the supplied reference. */
+.bracket-shell .match-head{
+  min-height:18px!important;
+  padding:2px 8px 4px!important;
+  font-size:8px!important;
+  letter-spacing:.05em!important;
+}
+.bracket-shell .match-head span:first-child{
+  color:#64748b!important;
+}
+.bracket-shell .match-head span:last-child{
+  color:var(--b-accent)!important;
+}
+
+/* Player rows + small profile picture. */
+.bracket-shell .player-line{
+  min-height:31px!important;
+  height:31px!important;
+  margin:3px 4px!important;
+  padding:3px 7px!important;
+  border:1px solid transparent!important;
+  border-radius:8px!important;
+  background:rgba(255,255,255,.02)!important;
+  font-size:10px!important;
+  column-gap:8px!important;
+}
+.bracket-shell .player-line .fixture-player-avatar{
+  width:26px!important;
+  height:26px!important;
+  min-width:26px!important;
+  flex-basis:26px!important;
+  border:2px solid rgba(148,163,184,.15)!important;
+  background:#1e293b!important;
+  box-shadow:none!important;
+}
+.bracket-shell .player-line b{
+  font-size:11px!important;
+  font-weight:700!important;
+  letter-spacing:0!important;
+  padding:0!important;
+}
+.bracket-shell .inline-score-input,
+.bracket-shell .player-line > span:last-child{
+  width:42px!important;
+  min-width:42px!important;
+  height:28px!important;
+  border-radius:6px!important;
+  font-size:12px!important;
+}
+.bracket-shell .inline-score-input{
+  border-color:rgba(148,163,184,.15)!important;
+  background:rgba(0,0,0,.30)!important;
+}
+
+/* Winner treatment from the reference. */
+.bracket-shell .player-line.winner{
+  background:linear-gradient(90deg,rgba(0,255,102,.15),rgba(0,0,0,0))!important;
+  border-color:rgba(0,255,102,.20)!important;
+  border-left:3px solid var(--b-success)!important;
+  box-shadow:none!important;
+}
+.bracket-shell .player-line.winner b{
+  color:#fff!important;
+  text-shadow:0 0 8px rgba(0,255,102,.40)!important;
+}
+.bracket-shell .player-line.winner .fixture-player-avatar{
+  border-color:var(--b-success)!important;
+  box-shadow:0 0 10px rgba(0,255,102,.30)!important;
+}
+.bracket-shell .player-line.winner .inline-score-input{
+  color:var(--b-success)!important;
+  border-color:rgba(0,255,102,.30)!important;
+  background:rgba(0,255,102,.05)!important;
+  box-shadow:inset 0 0 10px rgba(0,255,102,.10)!important;
+}
+.bracket-shell .player-line.winner::after{display:none!important}
+
+/* Final match receives the reference cyan emphasis. */
+.bracket-shell .bracket-round:nth-child(4) .bracket-match{
+  border-color:rgba(0,240,255,.34)!important;
+  box-shadow:0 0 30px rgba(0,240,255,.15),0 8px 32px rgba(0,0,0,.40)!important;
+}
+
+/* Exact 8 -> 4 -> 2 -> 1 center alignment.
+   R16 centers: 46,158,270,382,494,606,718,830
+   QF centers: 102,326,550,774
+   SF centers: 214,662
+   Final center: 438 */
+.bracket-shell .bracket-round .round-matches{
+  height:876px!important;
+  min-height:876px!important;
+}
+.bracket-shell .bracket-round .round-matches > .bracket-slot{
+  width:320px!important;
+  height:92px!important;
+  min-height:92px!important;
+}
+.bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+  width:320px!important;
+  height:92px!important;
+  min-height:92px!important;
+}
+
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(1){top:0!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(2){top:112px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(3){top:224px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(4){top:336px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(5){top:448px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(6){top:560px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(7){top:672px!important}
+.bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(8){top:784px!important}
+
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(1){top:56px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(2){top:280px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(3){top:504px!important}
+.bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(4){top:728px!important}
+
+.bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(1){top:168px!important}
+.bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(2){top:616px!important}
+
+.bracket-shell .bracket-round:nth-child(4) .round-matches > .bracket-slot:nth-child(1){top:392px!important}
+
+/* Classic bracket connectors — cyan/purple reference treatment. */
+.bracket-shell .bracket-round .round-matches > .bracket-slot::after{
+  right:-60px!important;
+  width:60px!important;
+  border-top:2px solid rgba(176,38,255,.55)!important;
+}
+.bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(odd)::before{
+  right:-60px!important;
+  height:56px!important;
+  border-right:2px solid rgba(176,38,255,.55)!important;
+}
+.bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(even)::before{
+  right:-60px!important;
+  top:-56px!important;
+  height:56px!important;
+  border-right:2px solid rgba(176,38,255,.55)!important;
+}
+.bracket-shell .bracket-round:nth-child(n+2) .round-matches > .bracket-slot::after{
+  left:-60px!important;
+  right:auto!important;
+}
+.bracket-shell .bracket-round:last-child .round-matches > .bracket-slot::before{
+  display:none!important;
+}
+
+/* Keep the style responsive without changing bracket relationships. */
+@media(max-width:1100px){
+  .bracket-shell .bracket{
+    grid-template-columns:repeat(var(--bracket-round-count),280px)!important;
+    column-gap:40px!important;
+  }
+  .bracket-shell .bracket-round,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    width:280px!important;
+  }
+  .bracket-shell .bracket-round .round-matches{
+    height:844px!important;
+    min-height:844px!important;
+  }
+  .bracket-shell .bracket-round .round-matches > .bracket-slot,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    height:88px!important;
+    min-height:88px!important;
+  }
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(1){top:0!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(2){top:106px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(3){top:212px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(4){top:318px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(5){top:424px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(6){top:530px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(7){top:636px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(8){top:742px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(1){top:53px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(2){top:265px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(3){top:477px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(4){top:689px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(1){top:159px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(2){top:583px!important}
+  .bracket-shell .bracket-round:nth-child(4) .round-matches > .bracket-slot:nth-child(1){top:371px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot::after{right:-40px!important;width:40px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(odd)::before{right:-40px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(even)::before{right:-40px!important}
+  .bracket-shell .bracket-round:nth-child(n+2) .round-matches > .bracket-slot::after{left:-40px!important}
+}
+
+@media(max-width:760px){
+  .bracket-shell .bracket{
+    grid-template-columns:repeat(var(--bracket-round-count),240px)!important;
+    column-gap:28px!important;
+  }
+  .bracket-shell .bracket-round,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    width:240px!important;
+  }
+  .bracket-shell .bracket-round .round-matches{
+    height:768px!important;
+    min-height:768px!important;
+  }
+  .bracket-shell .bracket-round .round-matches > .bracket-slot,
+  .bracket-shell .bracket-round .round-matches > .bracket-slot > .bracket-match{
+    height:82px!important;
+    min-height:82px!important;
+  }
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(1){top:0!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(2){top:98px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(3){top:196px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(4){top:294px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(5){top:392px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(6){top:490px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(7){top:588px!important}
+  .bracket-shell .bracket-round:nth-child(1) .round-matches > .bracket-slot:nth-child(8){top:686px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(1){top:49px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(2){top:245px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(3){top:441px!important}
+  .bracket-shell .bracket-round:nth-child(2) .round-matches > .bracket-slot:nth-child(4){top:637px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(1){top:147px!important}
+  .bracket-shell .bracket-round:nth-child(3) .round-matches > .bracket-slot:nth-child(2){top:539px!important}
+  .bracket-shell .bracket-round:nth-child(4) .round-matches > .bracket-slot:nth-child(1){top:343px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot::after{right:-28px!important;width:28px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(odd)::before{right:-28px!important}
+  .bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(even)::before{right:-28px!important}
+  .bracket-shell .bracket-round:nth-child(n+2) .round-matches > .bracket-slot::after{left:-28px!important}
+}
