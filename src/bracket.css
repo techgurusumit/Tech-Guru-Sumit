@@ -530,3 +530,42 @@
     width:26px!important;
   }
 }
+
+
+/* Player profile photo — small avatar on the left of every bracket player name. */
+.bracket-shell .fixture-player-avatar{
+  width:24px!important;
+  height:24px!important;
+  min-width:24px!important;
+  flex:0 0 24px!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  border-radius:50%!important;
+  border:1px solid rgba(255,255,255,.20)!important;
+  background:linear-gradient(135deg,var(--b-accent),var(--b-accent-2))!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.22)!important;
+}
+
+.bracket-shell .fixture-player-avatar img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  border-radius:50%!important;
+}
+
+.bracket-shell .player-line .fixture-player-avatar + b{
+  padding-right:20px!important;
+  min-width:0!important;
+}
+
+/* Keep the avatar compact on smaller bracket sizes too. */
+@media(max-width:760px){
+  .bracket-shell .fixture-player-avatar{
+    width:22px!important;
+    height:22px!important;
+    min-width:22px!important;
+    flex-basis:22px!important;
+  }
+}
