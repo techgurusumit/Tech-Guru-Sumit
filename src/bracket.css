@@ -450,11 +450,15 @@
   .bracket-shell .bracket-match::after{right:-26px!important;width:26px!important}
 }
 
-/* EXACT REFERENCE GEOMETRY — 8 R16 -> 4 QF -> 2 SF -> 1 FINAL */
+/* EXACT REFERENCE GEOMETRY — 8 R16 -> 4 QF -> 2 SF -> 1 FINAL
+   Grid rows are the bracket's mathematical slots:
+   R16 = 1 row, QF = 2 rows, SF = 4 rows, Final = 8 rows.
+   This keeps every later match exactly centered between its feeder matches. */
 .bracket-shell .bracket{
   display:grid!important;
   grid-template-columns:repeat(var(--bracket-round-count),292px)!important;
   column-gap:44px!important;
+  row-gap:0!important;
   align-items:start!important;
   width:max-content!important;
   min-width:max-content!important;
@@ -465,23 +469,36 @@
   display:flex!important;
   flex-direction:column!important;
 }
-.bracket-shell .bracket-round .round-title{margin-bottom:8px!important}
+.bracket-shell .bracket-round .round-title{
+  margin-bottom:8px!important;
+}
 .bracket-shell .bracket-round .round-matches{
   position:relative!important;
-  flex:none!important;
-  height:900px!important;
+  display:grid!important;
+  grid-template-rows:repeat(8,92px)!important;
+  row-gap:20px!important;
+  align-items:center!important;
+  height:876px!important;
+  min-height:876px!important;
   margin:0!important;
   padding:0!important;
-  display:block!important;
+  overflow:visible!important;
 }
 .bracket-shell .bracket-round .bracket-slot{
-  position:absolute!important;
-  left:0!important;
+  position:static!important;
   width:100%!important;
   height:92px!important;
+  min-height:92px!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  align-self:stretch!important;
 }
 .bracket-shell .bracket-round .bracket-slot .bracket-match{
   position:relative!important;
+  left:auto!important;
+  top:auto!important;
   width:100%!important;
   height:92px!important;
   min-height:92px!important;
@@ -489,31 +506,31 @@
   box-sizing:border-box!important;
 }
 
-/* R16: fixed 92px cards with 20px space, exactly like the reference */
-.bracket-shell .bracket-round:nth-child(1) .bracket-slot:nth-child(1){top:0!important}
-.bracket-shell .bracket-round:nth-child(1) .bracket-slot:nth-child(2){top:112px!important}
-.bracket-shell .bracket-round:nth-child(1) .bracket-slot:nth-child(3){top:224px!important}
-.bracket-shell .bracket-round:nth-child(1) .bracket-slot:nth-child(4){top:336px!important}
-.bracket-shell .bracket-round:nth-child(1) .bracket-slot:nth-child(5){top:448px!important}
-.bracket-shell .bracket-round:nth-child(1) .bracket-slot:nth-child(6){top:560px!important}
-.bracket-shell .bracket-round:nth-child(1) .bracket-slot:nth-child(7){top:672px!important}
-.bracket-shell .bracket-round:nth-child(1) .bracket-slot:nth-child(8){top:784px!important}
+/* R16: one grid row per match */
+.bracket-shell .bracket-round:nth-child(1) .bracket-slot{
+  grid-row:span 1!important;
+}
 
-/* QF sits in the exact vertical middle of each R16 pair */
-.bracket-shell .bracket-round:nth-child(2) .bracket-slot:nth-child(1){top:56px!important}
-.bracket-shell .bracket-round:nth-child(2) .bracket-slot:nth-child(2){top:280px!important}
-.bracket-shell .bracket-round:nth-child(2) .bracket-slot:nth-child(3){top:504px!important}
-.bracket-shell .bracket-round:nth-child(2) .bracket-slot:nth-child(4){top:728px!important}
+/* QF: every match occupies the space of two R16 matches */
+.bracket-shell .bracket-round:nth-child(2) .bracket-slot{
+  grid-row:span 2!important;
+  align-self:center!important;
+}
 
-/* SF sits in the exact vertical middle of each QF pair */
-.bracket-shell .bracket-round:nth-child(3) .bracket-slot:nth-child(1){top:168px!important}
-.bracket-shell .bracket-round:nth-child(3) .bracket-slot:nth-child(2){top:616px!important}
+/* SF: every match occupies the space of two QF matches */
+.bracket-shell .bracket-round:nth-child(3) .bracket-slot{
+  grid-row:span 4!important;
+  align-self:center!important;
+}
 
-/* Final sits in the exact vertical middle of both SF cards */
-.bracket-shell .bracket-round:nth-child(4) .bracket-slot:nth-child(1){top:392px!important}
-.bracket-shell .bracket-round:nth-child(n+5) .bracket-slot:nth-child(1){top:392px!important}
+/* FINAL: occupies the complete eight-match bracket height */
+.bracket-shell .bracket-round:nth-child(4) .bracket-slot,
+.bracket-shell .bracket-round:nth-child(n+5) .bracket-slot{
+  grid-row:span 8!important;
+  align-self:center!important;
+}
 
-/* connector lines remain attached to each card center */
+/* Keep connector lines exactly on each table's vertical center. */
 .bracket-shell .bracket-match::after{
   top:50%!important;
   right:-44px!important;
@@ -522,17 +539,57 @@
   border-radius:999px!important;
   background:linear-gradient(90deg,#7c83ff,#28d9ff)!important;
 }
-.bracket-shell .bracket-round:last-child .bracket-match::after{display:none!important}
+.bracket-shell .bracket-round:last-child .bracket-match::after{
+  display:none!important;
+}
 
 @media(max-width:1100px){
-  .bracket-shell .bracket{grid-template-columns:repeat(var(--bracket-round-count),260px)!important;column-gap:34px!important}
-  .bracket-shell .bracket-round{width:260px!important;min-width:260px!important}
-  .bracket-shell .bracket-round .bracket-match{width:100%!important}
-  .bracket-shell .bracket-match::after{right:-34px!important;width:34px!important}
+  .bracket-shell .bracket{
+    grid-template-columns:repeat(var(--bracket-round-count),260px)!important;
+    column-gap:34px!important;
+  }
+  .bracket-shell .bracket-round{
+    width:260px!important;
+    min-width:260px!important;
+  }
+  .bracket-shell .bracket-round .round-matches{
+    grid-template-rows:repeat(8,88px)!important;
+    row-gap:18px!important;
+    height:844px!important;
+    min-height:844px!important;
+  }
+  .bracket-shell .bracket-round .bracket-slot,
+  .bracket-shell .bracket-round .bracket-slot .bracket-match{
+    height:88px!important;
+    min-height:88px!important;
+  }
+  .bracket-shell .bracket-match::after{
+    right:-34px!important;
+    width:34px!important;
+  }
 }
 @media(max-width:760px){
-  .bracket-shell .bracket{grid-template-columns:repeat(var(--bracket-round-count),236px)!important;column-gap:26px!important}
-  .bracket-shell .bracket-round{width:236px!important;min-width:236px!important}
-  .bracket-shell .bracket-match{width:100%!important}
-  .bracket-shell .bracket-match::after{right:-26px!important;width:26px!important}
+  .bracket-shell .bracket{
+    grid-template-columns:repeat(var(--bracket-round-count),236px)!important;
+    column-gap:26px!important;
+  }
+  .bracket-shell .bracket-round{
+    width:236px!important;
+    min-width:236px!important;
+  }
+  .bracket-shell .bracket-round .round-matches{
+    grid-template-rows:repeat(8,82px)!important;
+    row-gap:16px!important;
+    height:768px!important;
+    min-height:768px!important;
+  }
+  .bracket-shell .bracket-round .bracket-slot,
+  .bracket-shell .bracket-round .bracket-slot .bracket-match{
+    height:82px!important;
+    min-height:82px!important;
+  }
+  .bracket-shell .bracket-match::after{
+    right:-26px!important;
+    width:26px!important;
+  }
 }
