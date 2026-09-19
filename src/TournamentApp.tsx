@@ -314,7 +314,7 @@ function MatchesPage({tournaments}:{tournaments:Tournament[]}){
 function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtures:Fixture[];tournament:Tournament;onUpdate:(id:number,f:Fixture)=>void;onRename:(id:number,oldName:string,newName:string)=>void;openImageEditor:OpenImageEditor}){
  const shellRef=React.useRef<HTMLDivElement>(null);
  const[fullscreen,setFullscreen]=React.useState(false);
- const[logos,setLogos]=React.useState<{organizer:string;sponsor:string;coSponsor:string}>(()=>{try{return JSON.parse(localStorage.getItem(`tgs_branding_${tournament.id}`)||'{"organizer":"","sponsor":"","coSponsor":""}')}catch{return {organizer:'',sponsor:'',coSponsor:''}}});
+ const[logos,setLogos]=React.useState<{organizer:string;sponsor:string;coSponsor:string}>(()=>{try{const empty='{"organizer":"","sponsor":"","coSponsor":""}';const raw=localStorage.getItem(`tgs_branding_${tournament.id}`)||localStorage.getItem(`tgs_branding_${tournament.id}_backup`)||empty;return JSON.parse(raw)}catch{return {organizer:'',sponsor:'',coSponsor:''}}});
  const[playerProfiles,setPlayerProfiles]=React.useState<Record<string,PlayerProfile>>(()=>{try{return JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}')}catch{return {}}});
  React.useEffect(()=>{try{localStorage.setItem(`tgs_branding_${tournament.id}`,JSON.stringify(logos))}catch{}},[logos,tournament.id]);
  React.useEffect(()=>{const onChange=()=>setFullscreen(Boolean(document.fullscreenElement));document.addEventListener('fullscreenchange',onChange);return()=>document.removeEventListener('fullscreenchange',onChange)},[]);
