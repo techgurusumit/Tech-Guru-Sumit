@@ -333,3 +333,81 @@ body::before{
 :root[data-gaming-theme='purple'] .hero-card{background:linear-gradient(135deg,rgba(168,85,247,.14),rgba(240,76,207,.04)),var(--panel)}
 :root[data-gaming-theme='ice'] .hero-card{background:linear-gradient(135deg,rgba(56,216,255,.14),rgba(120,169,255,.04)),var(--panel)}
 :root[data-gaming-theme='championship'] .hero-card{background:linear-gradient(135deg,rgba(229,185,76,.14),rgba(255,226,154,.04)),var(--panel)}
+
+
+/* THEME FIX v2
+   Preserve the user's custom background image for every theme and make the
+   sidebar use the active theme palette instead of the old fixed blue/black styles. */
+body{
+  background-color:var(--bg)!important;
+  background-image:
+    linear-gradient(180deg,rgba(7,11,22,.16),rgba(7,11,22,.30)),
+    var(--tgs-custom-background),
+    radial-gradient(circle at 80% -20%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 35%)!important;
+  background-size:cover,cover,auto!important;
+  background-position:center,center,center!important;
+  background-attachment:fixed,fixed,scroll!important;
+}
+
+/* The sidebar is a major surface, so it follows the selected theme too. */
+.sidebar{
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb,var(--panel) 96%,var(--accent) 4%),
+      var(--panel))!important;
+  border-right:1px solid var(--line)!important;
+  box-shadow:18px 0 45px color-mix(in srgb,var(--accent) 10%,rgba(0,0,0,.20))!important;
+  color:var(--text)!important;
+}
+.sidebar .brand strong,
+.sidebar .nav-item,
+.sidebar .profile-mini strong{
+  color:var(--text)!important;
+}
+.sidebar .brand span,
+.sidebar .profile-mini span,
+.sidebar .side-section-title{
+  color:var(--muted)!important;
+}
+.sidebar .nav-item{
+  background:transparent!important;
+  border-color:transparent!important;
+}
+.sidebar .nav-item:hover{
+  background:color-mix(in srgb,var(--accent) 10%,transparent)!important;
+  border-color:color-mix(in srgb,var(--accent) 18%,transparent)!important;
+  color:var(--text)!important;
+}
+.sidebar .nav-item.active{
+  background:linear-gradient(90deg,
+    color-mix(in srgb,var(--accent) 18%,transparent),
+    color-mix(in srgb,var(--accent) 5%,transparent))!important;
+  border-color:color-mix(in srgb,var(--accent) 22%,transparent)!important;
+  box-shadow:inset 3px 0 0 var(--accent),0 8px 24px color-mix(in srgb,var(--accent) 8%,transparent)!important;
+  color:var(--text)!important;
+}
+.sidebar .brand-mark{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2))!important;
+  color:#06101a!important;
+  border-color:color-mix(in srgb,var(--accent) 28%,transparent)!important;
+  box-shadow:0 10px 26px color-mix(in srgb,var(--accent) 20%,transparent)!important;
+}
+.sidebar .avatar{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2))!important;
+}
+.sidebar .profile-mini{
+  border-top-color:var(--line)!important;
+}
+
+/* Light remains a genuine light interface while still using the chosen accent. */
+:root[data-theme='light'] body{
+  background-image:
+    linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.16)),
+    var(--tgs-custom-background),
+    radial-gradient(circle at 80% -20%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 35%)!important;
+}
+:root[data-theme='light'] .sidebar{
+  background:linear-gradient(180deg,var(--panel),var(--panel-2))!important;
+  border-right-color:var(--line)!important;
+  box-shadow:12px 0 36px rgba(15,23,42,.08)!important;
+}
