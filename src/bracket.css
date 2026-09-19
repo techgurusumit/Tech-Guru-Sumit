@@ -920,3 +920,66 @@
   background:linear-gradient(90deg,#7c83ff,#28d9ff)!important;
   box-shadow:0 0 12px rgba(40,217,255,.35)!important;
 }
+
+/* =========================================================
+   FINAL FIX: 8-match knockout geometry
+   R1 has 8 matches -> 4 QF -> 2 SF -> 1 Final.
+   Each later match is centered between its two feeder matches.
+   ========================================================= */
+.bracket-shell .bracket{
+  --match-h:92px;
+  --r1-gap:22px;
+  --col-gap:44px;
+  display:flex!important;
+  align-items:flex-start!important;
+  gap:var(--col-gap)!important;
+}
+.bracket-shell .bracket-round{
+  flex:0 0 292px!important;
+  width:292px!important;
+}
+.bracket-shell .bracket-round .round-matches{
+  display:flex!important;
+  flex-direction:column!important;
+  padding-top:0!important;
+  margin:0!important;
+}
+.bracket-shell .bracket-round:nth-child(1) .round-matches{
+  gap:var(--r1-gap)!important;
+}
+.bracket-shell .bracket-round:nth-child(2) .round-matches{
+  gap:var(--r1-gap)!important;
+  padding-top:calc((var(--match-h) + var(--r1-gap)) / 2)!important;
+}
+.bracket-shell .bracket-round:nth-child(3) .round-matches{
+  gap:var(--r1-gap)!important;
+  padding-top:calc(3 * (var(--match-h) + var(--r1-gap)) / 2)!important;
+}
+.bracket-shell .bracket-round:nth-child(4) .round-matches{
+  gap:0!important;
+  padding-top:calc(7 * (var(--match-h) + var(--r1-gap)) / 2)!important;
+}
+.bracket-shell .bracket-round:nth-child(n+5) .round-matches{
+  gap:0!important;
+  padding-top:calc(7 * (var(--match-h) + var(--r1-gap)) / 2)!important;
+}
+.bracket-shell .bracket-match{
+  min-height:var(--match-h)!important;
+  height:var(--match-h)!important;
+  margin:0!important;
+  padding:6px!important;
+}
+.bracket-shell .bracket-match::after{
+  top:50%!important;
+  right:calc(-1 * var(--col-gap))!important;
+  width:var(--col-gap)!important;
+  height:3px!important;
+}
+@media(max-width:1100px){
+  .bracket-shell .bracket{--match-h:88px;--r1-gap:18px;--col-gap:34px}
+  .bracket-shell .bracket-round{flex-basis:260px!important;width:260px!important}
+}
+@media(max-width:760px){
+  .bracket-shell .bracket{--match-h:82px;--r1-gap:16px;--col-gap:26px;gap:var(--col-gap)!important;min-width:calc(4 * 236px + 3 * var(--col-gap))!important}
+  .bracket-shell .bracket-round{flex-basis:236px!important;width:236px!important}
+}
