@@ -1071,3 +1071,69 @@
   .bracket-shell .bracket{gap:26px!important}
   .bracket-shell .bracket-round{flex-basis:236px!important;width:236px!important}
 }
+
+/* EXACT REQUESTED ALIGNMENT: 8 R1 -> 4 QF -> 2 SF -> 1 FINAL */
+/* The first-round column defines the total bracket height.
+   Every later round uses the same height and places each card at the
+   midpoint of the feeder pair. No card sizing, colors, or content changes. */
+.bracket-shell .bracket{
+  display:grid!important;
+  grid-template-columns:repeat(var(--bracket-round-count),292px)!important;
+  align-items:stretch!important;
+  gap:40px!important;
+  width:max-content!important;
+  min-width:max-content!important;
+}
+.bracket-shell .bracket-round{
+  width:292px!important;
+  min-width:292px!important;
+  height:100%!important;
+}
+.bracket-shell .bracket-round .round-matches{
+  height:100%!important;
+  min-height:0!important;
+  padding-top:0!important;
+  margin:0!important;
+}
+.bracket-shell .bracket-round:nth-child(1) .round-matches{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  gap:20px!important;
+}
+.bracket-shell .bracket-round:nth-child(2) .round-matches,
+.bracket-shell .bracket-round:nth-child(3) .round-matches,
+.bracket-shell .bracket-round:nth-child(4) .round-matches{
+  display:grid!important;
+  grid-template-rows:repeat(8,minmax(0,1fr))!important;
+  gap:0!important;
+  align-items:center!important;
+}
+.bracket-shell .bracket-round:nth-child(2) .bracket-slot{
+  grid-row:span 2!important;
+  align-self:center!important;
+}
+.bracket-shell .bracket-round:nth-child(3) .bracket-slot{
+  grid-row:span 4!important;
+  align-self:center!important;
+}
+.bracket-shell .bracket-round:nth-child(4) .bracket-slot{
+  grid-row:span 8!important;
+  align-self:center!important;
+}
+.bracket-shell .bracket-round:nth-child(n+5) .round-matches{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.bracket-shell .bracket-round:nth-child(n+5) .bracket-slot{
+  align-self:center!important;
+}
+@media(max-width:1100px){
+  .bracket-shell .bracket{grid-template-columns:repeat(var(--bracket-round-count),260px)!important;gap:32px!important}
+  .bracket-shell .bracket-round{width:260px!important;min-width:260px!important}
+}
+@media(max-width:760px){
+  .bracket-shell .bracket{grid-template-columns:repeat(var(--bracket-round-count),236px)!important;gap:26px!important}
+  .bracket-shell .bracket-round{width:236px!important;min-width:236px!important}
+}
