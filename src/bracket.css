@@ -2484,3 +2484,40 @@
 .bracket-shell:-webkit-full-screen .bracket{
   background:transparent!important;
 }
+
+
+/* FULLSCREEN BACKGROUND DEFINITIVE FIX
+   The fullscreen CSS uses !important, so the inline background applied by
+   TournamentApp was being overridden. Use the same root background variable
+   that the normal window already displays. */
+.bracket-shell.is-fullscreen,
+.bracket-shell:fullscreen,
+.bracket-shell:-webkit-full-screen{
+  background-color:transparent!important;
+  background-image:
+    linear-gradient(180deg,rgba(7,11,22,.08),rgba(7,11,22,.16)),
+    var(--tgs-custom-background)!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-attachment:scroll!important;
+  isolation:isolate!important;
+}
+.bracket-shell.is-fullscreen::before,
+.bracket-shell:fullscreen::before,
+.bracket-shell:-webkit-full-screen::before{
+  content:none!important;
+  display:none!important;
+}
+.bracket-shell.is-fullscreen .bracket-scroll,
+.bracket-shell:fullscreen .bracket-scroll,
+.bracket-shell:-webkit-full-screen .bracket-scroll{
+  background:transparent!important;
+  background-image:none!important;
+  background-color:transparent!important;
+}
+.bracket-shell.is-fullscreen .bracket,
+.bracket-shell:fullscreen .bracket,
+.bracket-shell:-webkit-full-screen .bracket{
+  background:transparent!important;
+}
