@@ -314,8 +314,6 @@ function MatchesPage({tournaments}:{tournaments:Tournament[]}){
 function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtures:Fixture[];tournament:Tournament;onUpdate:(id:number,f:Fixture)=>void;onRename:(id:number,oldName:string,newName:string)=>void;openImageEditor:OpenImageEditor}){
  const shellRef=React.useRef<HTMLDivElement>(null);
  const[fullscreen,setFullscreen]=React.useState(false);
- const[bgOpacity,setBgOpacity]=React.useState(()=>{const saved=Number(localStorage.getItem('tgs_fullscreen_bg_opacity'));return Number.isFinite(saved)?Math.max(0,Math.min(100,saved)):65});
- React.useEffect(()=>{document.documentElement.style.setProperty('--fullscreen-bg-opacity',String(bgOpacity));},[bgOpacity]);
  const[logos,setLogos]=React.useState<{organizer:string;sponsor:string;coSponsor:string}>(()=>{try{const empty='{"organizer":"","sponsor":"","coSponsor":""}';const raw=localStorage.getItem(`tgs_branding_${tournament.id}`)||localStorage.getItem(`tgs_branding_${tournament.id}_backup`)||empty;return JSON.parse(raw)}catch{return {organizer:'',sponsor:'',coSponsor:''}}});
  const[playerProfiles,setPlayerProfiles]=React.useState<Record<string,PlayerProfile>>(()=>{try{return JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}')}catch{return {}}});
  React.useEffect(()=>{try{const value=JSON.stringify(logos);localStorage.setItem(`tgs_branding_${tournament.id}`,value);localStorage.setItem(`tgs_branding_${tournament.id}_backup`,value)}catch{}},[logos,tournament.id]);
@@ -328,7 +326,6 @@ function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtur
     if(active){
       const bg=localStorage.getItem('tgs_background');
       shell.style.backgroundColor='transparent';
-      document.documentElement.style.setProperty('--fullscreen-bg-opacity',String(bgOpacity));
       shell.style.backgroundImage=bg?'linear-gradient(180deg,rgba(7,11,22,.08),rgba(7,11,22,.16)),url("'+bg+'")':'none';
       shell.style.backgroundSize='cover';
       shell.style.backgroundPosition='center';
@@ -371,7 +368,6 @@ function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtur
     <button type="button" className="fullscreen-btn" onClick={toggleFullscreen}>{fullscreen?<Minimize2 size={15}/>:<Maximize2 size={15}/>}<span>{fullscreen?'Exit Fullscreen':'Full Screen'}</span></button>
    </div>
   </div>
-  {fullscreen&&<div className="fullscreen-bg-control" title="Adjust background transparency"><span>BG</span><input aria-label="Background visibility" type="range" min="0" max="100" value={bgOpacity} onChange={e=>{const value=Number(e.target.value);setBgOpacity(value);localStorage.setItem('tgs_fullscreen_bg_opacity',String(value));shellRef.current?.style.setProperty('--fullscreen-bg-opacity',String(value));document.documentElement.style.setProperty('--fullscreen-bg-opacity',String(value))}}/><strong>{bgOpacity}%</strong></div>}
   <div className="bracket-scroll"><div className="bracket" style={{'--bracket-round-count':rounds.length} as React.CSSProperties}>{rounds.map(r=><div className="bracket-round" key={r}><div className="round-title">{fixtures.find(f=>f.roundIndex===r)?.round||''}<span>{fixtures.filter(f=>f.roundIndex===r).length} matches</span></div><div className="round-matches">{fixtures.filter(f=>f.roundIndex===r).map(f=><div className="bracket-slot" key={f.id}><BracketMatch fixture={f} profiles={playerProfiles} onSave={nf=>onUpdate(tournament.id,nf)} onRename={(oldName,newName)=>onRename(tournament.id,oldName,newName)}/></div>)}</div></div>)}</div></div>
  </div>
 }
