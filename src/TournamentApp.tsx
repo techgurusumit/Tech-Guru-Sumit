@@ -327,7 +327,8 @@ function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtur
     if(!shell)return;
     if(active){
       const bg=localStorage.getItem('tgs_background');
-      shell.style.backgroundColor='transparent';\n      document.documentElement.style.setProperty('--fullscreen-bg-opacity',String(bgOpacity));
+      shell.style.backgroundColor='transparent';
+      document.documentElement.style.setProperty('--fullscreen-bg-opacity',String(bgOpacity));
       shell.style.backgroundImage=bg?'linear-gradient(180deg,rgba(7,11,22,.08),rgba(7,11,22,.16)),url("'+bg+'")':'none';
       shell.style.backgroundSize='cover';
       shell.style.backgroundPosition='center';
