@@ -36,9 +36,64 @@ function idFactory(){let n=Date.now()*1000;return()=>++n}
 function cleanNames(names:string[]){return names.map(x=>x.trim()).filter(Boolean)}
 type CropShape='square'|'wide'|'logo';
 type ImageEditorState={file:File;title:string;shape:CropShape;onSave:(data:string)=>void};
-const readImage=(file:File)=>new Promise<HTMLImageElement>((resolve,reject)=>{if(!file.type.startsWith('image/'))return reject(new Error('Please select an image file.'));const reader=new FileReader();reader.onerror=()=>reject(new Error('Could not read image.'));reader.onload=()=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('Could not load image.'));img.src=String(reader.result)};reader.readAsDataURL(file)});
-const cropAndResizeImage=(img:HTMLImageElement,zoom:number,posX:number,posY:number,w:number,h:number,quality=.84)=>{const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Image processing unavailable.');const base=Math.max(w/img.width,h/img.height);const scale=base*Math.max(.55,zoom);const dw=img.width*scale,dh=img.height*scale;const maxX=Math.max(0,dw-w),maxY=Math.max(0,dh-h);ctx.drawImage(img,(w-dw)/2-(posX/100)*maxX,(h-dh)/2-(posY/100)*maxY,dw,dh);return canvas.toDataURL('image/jpeg',quality)};
-function ImageCropModal({editor,close}:{editor:ImageEditorState;close:()=>void}){const[img,setImg]=React.useState<HTMLImageElement|null>(null);const[zoom,setZoom]=React.useState(1);const[x,setX]=React.useState(50);const[y,setY]=React.useState(50);const[saving,setSaving]=React.useState(false);React.useEffect(()=>{readImage(editor.file).then(setImg).catch(()=>setImg(null))},[editor.file]);const p=editor.shape==='wide'?{w:1280,h:720,label:'1280 × 720'}:{w:512,h:512,label:'512 × 512'};const preview=img?cropAndResizeImage(img,zoom,x,y,400,Math.round(400*p.h/p.w),.9):'';const apply=()=>{if(!img||saving)return;try{setSaving(true);const output=cropAndResizeImage(img,zoom,x,y,p.w,p.h);editor.onSave(output);close()}catch(err){setSaving(false);alert(err instanceof Error?err.message:'Could not process image.')}};return <div className="image-editor-backdrop" onMouseDown={e=>e.target===e.currentTarget&&close()}><div className="image-editor-modal" onMouseDown={e=>e.stopPropagation()}><div className="image-editor-head"><div><h3>{editor.title}</h3><p>Crop, position and resize before applying · Output {p.label}</p></div><button type="button" className="icon-btn" onClick={close}><X size={18}/></button></div><div className="image-editor-grid"><div className="image-editor-preview">{preview?<img src={preview} alt="Crop preview"/>:<div className="image-editor-loading">Loading image…</div>}</div><div className="image-editor-controls"><label>Zoom <input type="range" min="0.55" max="2.5" step="0.01" value={zoom} onChange={e=>setZoom(Number(e.target.value))}/><strong>{Math.round(zoom*100)}%</strong></label><label>Horizontal <input type="range" min="0" max="100" value={x} onChange={e=>setX(Number(e.target.value))}/></label><label>Vertical <input type="range" min="0" max="100" value={y} onChange={e=>setY(Number(e.target.value))}/></label><button type="button" className="secondary-btn" onClick={()=>{setZoom(1);setX(50);setY(50)}}>Reset Crop</button></div></div><div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button type="button" className="primary-btn" onClick={apply} disabled={!img||saving}><Upload size={15}/>{saving?'Applying…':'Apply Crop & Resize'}</button></div></div></div>}
+
+const processUploadedImage=(file:File,maxWidth:number,maxHeight:number,quality=.82)=>new Promise<string>((resolve,reject)=>{
+  if(!file.type.startsWith('image/')){reject(new Error('Please select a valid image file.'));return;}
+  const reader=new FileReader();
+  reader.onerror=()=>reject(new Error('Could not read the selected image.'));
+  reader.onload=()=>{
+    const img=new Image();
+    img.onerror=()=>reject(new Error('Could not load the selected image.'));
+    img.onload=()=>{
+      const scale=Math.min(1,maxWidth/img.naturalWidth,maxHeight/img.naturalHeight);
+      const w=Math.max(1,Math.round(img.naturalWidth*scale));
+      const h=Math.max(1,Math.round(img.naturalHeight*scale));
+      const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      if(!ctx){reject(new Error('Image processing is unavailable.'));return;}
+      ctx.drawImage(img,0,0,w,h);
+      resolve(canvas.toDataURL('image/jpeg',quality));
+    };
+    img.src=String(reader.result);
+  };
+  reader.readAsDataURL(file);
+});
+
+const readImage=(file:File)=>new Promise<HTMLImageElement>((resolve,reject)=>{
+  const reader=new FileReader();
+  reader.onerror=()=>reject(new Error('Could not read image.'));
+  reader.onload=()=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('Could not load image.'));img.src=String(reader.result)};
+  reader.readAsDataURL(file);
+});
+
+const cropAndResizeImage=(img:HTMLImageElement,zoom:number,posX:number,posY:number,w:number,h:number,quality=.84)=>{
+  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Image processing unavailable.');
+  const scale=Math.max(w/img.naturalWidth,h/img.naturalHeight)*Math.max(.55,zoom);
+  const dw=img.naturalWidth*scale,dh=img.naturalHeight*scale;
+  const maxX=Math.max(0,dw-w),maxY=Math.max(0,dh-h);
+  ctx.drawImage(img,(w-dw)/2-(posX/100)*maxX,(h-dh)/2-(posY/100)*maxY,dw,dh);
+  return canvas.toDataURL('image/jpeg',quality);
+};
+
+function ImageCropModal({editor,close}:{editor:ImageEditorState;close:()=>void}){
+ const[img,setImg]=React.useState<HTMLImageElement|null>(null);
+ const[zoom,setZoom]=React.useState(1);const[x,setX]=React.useState(50);const[y,setY]=React.useState(50);
+ const[error,setError]=React.useState('');
+ React.useEffect(()=>{readImage(editor.file).then(setImg).catch(err=>setError(err instanceof Error?err.message:'Could not load image.'))},[editor.file]);
+ const p=editor.shape==='wide'?{w:1280,h:720,label:'1280 × 720'}:{w:512,h:512,label:'512 × 512'};
+ const preview=img?cropAndResizeImage(img,zoom,x,y,400,Math.round(400*p.h/p.w),.9):'';
+ const apply=()=>{try{if(!img)return;const output=cropAndResizeImage(img,zoom,x,y,p.w,p.h);editor.onSave(output);close()}catch(err){setError(err instanceof Error?err.message:'Could not process image.')}};
+ return <div className="image-editor-backdrop"><div className="image-editor-modal" onMouseDown={e=>e.stopPropagation()}>
+  <div className="image-editor-head"><div><h3>{editor.title}</h3><p>Crop and resize before saving · Output {p.label}</p></div><button type="button" className="icon-btn" onClick={close}><X size={18}/></button></div>
+  <div className="image-editor-grid"><div className="image-editor-preview">{preview?<img src={preview} alt="Crop preview"/>:<div className="image-editor-loading">{error||'Loading image…'}</div>}</div>
+  <div className="image-editor-controls"><label>Zoom<input type="range" min="0.55" max="2.5" step="0.01" value={zoom} onChange={e=>setZoom(Number(e.target.value))}/><strong>{Math.round(zoom*100)}%</strong></label>
+  <label>Horizontal<input type="range" min="0" max="100" value={x} onChange={e=>setX(Number(e.target.value))}/></label>
+  <label>Vertical<input type="range" min="0" max="100" value={y} onChange={e=>setY(Number(e.target.value))}/></label>
+  <button type="button" className="secondary-btn" onClick={()=>{setZoom(1);setX(50);setY(50)}}>Reset Crop</button></div></div>
+  <div className="modal-actions"><button type="button" className="secondary-btn" onClick={close}>Cancel</button><button type="button" className="primary-btn" onClick={apply} disabled={!img}>Apply Crop & Resize</button></div>
+ </div></div>;
+}
 
 function circleRounds(names:string[],rounds?:number){
  const arr=names.slice(); if(arr.length%2)arr.push('');
@@ -216,7 +271,7 @@ function PlayersPage({tournaments,onEdit}:{tournaments:Tournament[];onEdit:(t:To
  const[q,setQ]=React.useState('');
  const[profiles,setProfiles]=React.useState<Record<string,PlayerProfile>>(()=>{try{return JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}')}catch{return {}}});
  const[uploading,setUploading]=React.useState('');
- const uploadPhoto=(name:string)=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;setImageEditor({file,title:'Player Profile · '+name,shape:'square',onSave:photo=>setProfiles(p=>{const next={...p,[name.trim().toLowerCase()]:{photo}};try{localStorage.setItem('tgs_player_profiles',JSON.stringify(next))}catch{alert('Profile photo storage is full. Please use a smaller crop.')}return next})})};
+ const uploadPhoto=(name:string)=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;setImageEditor({file,title:'Player Profile · '+name,shape:'square',onSave:photo=>setProfiles(p=>{const next={...p,[name.trim().toLowerCase()]:{photo}};localStorage.setItem('tgs_player_profiles',JSON.stringify(next));return next})})};
  return <section className="section-block"><div className="section-head"><div><h3>Active Players</h3><p>Manage player names and profile photos for each tournament.</p></div><div className="search-box"><Search size={15}/><input placeholder="Search player" value={q} onChange={e=>setQ(e.target.value)}/></div></div>{tournaments.length===0?<Empty title="No players yet" text="Create a tournament first." icon={<Users size={34}/>}/>:<div className="players-groups">{tournaments.map(t=>{const names=t.playerNames.map((p,i)=>({p,i})).filter(x=>x.p.toLowerCase().includes(q.toLowerCase()));return <div className="panel" key={t.id}><div className="section-head"><div><h3>{t.name}</h3><p>{t.game} · {t.format} · {t.playerNames.length} players</p></div><button className="secondary-btn" onClick={()=>onEdit(t)}><Pencil size={15}/> Edit Players</button></div><div className="list-grid">{names.map(x=>{const photo=profiles[x.p.trim().toLowerCase()]?.photo;return <div className="list-row player-profile-row" key={`${t.id}-${x.i}`}><label className="player-avatar-upload" title={uploading===x.p?'Processing image...':'Upload player profile photo'}>{photo?<img src={photo} alt={x.p}/>:<span>{uploading===x.p?'…':x.p[0]?.toUpperCase()}</span>}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={uploadPhoto(x.p)} hidden/></label><span><b>#{x.i+1}</b> {x.p}</span><small className="muted">{t.status}</small></div>})}</div></div>})}</div>}</section>
 }
 function PlayersModal({tournament,close,save}:{tournament:Tournament;close:()=>void;save:(t:Tournament)=>void}){
@@ -312,9 +367,9 @@ function SettingsPage({theme,setTheme,user,logout,updateUser,gamingTheme,setGami
   <div className="panel background-panel">
    <div className="settings-title-row"><div><h3>Custom Background</h3><p className="muted">Upload a gaming image for the application background.</p></div><Upload size={18}/></div>
    {bg?<div className="background-preview" style={{backgroundImage:`url("${bg}")`}}><div><strong>{fileName||'Custom background'}</strong><small>Stored locally on this browser</small></div></div>:<div className="background-empty"><Upload size={26}/><strong>No custom background</strong><small>JPG, PNG or WEBP recommended · 16:9 works best</small></div>}
-   <div className="background-actions"><label className="primary-btn upload-btn"><Upload size={15}/>{bg?'Change Background':'Upload Background'}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={upload} hidden/></label>{bg&&<button type="button" className="secondary-btn" onClick={clearBg}><RotateCcw size={15}/> Reset Background</button>}</div>
+   <div className="background-actions"><label className="primary-btn upload-btn"><Upload size={15}/>{bg?'Change Background':'Upload Background'}<input type="file" accept="image/*" onChange={upload} hidden/></label>{bg&&<button type="button" className="secondary-btn" onClick={clearBg}><RotateCcw size={15}/> Reset Background</button>}</div>
   </div>
-  <div className="panel account-panel"><h3>My Profile</h3><div className="my-profile-photo"><label title="Upload profile photo">{user.photo?<img src={user.photo} alt={user.name}/>:<span>{user.name[0]?.toUpperCase()}</span>}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;setImageEditor({file,title:'My Profile Photo',shape:'square',onSave:photo=>{try{updateUser({...user,photo})}catch{alert('Profile storage is full. Please use a smaller crop.')}}})}} hidden/></label><div><strong>{user.name}</strong><p className="muted">{user.email}</p></div></div><p className="muted">Click your photo to upload or change it.</p><button type="button" className="danger-btn" onClick={logout}><LogOut size={16}/> Logout</button></div>
+  <div className="panel account-panel"><h3>My Profile</h3><div className="my-profile-photo"><label title="Upload profile photo">{user.photo?<img src={user.photo} alt={user.name}/>:<span>{user.name[0]?.toUpperCase()}</span>}<input type="file" accept="image/*" onChange={e=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;setImageEditor({file,title:'My Profile Photo',shape:'square',onSave:photo=>updateUser({...user,photo})})}} hidden/></label><div><strong>{user.name}</strong><p className="muted">{user.email}</p></div></div><p className="muted">Click your photo to upload or change it.</p><button type="button" className="danger-btn" onClick={logout}><LogOut size={16}/> Logout</button></div>
  </section>
 }
 function AuthScreen({mode,setMode,onLogin}:{mode:'login'|'register';setMode:(m:'login'|'register')=>void;onLogin:(u:User)=>void}){
