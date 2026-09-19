@@ -70,7 +70,7 @@ function ImageCropModal({editor,close}:{editor:ImageEditorState;close:()=>void})
    readImage(editor.file).then(next=>{if(!cancelled)setImg(next)}).catch(err=>{if(!cancelled)setError(err instanceof Error?err.message:'Could not load image.')});
    return()=>{cancelled=true};
  },[editor.file]);
- const p=editor.shape==='wide'?{w:1280,h:720,label:'1280 × 720'}:{w:512,h:512,label:'512 × 512'};
+ const p=editor.shape==='wide'?{w:1280,h:720,label:'1280 × 720'}:editor.shape==='logo'?{w:256,h:256,label:'256 × 256'}:{w:512,h:512,label:'512 × 512'};
  const preserveTransparency=editor.file.type==='image/png'||editor.file.type==='image/webp';
  React.useEffect(()=>{
    const canvas=previewRef.current;
@@ -319,7 +319,8 @@ function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtur
  React.useEffect(()=>{try{localStorage.setItem(`tgs_branding_${tournament.id}`,JSON.stringify(logos))}catch{}},[logos,tournament.id]);
  React.useEffect(()=>{const onChange=()=>setFullscreen(Boolean(document.fullscreenElement));document.addEventListener('fullscreenchange',onChange);return()=>document.removeEventListener('fullscreenchange',onChange)},[]);
  const toggleFullscreen=async()=>{if(!shellRef.current)return;if(document.fullscreenElement){await document.exitFullscreen()}else{await shellRef.current.requestFullscreen()}};
- const uploadLogo=(key:'organizer'|'sponsor'|'coSponsor')=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;openImageEditor({file,title:key==='organizer'?'Organizer Logo':key==='sponsor'?'Sponsor Logo':'Co-Sponsor Logo',shape:'logo',onSave:data=>setLogos(x=>({...x,[key]:data}))})};
+ const saveLogos=React.useCallback((next:{organizer:string;sponsor:string;coSponsor:string})=>{setLogos(next);try{localStorage.setItem(`tgs_branding_${tournament.id}`,JSON.stringify(next));localStorage.setItem(`tgs_branding_${tournament.id}_backup`,JSON.stringify(next))}catch{setToast?.('Logo storage is full. Use smaller logo images.')}},[tournament.id]);
+ const uploadLogo=(key:'organizer'|'sponsor'|'coSponsor')=>(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];e.currentTarget.value='';if(!file)return;openImageEditor({file,title:key==='organizer'?'Organizer Logo':key==='sponsor'?'Sponsor Logo':'Co-Sponsor Logo',shape:'logo',onSave:data=>saveLogos({...logos,[key]:data})})};
  const rounds=Array.from(new Set(fixtures.map(f=>f.roundIndex))).sort((a,b)=>a-b);
  return <div ref={shellRef} className={`bracket-shell ${fullscreen?'is-fullscreen':''}`}>
   <div className="bracket-toolbar">
@@ -367,8 +368,8 @@ function BracketMatch({fixture,profiles,onSave,onRename}:{fixture:Fixture;profil
  const[p1,setP1]=React.useState(String(fixture.score1??''));const[p2,setP2]=React.useState(String(fixture.score2??''));
  const[editing,setEditing]=React.useState<1|2|null>(null);const[editName,setEditName]=React.useState('');
  React.useEffect(()=>{setP1(String(fixture.score1??''));setP2(String(fixture.score2??''))},[fixture.score1,fixture.score2,fixture.id]);
- const save=React.useCallback(()=>{if(!fixture.player1||!fixture.player2||p1===''||p2===''||!Number.isFinite(Number(p1))||!Number.isFinite(Number(p2))||Number(p1)===Number(p2))return;const a=Number(p1),b=Number(p2);const winner=a>b?fixture.player1:fixture.player2;onSave({...fixture,score1:a,score2:b,winner})},[fixture,p1,p2,onSave]);
- React.useEffect(()=>{if(!fixture.player1||!fixture.player2||p1===''||p2===''||!Number.isFinite(Number(p1))||!Number.isFinite(Number(p2))||Number(p1)===Number(p2))return;const timer=window.setTimeout(save,600);return()=>window.clearTimeout(timer)},[fixture.player1,fixture.player2,p1,p2,save]);
+ const save=React.useCallback(()=>{if(!fixture.player1||!fixture.player2||p1===''||p2===''||!Number.isFinite(Number(p1))||!Number.isFinite(Number(p2)))return;const a=Number(p1),b=Number(p2);const winner=a===b?fixture.winner:(a>b?fixture.player1:fixture.player2);onSave({...fixture,score1:a,score2:b,winner})},[fixture,p1,p2,onSave]);
+ React.useEffect(()=>{if(!fixture.player1||!fixture.player2||p1===''||p2===''||!Number.isFinite(Number(p1))||!Number.isFinite(Number(p2)))return;const timer=window.setTimeout(save,500);return()=>window.clearTimeout(timer)},[fixture.player1,fixture.player2,p1,p2,save]);
  const startRename=(slot:1|2)=>{const current=slot===1?fixture.player1:fixture.player2;if(!current||current==='TBD')return;setEditing(slot);setEditName(current)};
  const commitRename=()=>{const oldName=editing===1?fixture.player1:fixture.player2;const next=editName.trim();if(editing&&oldName&&next&&next!==oldName)onRename(oldName,next);setEditing(null);setEditName('')};
  const waiting=Boolean(fixture.pending1||fixture.pending2||!fixture.player1||!fixture.player2);
