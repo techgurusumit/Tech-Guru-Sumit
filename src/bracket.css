@@ -2521,3 +2521,17 @@
 .bracket-shell:-webkit-full-screen .bracket{
   background:transparent!important;
 }
+
+
+/* Browser Fullscreen API backdrop: this is the layer that was hiding the
+   page background. Mirror the same uploaded background here. */
+.bracket-shell::backdrop{
+  background-color:transparent!important;
+  background-image:
+    linear-gradient(180deg,rgba(7,11,22,.08),rgba(7,11,22,.16)),
+    var(--tgs-custom-background)!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-attachment:fixed!important;
+}
