@@ -54,8 +54,10 @@ const cropImage=(img:HTMLImageElement,posX:number,posY:number,w:number,h:number,
   const maxX=Math.max(0,dw-w),maxY=Math.max(0,dh-h);
   const dx=(w-dw)/2-(posX/100)*maxX,dy=(h-dh)/2-(posY/100)*maxY;
   ctx.drawImage(img,dx,dy,dw,dh);
-  const hasTransparency=img.naturalWidth>0&&img.naturalHeight>0;
-  return {data:canvas.toDataURL(hasTransparency?'image/png':'image/jpeg',quality),transparent:hasTransparency};
+  const sourceIsPng=img.src.startsWith('data:image/png');
+  const sourceIsWebp=img.src.startsWith('data:image/webp');
+  const transparent=sourceIsPng||sourceIsWebp;
+  return {data:canvas.toDataURL(transparent?'image/png':'image/jpeg',quality),transparent};
 };
 
 function ImageCropModal({editor,close}:{editor:ImageEditorState;close:()=>void}){
