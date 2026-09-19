@@ -311,6 +311,7 @@ function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtur
  const shellRef=React.useRef<HTMLDivElement>(null);
  const[fullscreen,setFullscreen]=React.useState(false);
  const[logos,setLogos]=React.useState<{organizer:string;sponsor:string;coSponsor:string}>(()=>{try{return JSON.parse(localStorage.getItem(`tgs_branding_${tournament.id}`)||'{"organizer":"","sponsor":"","coSponsor":""}')}catch{return {organizer:'',sponsor:'',coSponsor:''}}});
+ const[playerProfiles,setPlayerProfiles]=React.useState<Record<string,PlayerProfile>>(()=>{try{return JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}')}catch{return {}}});
  React.useEffect(()=>{try{localStorage.setItem(`tgs_branding_${tournament.id}`,JSON.stringify(logos))}catch{}},[logos,tournament.id]);
  React.useEffect(()=>{const onChange=()=>setFullscreen(Boolean(document.fullscreenElement));document.addEventListener('fullscreenchange',onChange);return()=>document.removeEventListener('fullscreenchange',onChange)},[]);
  const toggleFullscreen=async()=>{if(!shellRef.current)return;if(document.fullscreenElement){await document.exitFullscreen()}else{await shellRef.current.requestFullscreen()}};
@@ -334,7 +335,7 @@ function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtur
   <div className="bracket-scroll"><div className="bracket">{rounds.map(r=><div className="bracket-round" key={r}><div className="round-title">{fixtures.find(f=>f.roundIndex===r)?.round||''}<span>{fixtures.filter(f=>f.roundIndex===r).length} matches</span></div><div className="round-matches">{fixtures.filter(f=>f.roundIndex===r).map(f=><BracketMatch key={f.id} fixture={f} onSave={nf=>onUpdate(tournament.id,nf)} onRename={(oldName,newName)=>onRename(tournament.id,oldName,newName)}/>)}</div></div>)}</div></div>
  </div>
 }
-function BracketMatch({fixture,onSave,onRename}:{fixture:Fixture;onSave:(f:Fixture)=>void;onRename:(oldName:string,newName:string)=>void}){
+function BracketMatch({fixture,profiles,onSave,onRename}:{fixture:Fixture;profiles:Record<string,PlayerProfile>;onSave:(f:Fixture)=>void;onRename:(oldName:string,newName:string)=>void}){
  const[p1,setP1]=React.useState(String(fixture.score1??''));const[p2,setP2]=React.useState(String(fixture.score2??''));
  const[editing,setEditing]=React.useState<1|2|null>(null);const[editName,setEditName]=React.useState('');
  React.useEffect(()=>{setP1(String(fixture.score1??''));setP2(String(fixture.score2??''))},[fixture.score1,fixture.score2,fixture.id]);
@@ -344,8 +345,8 @@ function BracketMatch({fixture,onSave,onRename}:{fixture:Fixture;onSave:(f:Fixtu
  const commitRename=()=>{const oldName=editing===1?fixture.player1:fixture.player2;const next=editName.trim();if(editing&&oldName&&next&&next!==oldName)onRename(oldName,next);setEditing(null);setEditName('')};
  const waiting=Boolean(fixture.pending1||fixture.pending2||!fixture.player1||!fixture.player2);
  const p1Winner=Boolean(fixture.winner&&fixture.player1&&fixture.winner===fixture.player1);const p2Winner=Boolean(fixture.winner&&fixture.player2&&fixture.winner===fixture.player2);
- const playerLine=(slot:1|2,name?:string,winner=false,score?:number)=>{const active=editing===slot;return <div className={'player-line '+(winner?'winner':'')}>
-  {active?<input className="fixture-name-input" autoFocus value={editName} onChange={e=>setEditName(e.target.value)} onBlur={commitRename} onKeyDown={e=>{if(e.key==='Enter')commitRename();if(e.key==='Escape'){setEditing(null);setEditName('')}}}/>:<><b>{name||'TBD'}</b>{name&&<button type="button" className="fixture-name-edit" title="Edit player name" onClick={()=>startRename(slot)}><Pencil size={11}/></button>}</>}
+ const playerLine=(slot:1|2,name?:string,winner=false,score?:number)=>{const active=editing===slot;const photo=name?profiles[name.trim().toLowerCase()]?.photo:undefined;return <div className={'player-line '+(winner?'winner':'')}>
+  {active?<input className="fixture-name-input" autoFocus value={editName} onChange={e=>setEditName(e.target.value)} onBlur={commitRename} onKeyDown={e=>{if(e.key==='Enter')commitRename();if(e.key==='Escape'){setEditing(null);setEditName('')}}}/>:<><span className="fixture-player-avatar">{photo?<img src={photo} alt=""/>:null}</span><b>{name||'TBD'}</b>{name&&<button type="button" className="fixture-name-edit" title="Edit player name" onClick={()=>startRename(slot)}><Pencil size={11}/></button>}</>}
   {!fixture.winner&&name&&fixture.player1&&fixture.player2?<input className="inline-score-input" type="number" min="0" value={slot===1?p1:p2} onChange={e=>slot===1?setP1(e.target.value):setP2(e.target.value)} placeholder="0"/>:<span>{score??''}</span>}
  </div>};
  return <div className={'bracket-match '+(fixture.winner?'won ':'')+(waiting?'bye':'')}><div className="match-head"><span>{fixture.round} · Game {fixture.position+1}</span><span>{fixture.dateTime?<><Clock3 size={11}/> {fixture.dateTime}</>:''}</span></div><div className="score-match-body">{playerLine(1,fixture.player1,p1Winner,fixture.score1)}{playerLine(2,fixture.player2,p2Winner,fixture.score2)}</div>{fixture.winner?<div className="winner-line"><CheckCircle2 size={12}/> {fixture.bye?'BYE — ':''}{fixture.winner} advances</div>:waiting?<div className="winner-line">WAITING FOR OPPONENT</div>:null}</div>
