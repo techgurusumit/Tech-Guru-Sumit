@@ -1137,3 +1137,17 @@
   .bracket-shell .bracket{grid-template-columns:repeat(var(--bracket-round-count),236px)!important;gap:26px!important}
   .bracket-shell .bracket-round{width:236px!important;min-width:236px!important}
 }
+
+/* FINAL ROUND HEIGHT FIX: preserve title, share only the match area */
+.bracket-shell .bracket-round{
+  display:flex!important;
+  flex-direction:column!important;
+  align-self:stretch!important;
+}
+.bracket-shell .bracket-round .round-matches{
+  flex:1 1 auto!important;
+  min-height:0!important;
+}
+.bracket-shell .bracket-round:nth-child(1) .round-matches{
+  flex:0 0 auto!important;
+}
