@@ -48,11 +48,14 @@ const readImage=(file:File)=>new Promise<HTMLImageElement>((resolve,reject)=>{
 const cropImage=(img:HTMLImageElement,posX:number,posY:number,w:number,h:number,quality=.86)=>{
   const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
   const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Image processing unavailable.');
+  ctx.clearRect(0,0,w,h);
   const scale=Math.max(w/img.naturalWidth,h/img.naturalHeight);
   const dw=img.naturalWidth*scale,dh=img.naturalHeight*scale;
   const maxX=Math.max(0,dw-w),maxY=Math.max(0,dh-h);
-  ctx.drawImage(img,(w-dw)/2-(posX/100)*maxX,(h-dh)/2-(posY/100)*maxY,dw,dh);
-  return canvas.toDataURL('image/jpeg',quality);
+  const dx=(w-dw)/2-(posX/100)*maxX,dy=(h-dh)/2-(posY/100)*maxY;
+  ctx.drawImage(img,dx,dy,dw,dh);
+  const hasTransparency=img.naturalWidth>0&&img.naturalHeight>0;
+  return {data:canvas.toDataURL(hasTransparency?'image/png':'image/jpeg',quality),transparent:hasTransparency};
 };
 
 function ImageCropModal({editor,close}:{editor:ImageEditorState;close:()=>void}){
