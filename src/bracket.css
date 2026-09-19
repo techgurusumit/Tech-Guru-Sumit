@@ -86,6 +86,7 @@
   scrollbar-width:thin;
   scrollbar-color:rgba(148,163,184,.22) transparent;
 }
+
 .bracket{
   display:flex;
   align-items:flex-start;
@@ -140,13 +141,6 @@
   gap:18px;
 }
 
-/* progressive spacing creates a much cleaner bracket tree */
-.bracket-round:nth-child(2) .round-matches{padding-top:56px;gap:72px}
-.bracket-round:nth-child(3) .round-matches{padding-top:132px;gap:176px}
-.bracket-round:nth-child(4) .round-matches{padding-top:310px}
-.bracket-round:nth-child(5) .round-matches{padding-top:470px}
-.bracket-round:nth-child(n+6) .round-matches{padding-top:560px}
-
 .bracket-shell .bracket-match{
   position:relative;
   width:292px;
@@ -164,9 +158,10 @@
   right:-44px;
   top:50%;
   width:44px;
-  height:1px;
-  background:linear-gradient(90deg,rgba(109,124,255,.38),rgba(34,211,238,.72));
-  box-shadow:0 0 10px rgba(34,211,238,.08);
+  height:3px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#7c83ff,#28d9ff);
+  box-shadow:0 0 12px rgba(40,217,255,.35);
 }
 .bracket-round:last-child .bracket-match::after{display:none}
 .bracket-shell .bracket-match:hover{
@@ -192,27 +187,20 @@
   letter-spacing:.065em;
   text-transform:uppercase;
 }
-.bracket-shell .match-head span:first-child{
-  color:#9ea9bd;
-  font-weight:850;
-}
-.bracket-shell .match-head span:last-child{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  color:#647188;
-}
+.bracket-shell .match-head span:first-child{color:#9ea9bd;font-weight:850}
+.bracket-shell .match-head span:last-child{display:flex;align-items:center;gap:4px;color:#647188}
 .bracket-shell .match-head svg{color:var(--b-accent-2)}
 
 .bracket-shell .player-line{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  min-height:40px;
+  min-height:32px;
+  height:32px;
   box-sizing:border-box;
   gap:10px;
-  margin:4px 0;
-  padding:5px 7px 5px 11px;
+  margin:2px 0;
+  padding:2px 5px;
   border:1px solid rgba(148,163,184,.12);
   border-radius:10px;
   background:linear-gradient(90deg,#172235,#121b2a);
@@ -229,12 +217,9 @@
   white-space:nowrap;
   font-weight:750;
   letter-spacing:.01em;
+  padding-right:20px;
 }
-.bracket-shell .player-line span{
-  font-size:14px;
-  font-weight:900;
-  color:#c7d2e3;
-}
+.bracket-shell .player-line span{font-size:14px;font-weight:900;color:#c7d2e3}
 .bracket-shell .player-line.winner{
   border-color:rgba(53,208,127,.34);
   background:linear-gradient(90deg,rgba(21,55,47,.96),rgba(18,34,35,.96));
@@ -257,7 +242,7 @@
   display:flex;
   align-items:center;
   gap:6px;
-  padding:7px 4px 1px;
+  padding:3px 3px 0;
   color:#718097;
   font-size:8px;
   font-weight:750;
@@ -265,14 +250,8 @@
   text-transform:uppercase;
 }
 .bracket-shell .winner-line svg{color:var(--b-success)}
-.bracket-shell .bracket-match.bye{
-  opacity:.72;
-  border-color:rgba(148,163,184,.12);
-}
-.bracket-shell .bracket-match.bye .player-line{
-  background:linear-gradient(90deg,#131c2b,#111827);
-  color:#728096;
-}
+.bracket-shell .bracket-match.bye{opacity:.72;border-color:rgba(148,163,184,.12)}
+.bracket-shell .bracket-match.bye .player-line{background:linear-gradient(90deg,#131c2b,#111827);color:#728096}
 
 .bracket-shell .inline-score-input{
   flex:0 0 46px;
@@ -292,18 +271,13 @@
 }
 .bracket-shell .inline-score-input::-webkit-outer-spin-button,
 .bracket-shell .inline-score-input::-webkit-inner-spin-button{appearance:none;margin:0}
-.bracket-shell .inline-score-input:hover{
-  border-color:rgba(148,163,184,.38);
-}
 .bracket-shell .inline-score-input:focus{
   border-color:var(--b-accent);
   background:#101a2c;
   box-shadow:0 0 0 3px rgba(109,124,255,.13);
   transform:scale(1.02);
 }
-.bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)){
-  padding-right:66px!important;
-}
+.bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)){padding-right:66px!important}
 .bracket-shell .inline-save-btn{
   position:absolute!important;
   right:9px!important;
@@ -323,516 +297,26 @@
   text-transform:uppercase!important;
   box-shadow:0 10px 22px rgba(72,86,220,.24),inset 0 1px 0 rgba(255,255,255,.18)!important;
   cursor:pointer!important;
-  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease!important;
   z-index:5!important;
 }
-.bracket-shell .inline-save-btn:hover{
-  transform:translateY(-50%) scale(1.04)!important;
-  box-shadow:0 14px 26px rgba(72,86,220,.30),0 0 18px rgba(109,124,255,.10)!important;
-  filter:brightness(1.05)!important;
-}
-.bracket-shell .inline-save-btn:active{transform:translateY(-50%) scale(.98)!important}
-
-:root[data-theme='light'] .bracket-shell{
-  --b-bg:#eef2f8;
-  --b-surface:#fff;
-  --b-surface-2:#f7f9fc;
-  --b-card:#fff;
-  --b-card-hover:#fbfdff;
-  --b-line:rgba(30,41,59,.10);
-  --b-line-strong:rgba(30,41,59,.16);
-  --b-text:#172033;
-  --b-muted:#6c7890;
-  --b-accent:#5568eb;
-  --b-accent-2:#089fc0;
-  --b-success:#22a768;
-  background:
-    radial-gradient(circle at 12% 0%,rgba(85,104,235,.10),transparent 28%),
-    radial-gradient(circle at 88% 12%,rgba(8,159,192,.07),transparent 24%),
-    linear-gradient(180deg,#f6f8fc 0%,#edf2f8 100%);
-  color:var(--b-text);
-  box-shadow:0 24px 70px rgba(15,23,42,.10);
-}
-:root[data-theme='light'] .bracket-shell::before{
-  opacity:.58;
-  background-image:
-    linear-gradient(rgba(30,41,59,.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(30,41,59,.035) 1px,transparent 1px);
-}
-:root[data-theme='light'] .bracket-toolbar{
-  background:rgba(246,248,252,.82);
-}
-:root[data-theme='light'] .bracket-toolbar strong{color:#121b2d}
-:root[data-theme='light'] .bracket-toolbar span{color:#6f7b90}
-:root[data-theme='light'] .bracket-note{
-  background:rgba(34,167,104,.06);
-  color:#198557!important;
-  border-color:rgba(34,167,104,.15);
-}
-:root[data-theme='light'] .round-title{
-  background:linear-gradient(180deg,#fff,#f4f7fb);
-  border-color:rgba(30,41,59,.10);
-  color:#1b2537;
-  box-shadow:0 8px 20px rgba(15,23,42,.06),inset 0 1px 0 rgba(255,255,255,.9);
-}
-:root[data-theme='light'] .round-title span{color:#7b8798}
-:root[data-theme='light'] .bracket-shell .bracket-match{
-  background:linear-gradient(145deg,#fff,#f7f9fc);
-  border-color:rgba(30,41,59,.13);
-  box-shadow:0 10px 24px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,.95);
-}
-:root[data-theme='light'] .bracket-shell .bracket-match:hover{
-  background:#fff;
-  border-color:rgba(85,104,235,.34);
-  box-shadow:0 15px 32px rgba(15,23,42,.10),0 0 18px rgba(85,104,235,.06);
-}
-:root[data-theme='light'] .bracket-shell .match-head span:first-child{color:#66738b}
-:root[data-theme='light'] .bracket-shell .match-head span:last-child{color:#8a95a5}
-:root[data-theme='light'] .bracket-shell .player-line{
-  background:linear-gradient(90deg,#f7f9fc,#eef2f7);
-  border-color:rgba(30,41,59,.10);
-  color:#243047;
-}
-:root[data-theme='light'] .bracket-shell .player-line span{color:#5f6d82}
-:root[data-theme='light'] .bracket-shell .player-line.winner{
-  background:linear-gradient(90deg,#eaf9f1,#f9fdfb);
-  border-color:rgba(34,167,104,.28);
-}
-:root[data-theme='light'] .bracket-shell .player-line.winner b{color:#1b6e4b}
-:root[data-theme='light'] .bracket-shell .player-line.winner span{color:#1c9860}
-:root[data-theme='light'] .bracket-shell .inline-score-input{
-  background:#fff;
-  color:#1f2937;
-  border-color:rgba(30,41,59,.14);
-}
-:root[data-theme='light'] .bracket-shell .inline-score-input:focus{
-  background:#fff;
-  border-color:#5568eb;
-  box-shadow:0 0 0 3px rgba(85,104,235,.11);
-}
-:root[data-theme='light'] .bracket-shell .inline-save-btn{
-  background:linear-gradient(180deg,#6878ef,#5366df)!important;
-  box-shadow:0 10px 20px rgba(83,102,223,.18),inset 0 1px 0 rgba(255,255,255,.26)!important;
-}
-
-@media(max-width:1100px){
-  .bracket{gap:34px}
-  .bracket-round,
-  .bracket-shell .bracket-match{width:260px}
-  .bracket-shell .bracket-match::after{right:-34px;width:34px}
-  .bracket-round:nth-child(2) .round-matches{padding-top:48px;gap:60px}
-  .bracket-round:nth-child(3) .round-matches{padding-top:112px;gap:150px}
-  .bracket-round:nth-child(4) .round-matches{padding-top:250px}
-}
-@media(max-width:760px){
-  .bracket-toolbar{align-items:flex-start;flex-direction:column}
-  .bracket-scroll{padding:18px 12px 26px}
-  .bracket{gap:26px}
-  .bracket-round,
-  .bracket-shell .bracket-match{width:236px}
-  .bracket-shell .bracket-match::after{right:-26px;width:26px}
-  .round-title{height:40px;font-size:10px}
-  .bracket-round:nth-child(2) .round-matches{padding-top:36px;gap:42px}
-  .bracket-round:nth-child(3) .round-matches{padding-top:82px;gap:104px}
-  .bracket-round:nth-child(4) .round-matches{padding-top:190px}
-  .bracket-shell .bracket-match:not(.bye):not(:has(.winner-line)){padding-right:62px!important}
-  .bracket-shell .inline-save-btn{right:7px!important;width:44px!important;height:54px!important}
-  .bracket-shell .inline-score-input{flex-basis:40px;width:40px}
-}
-
-/* =========================================================
-   ESPORTS BROADCAST MODE + THEME-AWARE BRACKET BACKDROPS
-   ========================================================= */
-.bracket-shell{
-  background:
-    radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 28%),
-    radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 26%),
-    linear-gradient(135deg,#090e19 0%,#0d1626 48%,#080d17 100%);
-}
-:root[data-gaming-theme='crimson'] .bracket-shell{
- background:
-  radial-gradient(circle at 10% 10%,rgba(255,64,89,.24),transparent 28%),
-  radial-gradient(circle at 88% 10%,rgba(255,138,61,.14),transparent 25%),
-  linear-gradient(135deg,#16070b,#210d13 50%,#090b11);
-}
-:root[data-gaming-theme='toxic'] .bracket-shell{
- background:
-  radial-gradient(circle at 10% 10%,rgba(114,229,46,.18),transparent 28%),
-  radial-gradient(circle at 90% 12%,rgba(184,245,50,.10),transparent 25%),
-  linear-gradient(135deg,#07120c,#0c1b13 50%,#07100b);
-}
-:root[data-gaming-theme='purple'] .bracket-shell{
- background:
-  radial-gradient(circle at 10% 10%,rgba(168,85,247,.23),transparent 28%),
-  radial-gradient(circle at 88% 10%,rgba(240,76,207,.14),transparent 25%),
-  linear-gradient(135deg,#100817,#180d25 50%,#0c0712);
-}
-:root[data-gaming-theme='ice'] .bracket-shell{
- background:
-  radial-gradient(circle at 10% 10%,rgba(56,216,255,.22),transparent 28%),
-  radial-gradient(circle at 88% 10%,rgba(120,169,255,.14),transparent 25%),
-  linear-gradient(135deg,#06121a,#0a1b2a 50%,#07101b);
-}
-:root[data-gaming-theme='championship'] .bracket-shell{
- background:
-  radial-gradient(circle at 10% 10%,rgba(229,185,76,.20),transparent 28%),
-  radial-gradient(circle at 88% 10%,rgba(255,226,154,.11),transparent 25%),
-  linear-gradient(135deg,#110e08,#1d170b 50%,#0b0a07);
-}
-.bracket-branding{display:flex;align-items:center;gap:12px;min-width:0}
-.bracket-branding>div{min-width:0}
-.bracket-toolbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-.sponsor-slots{display:flex;align-items:center;gap:7px}
-.logo-slot{
- width:42px;height:42px;display:grid;place-items:center;position:relative;overflow:hidden;
- border:1px solid rgba(255,255,255,.14);border-radius:10px;
- background:rgba(255,255,255,.06);cursor:pointer;flex:0 0 auto;
- box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
-}
-.logo-slot:hover{border-color:color-mix(in srgb,var(--accent) 65%,transparent);transform:translateY(-1px)}
-.logo-slot img{width:100%;height:100%;object-fit:contain;padding:5px}
-.logo-slot span{font-size:7px;font-weight:900;letter-spacing:.08em;color:#9ba8bd}
-.organizer-slot{width:48px;height:48px;border-radius:12px}
-.fullscreen-btn{
- display:inline-flex;align-items:center;justify-content:center;gap:7px;
- height:38px;padding:0 12px;border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);
- border-radius:9px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 18%,#101827),#0d1524);
- color:#eef3fb;font-size:9px;font-weight:850;letter-spacing:.04em;text-transform:uppercase;
- box-shadow:0 8px 18px rgba(0,0,0,.16);cursor:pointer;
-}
-.fullscreen-btn:hover{border-color:color-mix(in srgb,var(--accent) 65%,transparent);box-shadow:0 10px 24px color-mix(in srgb,var(--accent) 12%,transparent)}
-.bracket-shell:fullscreen{
- width:100vw;height:100vh;max-width:none;margin:0;border-radius:0;
- display:flex;flex-direction:column;background-color:#080d17;
-}
-.bracket-shell:fullscreen .bracket-toolbar{padding:16px 24px}
-.bracket-shell:fullscreen .bracket-scroll{flex:1;min-height:0;padding:26px 28px 40px}
-.bracket-shell:fullscreen .bracket{padding-bottom:50px}
-.bracket-shell:fullscreen .bracket-round,
-.bracket-shell:fullscreen .bracket-shell .bracket-match{width:300px}
-@media(max-width:900px){
- .bracket-toolbar-right{justify-content:flex-start}
- .bracket-toolbar{align-items:flex-start;flex-direction:column}
-}
-@media(max-width:600px){
- .bracket-toolbar-right{width:100%}
- .bracket-toolbar-right .bracket-note{order:3}
- .fullscreen-btn{flex:1}
-}
-
-/* =========================================================
-   BROADCAST BRANDING: larger logos + designation labels
-   and 50% translucent fixture background
-   ========================================================= */
-.bracket-shell{
-  position:relative;
-  isolation:isolate;
-  background-image:
-    linear-gradient(rgba(7,11,18,.50),rgba(7,11,18,.50)),
-    var(--tgs-custom-background),
-    radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 28%),
-    radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 26%),
-    linear-gradient(135deg,#090e19 0%,#0d1626 48%,#080d17 100%);
-  background-size:cover,cover,auto,auto,auto;
-  background-position:center,center,center,center,center;
-}
-.bracket-branding{gap:14px}
-.logo-brand-group{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  flex:0 0 auto;
-}
-.logo-brand-group small{
-  color:#aeb9cc;
-  font-size:7px;
-  line-height:1;
-  font-weight:950;
-  letter-spacing:.10em;
-  text-transform:uppercase;
-  white-space:nowrap;
-  text-shadow:0 1px 3px rgba(0,0,0,.5);
-}
-.logo-slot{
-  width:58px;
-  height:58px;
-  border-radius:12px;
-}
-.organizer-slot{
-  width:66px;
-  height:66px;
-  border-radius:13px;
-}
-.sponsor-slot{
-  width:58px;
-  height:58px;
-}
-.logo-slot img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  padding:6px;
-}
-.sponsor-slots{gap:12px}
-.bracket-toolbar-right{gap:14px}
-@media(max-width:900px){
- .organizer-slot{width:58px;height:58px}
- .logo-slot,.sponsor-slot{width:52px;height:52px}
- .logo-brand-group small{font-size:6px}
-}
-@media(max-width:600px){
- .bracket-branding{width:100%}
- .bracket-toolbar-right{width:100%}
- .sponsor-slots{margin-left:auto}
- .logo-slot,.sponsor-slot{width:48px;height:48px}
- .organizer-slot{width:52px;height:52px}
-}
-
-/* FINAL REQUEST: 50% transparent bracket background + prominent 100% visible branding */
-.bracket-shell{
-  background-color:rgba(8,13,23,.50)!important;
-  background-blend-mode:normal!important;
-  backdrop-filter:blur(2px);
-}
-.bracket-shell::before{opacity:.18!important}
-.bracket-branding .logo-brand-group small,
-.bracket-toolbar-right .logo-brand-group small{
-  opacity:1!important;
-  visibility:visible!important;
-  color:#ffffff!important;
-  font-size:8px!important;
-  font-weight:950!important;
-  text-shadow:0 1px 4px rgba(0,0,0,.75)!important;
-}
-.logo-slot{
-  width:66px!important;
-  height:66px!important;
-  opacity:1!important;
-  background:rgba(7,12,22,.82)!important;
-  border:1px solid rgba(255,255,255,.26)!important;
-}
-.organizer-slot{width:76px!important;height:76px!important}
-.sponsor-slot{width:66px!important;height:66px!important}
-.logo-slot img{
-  opacity:1!important;
-  visibility:visible!important;
-  filter:none!important;
-}
-.logo-brand-group{
-  opacity:1!important;
-  visibility:visible!important;
-}
-
-/* FINAL TRANSPARENCY FIX
-   Keep the uploaded theme/background visible through the bracket board.
-   Only the board surface is translucent; cards remain readable. */
-.bracket-shell{
-  background:
-    linear-gradient(rgba(10,15,27,.50),rgba(10,15,27,.50)),
-    var(--tgs-custom-background),
-    radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 28%),
-    radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 26%),
-    linear-gradient(135deg,#090e19 0%,#0d1626 48%,#080d17 100%)!important;
-  background-size:cover,cover,auto,auto,auto!important;
-  background-position:center!important;
-  background-blend-mode:normal!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 24px 70px rgba(0,0,0,.22)!important;
-}
-.bracket-shell .bracket-scroll{
-  background:transparent!important;
-}
-.bracket-shell .bracket{
-  background:transparent!important;
-}
-.bracket-shell .bracket-toolbar{
-  background:rgba(9,14,25,.40)!important;
-}
-.bracket-shell .round-title{
-  background:rgba(18,26,42,.62)!important;
-}
-.bracket-shell .bracket-match{
-  background:rgba(13,20,34,.68)!important;
-}
-.bracket-shell .player-line{
-  background:rgba(23,34,53,.82)!important;
-}
-.bracket-shell .bracket-match:hover{
-  background:rgba(22,34,56,.78)!important;
-}
-/* keep theme/light-mode backgrounds translucent too */
-:root[data-theme='light'] .bracket-shell{
-  background:
-    linear-gradient(rgba(242,246,251,.50),rgba(242,246,251,.50)),
-    var(--tgs-custom-background),
-    radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 28%),
-    radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 10%,transparent),transparent 26%),
-    linear-gradient(135deg,#eef3f9,#f6f8fb)!important;
-}
-
-/* Final: bracket background shows through at 50% opacity */
-.bracket-shell{
-  background-image:
-    linear-gradient(rgba(10,15,27,.50),rgba(10,15,27,.50)),
-    var(--tgs-custom-background),
-    radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 28%),
-    radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 26%),
-    linear-gradient(135deg,#090e19 0%,#0d1626 48%,#080d17 100%)!important;
-  background-color:transparent!important;
-}
-.bracket-shell .bracket-scroll,
-.bracket-shell .bracket{background:transparent!important}
-
-/* FINAL VISIBILITY + FULLSCREEN FIX */
-.bracket-shell .player-line b,
-.bracket-shell .player-line span{
-  color:#f4f7fb!important;
-  opacity:1!important;
-  visibility:visible!important;
-  text-shadow:0 1px 2px rgba(0,0,0,.35);
-}
-.bracket-shell .match-head span{
-  color:#d8e1ef!important;
-  opacity:1!important;
-}
-.bracket-shell .winner-line{
-  color:#cbd6e7!important;
-  opacity:1!important;
-}
-/* All three branding slots are exactly the same size. No artificial dark box behind transparent logos. */
-.bracket-shell .organizer-slot,
-.bracket-shell .sponsor-slot,
-.bracket-shell .logo-slot{
-  width:72px!important;
-  height:72px!important;
-  min-width:72px!important;
-  min-height:72px!important;
-  padding:0!important;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
-  border-radius:0!important;
-}
-.bracket-shell .logo-slot img{
-  width:100%!important;
-  height:100%!important;
-  object-fit:contain!important;
-  padding:0!important;
-  background:transparent!important;
-  mix-blend-mode:normal!important;
-}
-.bracket-shell .logo-brand-group small{
-  color:#fff!important;
-  opacity:1!important;
-  visibility:visible!important;
-  font-size:8px!important;
-  font-weight:950!important;
-  text-shadow:0 1px 4px rgba(0,0,0,.85)!important;
-}
-/* Fullscreen: compact header so match score cards remain visible in the viewport. */
-.bracket-shell:fullscreen{
-  width:100vw!important;
-  height:100vh!important;
-  max-height:100vh!important;
-  overflow:hidden!important;
-}
-.bracket-shell:fullscreen .bracket-toolbar{
-  flex:0 0 auto!important;
-  min-height:96px!important;
-  padding:10px 18px!important;
-}
-.bracket-shell:fullscreen .bracket-scroll{
-  display:block!important;
-  height:calc(100vh - 96px)!important;
-  max-height:calc(100vh - 96px)!important;
-  min-height:0!important;
-  overflow:auto!important;
-  padding:16px 22px 30px!important;
-}
-.bracket-shell:fullscreen .bracket{
-  min-height:100%!important;
-}
-@media(max-width:900px){
- .bracket-shell .organizer-slot,
- .bracket-shell .sponsor-slot,
- .bracket-shell .logo-slot{width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important}
-}
-@media(max-width:600px){
- .bracket-shell .organizer-slot,
- .bracket-shell .sponsor-slot,
- .bracket-shell .logo-slot{width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important}
- .bracket-shell:fullscreen .bracket-toolbar{min-height:118px!important}
- .bracket-shell:fullscreen .bracket-scroll{height:calc(100vh - 118px)!important;max-height:calc(100vh - 118px)!important}
-}
-
-/* FINAL BRACKET ALIGNMENT
-   Keep each elimination round centered between the two feeder matches.
-   Visual-only CSS; fixture/scoring logic is untouched. */
-.bracket{
-  align-items:flex-start!important;
-  gap:44px!important;
-}
-.bracket-round:nth-child(1) .round-matches{
-  padding-top:0!important;
-  gap:18px!important;
-}
-.bracket-round:nth-child(2) .round-matches{
-  padding-top:77px!important;
-  gap:172px!important;
-}
-.bracket-round:nth-child(3) .round-matches{
-  padding-top:231px!important;
-  gap:480px!important;
-}
-.bracket-round:nth-child(4) .round-matches{
-  padding-top:539px!important;
-  gap:0!important;
-}
-.bracket-round:nth-child(n+5) .round-matches{
-  padding-top:560px!important;
-  gap:0!important;
-}
-/* connector lines stay attached to the exact vertical center */
-.bracket-shell .bracket-match::after{
-  top:50%!important;
-}
-@media(max-width:1100px){
-  .bracket{gap:34px!important}
-  .bracket-round:nth-child(1) .round-matches{gap:18px!important}
-  .bracket-round:nth-child(2) .round-matches{padding-top:66px!important;gap:150px!important}
-  .bracket-round:nth-child(3) .round-matches{padding-top:205px!important;gap:420px!important}
-  .bracket-round:nth-child(4) .round-matches{padding-top:470px!important}
-}
-@media(max-width:760px){
-  .bracket{gap:26px!important}
-  .bracket-round:nth-child(1) .round-matches{gap:18px!important}
-  .bracket-round:nth-child(2) .round-matches{padding-top:55px!important;gap:118px!important}
-  .bracket-round:nth-child(3) .round-matches{padding-top:160px!important;gap:330px!important}
-  .bracket-round:nth-child(4) .round-matches{padding-top:370px!important}
-}
-
-/* Fixture player-name editing + profile avatars */
-.bracket-shell .player-line{position:relative}
-.bracket-shell .player-line b{padding-right:20px}
 .bracket-shell .fixture-name-edit{
- position:absolute;right:62px;top:50%;transform:translateY(-50%);
- width:22px;height:22px;display:grid;place-items:center;padding:0;
- border:0;border-radius:6px;background:rgba(255,255,255,.08);
- color:#cbd6e7;cursor:pointer;z-index:5;
+  position:absolute;right:62px;top:50%;transform:translateY(-50%);
+  width:22px;height:22px;display:grid;place-items:center;padding:0;
+  border:0;border-radius:6px;background:rgba(255,255,255,.08);
+  color:#cbd6e7;cursor:pointer;z-index:5;
 }
 .bracket-shell .fixture-name-edit:hover{background:color-mix(in srgb,var(--accent) 24%,transparent);color:#fff}
 .bracket-shell .fixture-name-input{
- width:calc(100% - 45px);height:28px;padding:0 8px;border-radius:7px;
- border:1px solid var(--accent);background:rgba(8,14,24,.88);color:#fff;
- font:inherit;font-weight:800;outline:none;
+  width:calc(100% - 45px);height:28px;padding:0 8px;border-radius:7px;
+  border:1px solid var(--accent);background:rgba(8,14,24,.88);color:#fff;
+  font:inherit;font-weight:800;outline:none;
 }
 .bracket-shell .inline-score-input{position:relative;z-index:6}
 .player-profile-row{gap:10px}
 .player-avatar-upload{
- width:38px;height:38px;min-width:38px;border-radius:50%;overflow:hidden;
- display:grid;place-items:center;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-2));
- color:#fff;font-weight:900;font-size:12px;border:2px solid rgba(255,255,255,.65);
+  width:38px;height:38px;min-width:38px;border-radius:50%;overflow:hidden;
+  display:grid;place-items:center;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#fff;font-weight:900;font-size:12px;border:2px solid rgba(255,255,255,.65);
 }
 .player-avatar-upload img{width:100%;height:100%;object-fit:cover}
 .my-profile-photo{display:flex;align-items:center;gap:12px;margin:12px 0}
@@ -844,243 +328,41 @@
 .my-profile-photo img{width:100%;height:100%;object-fit:cover}
 .my-profile-photo strong{font-size:14px}
 
-/* Keep the bracket canvas transparent so the page/custom background remains visible.
-   Match cards and toolbar keep their own surfaces. */
+:root[data-theme='light'] .bracket-shell{
+  --b-bg:#eef2f8;--b-surface:#fff;--b-surface-2:#f7f9fc;--b-card:#fff;--b-card-hover:#fbfdff;
+  --b-line:rgba(30,41,59,.10);--b-line-strong:rgba(30,41,59,.16);--b-text:#172033;--b-muted:#6c7890;
+  --b-accent:#5568eb;--b-accent-2:#089fc0;--b-success:#22a768;
+  color:var(--b-text);box-shadow:0 24px 70px rgba(15,23,42,.10);
+}
+:root[data-theme='light'] .bracket-shell .round-title{background:linear-gradient(180deg,#fff,#f4f7fb);border-color:rgba(30,41,59,.10);color:#1b2537}
+:root[data-theme='light'] .bracket-shell .bracket-match{background:linear-gradient(145deg,#fff,#f7f9fc);border-color:rgba(30,41,59,.13);box-shadow:0 10px 24px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,.95)}
+:root[data-theme='light'] .bracket-shell .player-line{background:linear-gradient(90deg,#f7f9fc,#eef2f7);border-color:rgba(30,41,59,.10);color:#243047}
+
+.bracket-toolbar-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+.bracket-branding{display:flex;align-items:center;gap:14px;min-width:0}
+.logo-brand-group{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex:0 0 auto}
+.logo-brand-group small{color:#aeb9cc;font-size:7px;line-height:1;font-weight:950;letter-spacing:.10em;text-transform:uppercase;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.logo-slot{width:58px;height:58px;display:grid;place-items:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.06);cursor:pointer;flex:0 0 auto;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.logo-slot img{width:100%;height:100%;object-fit:contain;padding:6px}
+.organizer-slot{width:66px;height:66px;border-radius:13px}.sponsor-slot{width:58px;height:58px}.sponsor-slots{display:flex;align-items:center;gap:12px}
+.fullscreen-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 12px;border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:9px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 18%,#101827),#0d1524);color:#eef3fb;font-size:9px;font-weight:850;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 8px 18px rgba(0,0,0,.16);cursor:pointer}
+.fullscreen-btn:hover{border-color:color-mix(in srgb,var(--accent) 65%,transparent)}
+
 .bracket-shell{
+  position:relative;
+  isolation:isolate;
   background:transparent!important;
   box-shadow:0 24px 70px rgba(0,0,0,.12);
 }
-.bracket-shell::before{
-  opacity:0!important;
-}
+.bracket-shell::before{opacity:0!important}
 
-/* Bracket tree alignment: each later-round match is centered between its two feeder matches.
-   No artificial top padding; vertical spacing comes from the actual feeder match heights. */
-.bracket-shell .bracket{
-  align-items:flex-start!important;
-  gap:44px!important;
-}
-.bracket-shell .bracket-round{
-  width:292px!important;
-}
-.bracket-shell .round-title{
-  margin-bottom:8px!important;
-}
-.bracket-shell .round-matches{
-  padding-top:0!important;
-  gap:28px!important;
-}
-.bracket-shell .bracket-round:nth-child(2) .round-matches{
-  gap:calc(28px + 18px)!important;
-}
-.bracket-shell .bracket-round:nth-child(3) .round-matches{
-  gap:calc(28px + 18px)!important;
-}
-.bracket-shell .bracket-round:nth-child(4) .round-matches,
-.bracket-shell .bracket-round:nth-child(5) .round-matches,
-.bracket-shell .bracket-round:nth-child(n+6) .round-matches{
-  gap:28px!important;
-}
-.bracket-shell .bracket-match{
-  height:auto!important;
-  min-height:0!important;
-  padding:6px!important;
-  margin:0!important;
-  box-sizing:border-box!important;
-}
-.bracket-shell .match-head{
-  min-height:16px!important;
-  padding:0 3px 4px!important;
-}
-.bracket-shell .player-line{
-  min-height:32px!important;
-  height:32px!important;
-  margin:2px 0!important;
-  padding:2px 5px!important;
-}
-.bracket-shell .winner-line{
-  padding:3px 3px 0!important;
-}
-.bracket-shell .fixture-player-avatar{
-  flex:0 0 24px!important;
-  width:24px!important;
-  height:24px!important;
-}
-.bracket-shell .fixture-player-avatar img{
-  width:100%!important;
-  height:100%!important;
-  object-fit:contain!important;
-}
-.bracket-shell .bracket-match::after{
-  width:44px!important;
-  height:3px!important;
-  right:-44px!important;
-  top:50%!important;
-  border-radius:999px!important;
-  background:linear-gradient(90deg,#7c83ff,#28d9ff)!important;
-  box-shadow:0 0 12px rgba(40,217,255,.35)!important;
-}
-
-/* =========================================================
-   FINAL FIX: 8-match knockout geometry
-   R1 has 8 matches -> 4 QF -> 2 SF -> 1 Final.
-   Each later match is centered between its two feeder matches.
-   ========================================================= */
-.bracket-shell .bracket{
-  --match-h:92px;
-  --r1-gap:22px;
-  --col-gap:44px;
-  display:flex!important;
-  align-items:flex-start!important;
-  gap:var(--col-gap)!important;
-}
-.bracket-shell .bracket-round{
-  flex:0 0 292px!important;
-  width:292px!important;
-}
-.bracket-shell .bracket-round .round-matches{
-  display:flex!important;
-  flex-direction:column!important;
-  padding-top:0!important;
-  margin:0!important;
-}
-.bracket-shell .bracket-round:nth-child(1) .round-matches{
-  gap:var(--r1-gap)!important;
-}
-.bracket-shell .bracket-round:nth-child(2) .round-matches{
-  gap:var(--r1-gap)!important;
-  padding-top:calc((var(--match-h) + var(--r1-gap)) / 2)!important;
-}
-.bracket-shell .bracket-round:nth-child(3) .round-matches{
-  gap:var(--r1-gap)!important;
-  padding-top:calc(3 * (var(--match-h) + var(--r1-gap)) / 2)!important;
-}
-.bracket-shell .bracket-round:nth-child(4) .round-matches{
-  gap:0!important;
-  padding-top:calc(7 * (var(--match-h) + var(--r1-gap)) / 2)!important;
-}
-.bracket-shell .bracket-round:nth-child(n+5) .round-matches{
-  gap:0!important;
-  padding-top:calc(7 * (var(--match-h) + var(--r1-gap)) / 2)!important;
-}
-.bracket-shell .bracket-match{
-  min-height:var(--match-h)!important;
-  height:var(--match-h)!important;
-  margin:0!important;
-  padding:6px!important;
-}
-.bracket-shell .bracket-match::after{
-  top:50%!important;
-  right:calc(-1 * var(--col-gap))!important;
-  width:var(--col-gap)!important;
-  height:3px!important;
-}
-@media(max-width:1100px){
-  .bracket-shell .bracket{--match-h:88px;--r1-gap:18px;--col-gap:34px}
-  .bracket-shell .bracket-round{flex-basis:260px!important;width:260px!important}
-}
-@media(max-width:760px){
-  .bracket-shell .bracket{--match-h:82px;--r1-gap:16px;--col-gap:26px;gap:var(--col-gap)!important;min-width:calc(4 * 236px + 3 * var(--col-gap))!important}
-  .bracket-shell .bracket-round{flex-basis:236px!important;width:236px!important}
-}
-
-/* FINAL GEOMETRY OVERRIDE: pair-centered knockout bracket */
-.bracket-shell .bracket{display:flex!important;align-items:flex-start!important;gap:44px!important}
-.bracket-shell .bracket-round{flex:0 0 292px!important;width:292px!important}
-.bracket-shell .round-matches{display:flex!important;flex-direction:column!important;gap:28px!important;padding-top:0!important;margin:0!important}
-.bracket-shell .bracket-match{height:92px!important;min-height:92px!important;margin:0!important;box-sizing:border-box!important}
-.bracket-shell .bracket-round:nth-child(2) .round-matches{padding-top:60px!important;gap:152px!important}
-.bracket-shell .bracket-round:nth-child(3) .round-matches{padding-top:181px!important;gap:400px!important}
-.bracket-shell .bracket-round:nth-child(4) .round-matches{padding-top:423px!important;gap:0!important}
-.bracket-shell .bracket-round:nth-child(n+5) .round-matches{padding-top:423px!important;gap:0!important}
-.bracket-shell .bracket-match::after{top:50%!important;right:-44px!important;width:44px!important;height:3px!important}
-@media(max-width:1100px){
- .bracket-shell .bracket{gap:34px!important}
- .bracket-shell .bracket-round{flex-basis:260px!important;width:260px!important}
- .bracket-shell .bracket-round:nth-child(2) .round-matches{padding-top:54px!important;gap:132px!important}
- .bracket-shell .bracket-round:nth-child(3) .round-matches{padding-top:167px!important;gap:350px!important}
- .bracket-shell .bracket-round:nth-child(4) .round-matches{padding-top:385px!important}
- .bracket-shell .bracket-match::after{right:-34px!important;width:34px!important}
-}
-@media(max-width:760px){
- .bracket-shell .bracket{gap:26px!important;min-width:calc(4 * 236px + 3 * 26px)!important}
- .bracket-shell .bracket-round{flex-basis:236px!important;width:236px!important}
- .bracket-shell .bracket-round:nth-child(2) .round-matches{padding-top:49px!important;gap:116px!important}
- .bracket-shell .bracket-round:nth-child(3) .round-matches{padding-top:147px!important;gap:300px!important}
- .bracket-shell .bracket-round:nth-child(4) .round-matches{padding-top:339px!important}
- .bracket-shell .bracket-match{height:82px!important;min-height:82px!important}
- .bracket-shell .bracket-match::after{right:-26px!important;width:26px!important}
-}
-/* PAIR-CENTERED BRACKET — layout derived from actual match height */
-.bracket-shell .bracket{
-  display:flex!important;
-  align-items:flex-start!important;
-  gap:40px!important;
-  width:max-content!important;
-  min-width:max-content!important;
-}
-.bracket-shell .bracket-round{
-  flex:0 0 292px!important;
-  width:292px!important;
-}
-.bracket-shell .round-matches{
-  display:flex!important;
-  flex-direction:column!important;
-  gap:20px!important;
-  padding-top:0!important;
-}
-.bracket-shell .bracket-match{
-  position:relative!important;
-  margin:0!important;
-  height:auto!important;
-  min-height:0!important;
-}
-/* Pair geometry: later round cards sit at the midpoint of their 2 feeder cards.
-   This is implemented with CSS grid row spans, not arbitrary page-top offsets. */
-.bracket-shell .bracket-round:nth-child(2) .round-matches{
-  display:grid!important;
-  grid-template-rows:repeat(4,minmax(0,1fr))!important;
-  gap:0!important;
-}
-.bracket-shell .bracket-round:nth-child(2) .bracket-slot{
-  grid-row:span 2!important;
-  align-self:center!important;
-}
-.bracket-shell .bracket-round:nth-child(3) .round-matches{
-  display:grid!important;
-  grid-template-rows:repeat(2,minmax(0,1fr))!important;
-  gap:0!important;
-}
-.bracket-shell .bracket-round:nth-child(3) .bracket-slot{
-  grid-row:span 1!important;
-  align-self:center!important;
-}
-.bracket-shell .bracket-round:nth-child(4) .round-matches{
-  display:grid!important;
-  grid-template-rows:1fr!important;
-  gap:0!important;
-}
-.bracket-shell .bracket-round:nth-child(4) .bracket-slot{
-  align-self:center!important;
-}
-@media(max-width:1100px){
-  .bracket-shell .bracket{gap:32px!important}
-  .bracket-shell .bracket-round{flex-basis:260px!important;width:260px!important}
-}
-@media(max-width:760px){
-  .bracket-shell .bracket{gap:26px!important}
-  .bracket-shell .bracket-round{flex-basis:236px!important;width:236px!important}
-}
-
-/* EXACT REQUESTED ALIGNMENT: 8 R1 -> 4 QF -> 2 SF -> 1 FINAL */
-/* The first-round column defines the total bracket height.
-   Every later round uses the same height and places each card at the
-   midpoint of the feeder pair. No card sizing, colors, or content changes. */
+/* Only the bracket geometry below changes positions. */
 .bracket-shell .bracket{
   display:grid!important;
   grid-template-columns:repeat(var(--bracket-round-count),292px)!important;
   align-items:stretch!important;
-  gap:40px!important;
+  column-gap:44px!important;
+  row-gap:0!important;
   width:max-content!important;
   min-width:max-content!important;
 }
@@ -1088,205 +370,82 @@
   width:292px!important;
   min-width:292px!important;
   height:100%!important;
-}
-.bracket-shell .bracket-round .round-matches{
-  height:100%!important;
-  min-height:0!important;
-  padding-top:0!important;
-  margin:0!important;
-}
-.bracket-shell .bracket-round:nth-child(1) .round-matches{
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:flex-start!important;
-  gap:20px!important;
-}
-.bracket-shell .bracket-round:nth-child(2) .round-matches,
-.bracket-shell .bracket-round:nth-child(3) .round-matches,
-.bracket-shell .bracket-round:nth-child(4) .round-matches{
-  display:grid!important;
-  grid-template-rows:repeat(8,minmax(0,1fr))!important;
-  gap:0!important;
-  align-items:center!important;
-}
-.bracket-shell .bracket-round:nth-child(2) .bracket-slot{
-  grid-row:span 2!important;
-  align-self:center!important;
-}
-.bracket-shell .bracket-round:nth-child(3) .bracket-slot{
-  grid-row:span 4!important;
-  align-self:center!important;
-}
-.bracket-shell .bracket-round:nth-child(4) .bracket-slot{
-  grid-row:span 8!important;
-  align-self:center!important;
-}
-.bracket-shell .bracket-round:nth-child(n+5) .round-matches{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-}
-.bracket-shell .bracket-round:nth-child(n+5) .bracket-slot{
-  align-self:center!important;
-}
-@media(max-width:1100px){
-  .bracket-shell .bracket{grid-template-columns:repeat(var(--bracket-round-count),260px)!important;gap:32px!important}
-  .bracket-shell .bracket-round{width:260px!important;min-width:260px!important}
-}
-@media(max-width:760px){
-  .bracket-shell .bracket{grid-template-columns:repeat(var(--bracket-round-count),236px)!important;gap:26px!important}
-  .bracket-shell .bracket-round{width:236px!important;min-width:236px!important}
-}
-
-/* FINAL ROUND HEIGHT FIX: preserve title, share only the match area */
-.bracket-shell .bracket-round{
   display:flex!important;
   flex-direction:column!important;
   align-self:stretch!important;
 }
+.bracket-shell .bracket-round .round-title{margin-bottom:8px!important}
 .bracket-shell .bracket-round .round-matches{
+  position:relative!important;
   flex:1 1 auto!important;
   min-height:0!important;
-}
-.bracket-shell .bracket-round:nth-child(1) .round-matches{
-  flex:0 0 auto!important;
-}
-
-/* USER REFERENCE ALIGNMENT — preserve all existing styling/content */
-.bracket-shell .bracket{
-  display:flex!important;
-  align-items:flex-start!important;
-  gap:36px!important;
-  width:max-content!important;
-  min-width:max-content!important;
-}
-.bracket-shell .bracket-round{
-  flex:0 0 260px!important;
-  width:260px!important;
-  min-width:260px!important;
-}
-.bracket-shell .bracket-round .round-matches{
-  display:flex!important;
-  flex-direction:column!important;
-  gap:24px!important;
+  height:auto!important;
   padding:0!important;
   margin:0!important;
+  display:block!important;
 }
 .bracket-shell .bracket-round:nth-child(1) .round-matches{
-  justify-content:flex-start!important;
+  height:auto!important;
 }
-.bracket-shell .bracket-round:nth-child(2) .round-matches{
-  justify-content:space-between!important;
-  padding-top:56px!important;
-  padding-bottom:56px!important;
-}
-.bracket-shell .bracket-round:nth-child(3) .round-matches{
-  justify-content:space-between!important;
-  padding-top:180px!important;
-  padding-bottom:180px!important;
-}
-.bracket-shell .bracket-round:nth-child(4) .round-matches{
-  justify-content:flex-start!important;
-  padding-top:468px!important;
-}
-.bracket-shell .bracket-round:nth-child(n+5) .round-matches{
-  justify-content:flex-start!important;
-  padding-top:468px!important;
-}
-@media(max-width:1100px){
-  .bracket-shell .bracket{gap:30px!important}
-  .bracket-shell .bracket-round{flex-basis:250px!important;width:250px!important;min-width:250px!important}
-  .bracket-shell .bracket-round:nth-child(2) .round-matches{padding-top:52px!important;padding-bottom:52px!important}
-  .bracket-shell .bracket-round:nth-child(3) .round-matches{padding-top:166px!important;padding-bottom:166px!important}
-  .bracket-shell .bracket-round:nth-child(4) .round-matches,
-  .bracket-shell .bracket-round:nth-child(n+5) .round-matches{padding-top:432px!important}
-}
-@media(max-width:760px){
-  .bracket-shell .bracket{gap:24px!important}
-  .bracket-shell .bracket-round{flex-basis:236px!important;width:236px!important;min-width:236px!important}
-  .bracket-shell .bracket-round:nth-child(2) .round-matches{padding-top:48px!important;padding-bottom:48px!important}
-  .bracket-shell .bracket-round:nth-child(3) .round-matches{padding-top:150px!important;padding-bottom:150px!important}
-  .bracket-shell .bracket-round:nth-child(4) .round-matches,
-  .bracket-shell .bracket-round:nth-child(n+5) .round-matches{padding-top:390px!important}
-}
-
-/* FINAL BRACKET ALIGNMENT — 8 R1 -> 4 QF -> 2 SF -> 1 FINAL
-   Only positioning is changed. Existing card design/content stays untouched. */
-.bracket-shell .bracket{
-  display:flex!important;
-  align-items:stretch!important;
-  gap:44px!important;
-  width:max-content!important;
-  min-width:max-content!important;
-}
-.bracket-shell .bracket-round{
-  flex:0 0 292px!important;
+.bracket-shell .bracket-round .bracket-match{
+  position:absolute!important;
+  left:0!important;
   width:292px!important;
-  min-width:292px!important;
-  align-self:stretch!important;
-}
-.bracket-shell .bracket-round .round-matches{
-  flex:1 1 auto!important;
-  min-height:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:stretch!important;
-  align-items:stretch!important;
-  gap:0!important;
-  padding:0!important;
   margin:0!important;
+  box-sizing:border-box!important;
+}
+/* Stack R1 naturally; the later rounds use the actual R1 match coordinates. */
+.bracket-shell .bracket-round:nth-child(1) .bracket-match:nth-child(1){position:relative!important}
+.bracket-shell .bracket-round:nth-child(1) .bracket-match + .bracket-match{margin-top:20px!important}
+/* 8 R1 matches define 8 equal center slots. */
+.bracket-shell .bracket-round:nth-child(2) .bracket-match:nth-child(1){top:calc((0 + .5) * (var(--slot-h) + var(--slot-gap)))!important}
+.bracket-shell .bracket-round:nth-child(2) .bracket-match:nth-child(2){top:calc((2 + .5) * (var(--slot-h) + var(--slot-gap)))!important}
+.bracket-shell .bracket-round:nth-child(2) .bracket-match:nth-child(3){top:calc((4 + .5) * (var(--slot-h) + var(--slot-gap)))!important}
+.bracket-shell .bracket-round:nth-child(2) .bracket-match:nth-child(4){top:calc((6 + .5) * (var(--slot-h) + var(--slot-gap)))!important}
+.bracket-shell .bracket-round:nth-child(3) .bracket-match:nth-child(1){top:calc((1.5 + 1) * (var(--slot-h) + var(--slot-gap)))!important}
+.bracket-shell .bracket-round:nth-child(3) .bracket-match:nth-child(2){top:calc((5.5 + 1) * (var(--slot-h) + var(--slot-gap)))!important}
+.bracket-shell .bracket-round:nth-child(4) .bracket-match:nth-child(1){top:calc((3.5 + 1) * (var(--slot-h) + var(--slot-gap)))!important}
+.bracket-shell .bracket-round:nth-child(n+5) .bracket-match:nth-child(1){top:calc((3.5 + 1) * (var(--slot-h) + var(--slot-gap)))!important}
+/* R1 match card must have a stable height for exact centering. */
+.bracket-shell .bracket-round:nth-child(n) .bracket-match{
+  --slot-h:92px;
+  --slot-gap:20px;
 }
 .bracket-shell .bracket-round:nth-child(1) .bracket-match{
-  flex:1 1 0!important;
-  min-height:0!important;
-  margin:0 0 18px 0!important;
+  position:relative!important;
+  height:92px!important;
+  min-height:92px!important;
 }
-.bracket-shell .bracket-round:nth-child(1) .bracket-match:last-child{
-  margin-bottom:0!important;
+.bracket-shell .bracket-round:nth-child(n+2) .bracket-match{
+  height:92px!important;
+  min-height:92px!important;
 }
-.bracket-shell .bracket-round:nth-child(2) .bracket-match{
-  flex:2 1 0!important;
-  min-height:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:center!important;
-}
-.bracket-shell .bracket-round:nth-child(3) .bracket-match{
-  flex:4 1 0!important;
-  min-height:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:center!important;
-}
-.bracket-shell .bracket-round:nth-child(4) .bracket-match{
-  flex:8 1 0!important;
-  min-height:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:center!important;
-}
-.bracket-shell .bracket-round:nth-child(n+5) .bracket-match{
-  flex:8 1 0!important;
-  min-height:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:center!important;
-}
-.bracket-shell .bracket-round:not(:first-child) .bracket-match::after{
-  right:-44px!important;
+/* connector starts/ends at card centers */
+.bracket-shell .bracket-match::after{
   top:50%!important;
+  right:-44px!important;
+  width:44px!important;
+  height:3px!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,#7c83ff,#28d9ff)!important;
 }
+.bracket-shell .bracket-round:last-child .bracket-match::after{display:none!important}
+
 @media(max-width:1100px){
-  .bracket-shell .bracket{gap:32px!important}
-  .bracket-shell .bracket-round{flex-basis:260px!important;width:260px!important;min-width:260px!important}
-  .bracket-shell .bracket-round:nth-child(1) .bracket-match{margin-bottom:16px!important}
-  .bracket-shell .bracket-round:nth-child(1) .bracket-match:last-child{margin-bottom:0!important}
-  .bracket-shell .bracket-round:not(:first-child) .bracket-match::after{right:-32px!important}
+  .bracket-shell .bracket{grid-template-columns:repeat(var(--bracket-round-count),260px)!important;column-gap:34px!important}
+  .bracket-shell .bracket-round{width:260px!important;min-width:260px!important}
+  .bracket-shell .bracket-round .bracket-match{width:260px!important}
+  .bracket-shell .bracket-round:nth-child(n) .bracket-match{--slot-h:88px;--slot-gap:18px}
+  .bracket-shell .bracket-round:nth-child(1) .bracket-match,
+  .bracket-shell .bracket-round:nth-child(n+2) .bracket-match{height:88px!important;min-height:88px!important}
+  .bracket-shell .bracket-match::after{right:-34px!important;width:34px!important}
 }
 @media(max-width:760px){
-  .bracket-shell .bracket{gap:24px!important}
-  .bracket-shell .bracket-round{flex-basis:236px!important;width:236px!important;min-width:236px!important}
-  .bracket-shell .bracket-round:nth-child(1) .bracket-match{margin-bottom:14px!important}
-  .bracket-shell .bracket-round:nth-child(1) .bracket-match:last-child{margin-bottom:0!important}
-  .bracket-shell .bracket-round:not(:first-child) .bracket-match::after{right:-24px!important}
+  .bracket-shell .bracket{grid-template-columns:repeat(var(--bracket-round-count),236px)!important;column-gap:26px!important}
+  .bracket-shell .bracket-round{width:236px!important;min-width:236px!important}
+  .bracket-shell .bracket-round .bracket-match{width:236px!important}
+  .bracket-shell .bracket-round:nth-child(n) .bracket-match{--slot-h:82px;--slot-gap:16px}
+  .bracket-shell .bracket-round:nth-child(1) .bracket-match,
+  .bracket-shell .bracket-round:nth-child(n+2) .bracket-match{height:82px!important;min-height:82px!important}
+  .bracket-shell .bracket-match::after{right:-26px!important;width:26px!important}
 }
