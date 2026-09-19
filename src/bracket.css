@@ -854,11 +854,12 @@
   opacity:0!important;
 }
 
-/* Compact bracket cards: profile photo + content only, with no artificial empty height. */
+/* Compact bracket cards: only the space required by the match content. */
 .bracket-shell .bracket-match{
   height:auto!important;
   min-height:0!important;
-  padding:7px!important;
+  padding:6px!important;
+  box-sizing:border-box!important;
 }
 .bracket-shell .round-matches,
 .bracket-round:nth-child(2) .round-matches,
@@ -867,19 +868,23 @@
 .bracket-round:nth-child(5) .round-matches,
 .bracket-round:nth-child(n+6) .round-matches{
   padding-top:0!important;
-  gap:14px!important;
+  gap:8px!important;
 }
 .bracket-shell .player-line{
-  min-height:36px!important;
-  height:36px!important;
-  margin:3px 0!important;
-  padding:3px 6px!important;
-  gap:7px!important;
+  min-height:32px!important;
+  height:32px!important;
+  margin:2px 0!important;
+  padding:2px 5px!important;
+  gap:5px!important;
+}
+.bracket-shell .match-head{
+  min-height:16px!important;
+  padding:0 3px 4px!important;
 }
 .bracket-shell .fixture-player-avatar{
-  flex:0 0 28px;
-  width:28px;
-  height:28px;
+  flex:0 0 24px;
+  width:24px;
+  height:24px;
   border-radius:50%;
   overflow:hidden;
   display:grid;
@@ -892,19 +897,12 @@
   width:100%;
   height:100%;
   display:block;
-  object-fit:cover;
+  object-fit:contain!important;
   background:transparent!important;
-}
-.bracket-shell .player-line>span.fixture-player-avatar{
-  font-size:0!important;
-  color:transparent!important;
-}
-.bracket-shell .player-line>span:not(.fixture-player-avatar){
-  font-size:14px;
 }
 .bracket-shell .player-line b{
   line-height:1;
 }
 .bracket-shell .winner-line{
-  padding:5px 3px 0!important;
+  padding:3px 3px 0!important;
 }
