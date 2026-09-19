@@ -942,3 +942,17 @@
 .bracket-shell .player-line>span:not(.fixture-player-avatar){
   grid-column:4!important;
 }
+
+/* Stable score column: every player score sits on exactly the same vertical line. */
+.bracket-shell .player-line{
+  display:grid!important;
+  grid-template-columns:28px minmax(80px,1fr) 24px 46px!important;
+  column-gap:6px!important;
+  align-items:center!important;
+}
+.bracket-shell .player-line .fixture-player-avatar{grid-column:1!important}
+.bracket-shell .player-line b{grid-column:2!important;min-width:0!important}
+.bracket-shell .player-line .fixture-name-edit{grid-column:3!important;justify-self:center!important}
+.bracket-shell .player-line .inline-score-input,
+.bracket-shell .player-line>span:not(.fixture-player-avatar){grid-column:4!important;justify-self:end!important;width:46px!important;box-sizing:border-box!important}
+.bracket-shell .player-line .inline-score-input{margin-left:0!important}
