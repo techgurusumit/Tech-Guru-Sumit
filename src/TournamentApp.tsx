@@ -313,7 +313,8 @@ function MatchesPage({tournaments}:{tournaments:Tournament[]}){
 }
 function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtures:Fixture[];tournament:Tournament;onUpdate:(id:number,f:Fixture)=>void;onRename:(id:number,oldName:string,newName:string)=>void;openImageEditor:OpenImageEditor}){
  const shellRef=React.useRef<HTMLDivElement>(null);
- const[fullscreen,setFullscreen]=React.useState(false);\n const[bgOpacity,setBgOpacity]=React.useState(()=>{const saved=Number(localStorage.getItem('tgs_fullscreen_bg_opacity'));return Number.isFinite(saved)?Math.max(0,Math.min(100,saved)):65});
+ const[fullscreen,setFullscreen]=React.useState(false);
+ const[bgOpacity,setBgOpacity]=React.useState(()=>{const saved=Number(localStorage.getItem('tgs_fullscreen_bg_opacity'));return Number.isFinite(saved)?Math.max(0,Math.min(100,saved)):65});
  const[logos,setLogos]=React.useState<{organizer:string;sponsor:string;coSponsor:string}>(()=>{try{const empty='{"organizer":"","sponsor":"","coSponsor":""}';const raw=localStorage.getItem(`tgs_branding_${tournament.id}`)||localStorage.getItem(`tgs_branding_${tournament.id}_backup`)||empty;return JSON.parse(raw)}catch{return {organizer:'',sponsor:'',coSponsor:''}}});
  const[playerProfiles,setPlayerProfiles]=React.useState<Record<string,PlayerProfile>>(()=>{try{return JSON.parse(localStorage.getItem('tgs_player_profiles')||'{}')}catch{return {}}});
  React.useEffect(()=>{try{const value=JSON.stringify(logos);localStorage.setItem(`tgs_branding_${tournament.id}`,value);localStorage.setItem(`tgs_branding_${tournament.id}_backup`,value)}catch{}},[logos,tournament.id]);
