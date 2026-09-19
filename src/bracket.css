@@ -829,3 +829,93 @@
 .bracket-shell .bracket-round:last-child .round-matches > .bracket-slot::before{
   display:none!important;
 }
+
+
+/* Final bracket card fit and pencil-style connector tuning. */
+.bracket-shell .bracket-match{
+  overflow:hidden!important;
+  padding:8px!important;
+}
+.bracket-shell .player-line{
+  display:grid!important;
+  grid-template-columns:22px minmax(0,1fr) 38px!important;
+  align-items:center!important;
+  column-gap:6px!important;
+  min-width:0!important;
+  width:100%!important;
+  overflow:hidden!important;
+  padding:2px 5px!important;
+}
+.bracket-shell .player-line .fixture-player-avatar{
+  grid-column:1!important;
+  width:22px!important;
+  height:22px!important;
+  min-width:22px!important;
+}
+.bracket-shell .player-line b{
+  grid-column:2!important;
+  min-width:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  padding:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  line-height:1.15!important;
+}
+.bracket-shell .inline-score-input,
+.bracket-shell .player-line > span:last-child{
+  grid-column:3!important;
+  justify-self:end!important;
+}
+.bracket-shell .fixture-name-edit{
+  right:47px!important;
+  width:18px!important;
+  height:18px!important;
+}
+.bracket-shell .winner-line{
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.bracket-shell .bracket-round .round-matches > .bracket-slot::after,
+.bracket-shell .bracket-round .round-matches > .bracket-slot::before{
+  filter:none!important;
+  box-shadow:none!important;
+  background:none!important;
+}
+.bracket-shell .bracket-round .round-matches > .bracket-slot::after{
+  border-top:2px solid rgba(170,178,194,.82)!important;
+}
+.bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(odd)::before{
+  border-right:2px solid rgba(170,178,194,.82)!important;
+}
+.bracket-shell .bracket-round .round-matches > .bracket-slot:nth-child(even)::before{
+  border-right:2px solid rgba(170,178,194,.82)!important;
+}
+:fullscreen.bracket-shell{
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+:fullscreen.bracket-shell .bracket-toolbar{
+  background:transparent!important;
+  border-bottom-color:transparent!important;
+}
+:fullscreen.bracket-shell .bracket-scroll{
+  background:transparent!important;
+}
+:fullscreen.bracket-shell .bracket{
+  margin-inline:auto!important;
+}
+@media(max-width:760px){
+  .bracket-shell .player-line{
+    grid-template-columns:22px minmax(0,1fr) 34px!important;
+    column-gap:5px!important;
+  }
+  .bracket-shell .inline-score-input,
+  .bracket-shell .player-line > span:last-child{
+    width:34px!important;
+    min-width:34px!important;
+  }
+}
