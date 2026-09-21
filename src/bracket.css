@@ -2601,3 +2601,43 @@
     flex:1 1 48%!important;
   }
 }
+
+
+/* FINAL REQUEST: center only Share Fixtures / Share Scorecard / Scorecard. */
+.bracket-shell .bracket-share-actions{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  z-index:6!important;
+  white-space:nowrap!important;
+}
+.bracket-shell .bracket-share-actions .share-btn,
+.bracket-shell .bracket-share-actions .scorecard-btn{
+  height:30px!important;
+  padding:0 10px!important;
+  border-radius:8px!important;
+  border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)!important;
+  background:color-mix(in srgb,var(--panel) 82%,transparent)!important;
+  color:var(--text)!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  letter-spacing:.03em!important;
+}
+.bracket-shell .bracket-share-actions .share-btn:hover,
+.bracket-shell .bracket-share-actions .scorecard-btn:hover{
+  border-color:color-mix(in srgb,var(--accent) 55%,transparent)!important;
+}
+.bracket-shell .bracket-toolbar-right{position:relative!important}
+@media(max-width:900px){
+  .bracket-shell .bracket-share-actions{
+    position:static!important;
+    transform:none!important;
+    order:0!important;
+    margin-inline:auto!important;
+  }
+}
