@@ -360,13 +360,12 @@ function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtur
     <div><strong>{tournament.name}</strong><span>{tournament.game} · {tournament.playerNames.length} players · {fixtures.length} total matches</span></div>
    </div>
    <div className="bracket-toolbar-right">
+    <span className="bracket-note"><CheckCircle2 size={14}/> {tournament.format==='Swiss System'?'Next round unlocks after the current round':'Winner tracking enabled'}</span>
+    <button type="button" className="fullscreen-btn" onClick={toggleFullscreen}>{fullscreen?<Minimize2 size={15}/>:<Maximize2 size={15}/>}<span>{fullscreen?'Exit Fullscreen':'Full Screen'}</span></button>
     <div className="sponsor-slots">
      <div className="logo-brand-group"><label className="logo-slot sponsor-slot" title="Upload Sponsor Logo">{logos.sponsor?<img src={logos.sponsor} alt="Sponsor"/>:<span>SP</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('sponsor')} hidden/></label><small>SPONSOR</small></div>
      <div className="logo-brand-group"><label className="logo-slot sponsor-slot" title="Upload Co-Sponsor Logo">{logos.coSponsor?<img src={logos.coSponsor} alt="Co-Sponsor"/>:<span>CO</span>}<input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo('coSponsor')} hidden/></label><small>CO-SPONSOR</small></div>
-    </div>
-    <span className="bracket-note"><CheckCircle2 size={14}/> {tournament.format==='Swiss System'?'Next round unlocks after the current round':'Winner tracking enabled'}</span>
-    <button type="button" className="fullscreen-btn" onClick={toggleFullscreen}>{fullscreen?<Minimize2 size={15}/>:<Maximize2 size={15}/>}<span>{fullscreen?'Exit Fullscreen':'Full Screen'}</span></button>
-   </div>
+    </div>   </div>
   </div>
   <div className="bracket-scroll"><div className="bracket" style={{'--bracket-round-count':rounds.length} as React.CSSProperties}>{rounds.map(r=><div className="bracket-round" key={r}><div className="round-title">{fixtures.find(f=>f.roundIndex===r)?.round||''}<span>{fixtures.filter(f=>f.roundIndex===r).length} matches</span></div><div className="round-matches">{fixtures.filter(f=>f.roundIndex===r).map(f=><div className="bracket-slot" key={f.id}><BracketMatch fixture={f} profiles={playerProfiles} onSave={nf=>onUpdate(tournament.id,nf)} onRename={(oldName,newName)=>onRename(tournament.id,oldName,newName)}/></div>)}</div></div>)}</div></div>
  </div>
