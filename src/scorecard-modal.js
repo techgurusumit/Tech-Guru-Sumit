@@ -133,15 +133,8 @@
   }
 
   function addToolbarScorecard() {
-    const toolbar = document.querySelector('.bracket-toolbar');
-    if (!toolbar) return;
-    if (toolbar.querySelector(`.${TOOLBAR_BUTTON}`)) return;
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = TOOLBAR_BUTTON;
-    button.textContent = 'Scorecard';
-    button.addEventListener('click', openScorecard);
-    toolbar.appendChild(button);
+    // Scorecard toolbar button is already added by the share manager.
+    // Do not create a duplicate button here.
   }
 
   function enhance() {
