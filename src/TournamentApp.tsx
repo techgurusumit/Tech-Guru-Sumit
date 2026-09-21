@@ -360,11 +360,7 @@ function Bracket({fixtures,tournament,onUpdate,onRename,openImageEditor}:{fixtur
     <div><strong>{tournament.name}</strong><span>{tournament.game} · {tournament.playerNames.length} players · {fixtures.length} total matches</span></div>
    </div>
    <div className="bracket-toolbar-right">
-    <div className="bracket-share-actions">
-     <button type="button" className="share-btn share-fixtures-btn">Share Fixtures</button>
-     <button type="button" className="share-btn share-scorecard-btn">Share Scorecard</button>
-     <button type="button" className="scorecard-btn">Scorecard</button>
-    </div>
+/div>
     <span className="bracket-note"><CheckCircle2 size={14}/> {tournament.format==='Swiss System'?'Next round unlocks after the current round':'Winner tracking enabled'}</span>
     <button type="button" className="fullscreen-btn" onClick={toggleFullscreen}>{fullscreen?<Minimize2 size={15}/>:<Maximize2 size={15}/>}<span>{fullscreen?'Exit Fullscreen':'Full Screen'}</span></button>
     <div className="sponsor-slots">
