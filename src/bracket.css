@@ -2537,27 +2537,67 @@
 }
 
 
-/* FINAL REQUEST: branding positions only. Organizer stays left; Sponsor and Co-Sponsor move into a dedicated right group. */
+
+/* FINAL REQUEST: keep organizer on the left, sponsor/co-sponsor in the opposite corner,
+   and keep the control/status buttons small in the middle. No other layout changes. */
 .bracket-shell .bracket-toolbar{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
+  position:relative!important;
+  display:flex!important;
   align-items:center!important;
-  gap:24px!important;
+  justify-content:space-between!important;
+  gap:18px!important;
 }
 .bracket-shell .bracket-branding{
+  flex:1 1 0!important;
+  min-width:0!important;
   justify-content:flex-start!important;
 }
 .bracket-shell .bracket-toolbar-right{
+  flex:1 1 0!important;
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
   justify-content:flex-end!important;
+  gap:10px!important;
 }
 .bracket-shell .sponsor-slots{
-  order:0!important;
+  order:3!important;
+  flex:0 0 auto!important;
+  margin-left:auto!important;
+}
+.bracket-shell .bracket-note{
+  order:1!important;
+  flex:0 0 auto!important;
+  padding:6px 8px!important;
+  font-size:8px!important;
+}
+.bracket-shell .fullscreen-btn{
+  order:2!important;
+  height:32px!important;
+  padding:0 9px!important;
+  font-size:8px!important;
+}
+.bracket-shell .sponsor-slot{
+  width:46px!important;
+  height:46px!important;
+}
+.bracket-shell .sponsor-slots{
+  gap:8px!important;
+}
+.bracket-shell .sponsor-slots .logo-brand-group{
+  gap:3px!important;
+}
+.bracket-shell .sponsor-slots .logo-brand-group small{
+  font-size:6px!important;
 }
 @media(max-width:900px){
   .bracket-shell .bracket-toolbar{
-    grid-template-columns:1fr!important;
+    flex-wrap:wrap!important;
+  }
+  .bracket-shell .bracket-branding{
+    flex:1 1 48%!important;
   }
   .bracket-shell .bracket-toolbar-right{
-    justify-content:flex-start!important;
+    flex:1 1 48%!important;
   }
 }
