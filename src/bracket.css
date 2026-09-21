@@ -2602,42 +2602,35 @@
   }
 }
 
-
-/* FINAL REQUEST: center only Share Fixtures / Share Scorecard / Scorecard. */
-.bracket-shell .bracket-share-actions{
-  position:absolute!important;
-  left:50%!important;
-  top:50%!important;
-  transform:translate(-50%,-50%)!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:8px!important;
-  z-index:6!important;
-  white-space:nowrap!important;
+/* FINAL REQUEST: use the existing Share Fixtures, Share Scorecard and Scorecard
+   buttons; only position them together in the center. */
+.bracket-shell .bracket-toolbar{
+  position:relative!important;
 }
-.bracket-shell .bracket-share-actions .share-btn,
-.bracket-shell .bracket-share-actions .scorecard-btn{
+.bracket-shell .bracket-toolbar > .tgs-share-toolbar-btn,
+.bracket-shell .bracket-toolbar > .tgs-scorecard-toolbar-btn{
+  position:absolute!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  z-index:20!important;
   height:30px!important;
   padding:0 10px!important;
-  border-radius:8px!important;
-  border:1px solid color-mix(in srgb,var(--accent) 28%,transparent)!important;
-  background:color-mix(in srgb,var(--panel) 82%,transparent)!important;
-  color:var(--text)!important;
   font-size:8px!important;
-  font-weight:800!important;
-  letter-spacing:.03em!important;
+  white-space:nowrap!important;
 }
-.bracket-shell .bracket-share-actions .share-btn:hover,
-.bracket-shell .bracket-share-actions .scorecard-btn:hover{
-  border-color:color-mix(in srgb,var(--accent) 55%,transparent)!important;
+.bracket-shell .bracket-toolbar > .tgs-share-fixtures{
+  left:calc(50% - 178px)!important;
 }
-.bracket-shell .bracket-toolbar-right{position:relative!important}
+.bracket-shell .bracket-toolbar > .tgs-share-scorecard{
+  left:calc(50% - 62px)!important;
+}
+.bracket-shell .bracket-toolbar > .tgs-scorecard-toolbar-btn{
+  left:calc(50% + 62px)!important;
+}
 @media(max-width:900px){
-  .bracket-shell .bracket-share-actions{
+  .bracket-shell .bracket-toolbar > .tgs-share-toolbar-btn,
+  .bracket-shell .bracket-toolbar > .tgs-scorecard-toolbar-btn{
     position:static!important;
     transform:none!important;
-    order:0!important;
-    margin-inline:auto!important;
   }
 }
