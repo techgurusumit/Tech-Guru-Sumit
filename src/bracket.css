@@ -2535,3 +2535,29 @@
   background-position:center!important;
   background-attachment:fixed!important;
 }
+
+
+/* FINAL REQUEST: branding positions only. Organizer stays left; Sponsor and Co-Sponsor move into a dedicated right group. */
+.bracket-shell .bracket-toolbar{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:24px!important;
+}
+.bracket-shell .bracket-branding{
+  justify-content:flex-start!important;
+}
+.bracket-shell .bracket-toolbar-right{
+  justify-content:flex-end!important;
+}
+.bracket-shell .sponsor-slots{
+  order:0!important;
+}
+@media(max-width:900px){
+  .bracket-shell .bracket-toolbar{
+    grid-template-columns:1fr!important;
+  }
+  .bracket-shell .bracket-toolbar-right{
+    justify-content:flex-start!important;
+  }
+}
