@@ -1,0 +1,1 @@
+Page-level components live in separate files. Shared tournament logic remains in the application layer.
