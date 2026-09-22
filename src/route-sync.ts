@@ -17,10 +17,7 @@ function syncUrlFromRenderedPage() {
 
 function activatePath(pathname: string) {
   const page = routeForPath(pathname);
-  if (cleanPath(window.location.pathname) === '/' && page.path !== '/') {
-    window.history.replaceState({ tgsPage: page.key }, '', page.path);
-  }
-
+  window.dispatchEvent(new CustomEvent('tgs:navigate', { detail: page.key }));
   const buttons = Array.from(document.querySelectorAll<HTMLElement>('.sidebar .nav-item'));
   const button = buttons.find(item => item.textContent?.trim() === page.label);
   if (button && !button.classList.contains('active')) button.click();

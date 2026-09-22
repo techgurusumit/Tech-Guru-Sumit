@@ -2,6 +2,7 @@ import React from 'react';
 import { Trophy, Users, Swords, BarChart3, Settings, Plus, ArrowRight, CalendarDays, Gamepad2, Crown, LogIn, LogOut, Moon, Sun, X, Trash2, Pencil, GitBranch, Lock, ChevronDown, Search, Clock3, CheckCircle2, Upload, RotateCcw, Maximize2, Minimize2, Palette } from 'lucide-react';
 import './tournament-formats.css';
 import { supabase } from './share-config';
+import { routeForPath, routeForKey } from './pages';
 
 type ResultType='winner'|'loser';
 type SourceRef={id:number;result:ResultType};
@@ -245,8 +246,21 @@ function standings(t:Tournament){
 }
 
 function App(){
- const [active,setActive]=React.useState('Dashboard');const [tournaments,setTournaments]=React.useState<Tournament[]>(loadTournaments);const [user,setUser]=React.useState<User|null>(()=>{try{const s=localStorage.getItem('tgs_session');return s?JSON.parse(s):null}catch{return null}});const [authMode,setAuthMode]=React.useState<'login'|'register'>('login');const [theme,setTheme]=React.useState<'dark'|'light'>((localStorage.getItem('tgs_theme') as any)||'dark');const [gamingTheme,setGamingTheme]=React.useState<GamingTheme>((localStorage.getItem('tgs_gaming_theme') as GamingTheme)||'cyber');const [create,setCreate]=React.useState(false);const [edit,setEdit]=React.useState<Tournament|null>(null);const [playersEdit,setPlayersEdit]=React.useState<Tournament|null>(null);const [guard,setGuard]=React.useState<{action:'edit'|'delete'|'fixtures';t:Tournament}|null>(null);const [toast,setToast]=React.useState('');const [themePickerOpen,setThemePickerOpen]=React.useState(false);
+ const [active,setActive]=React.useState(()=>routeForPath(window.location.pathname).key);const [tournaments,setTournaments]=React.useState<Tournament[]>(loadTournaments);const [user,setUser]=React.useState<User|null>(()=>{try{const s=localStorage.getItem('tgs_session');return s?JSON.parse(s):null}catch{return null}});const [authMode,setAuthMode]=React.useState<'login'|'register'>('login');const [theme,setTheme]=React.useState<'dark'|'light'>((localStorage.getItem('tgs_theme') as any)||'dark');const [gamingTheme,setGamingTheme]=React.useState<GamingTheme>((localStorage.getItem('tgs_gaming_theme') as GamingTheme)||'cyber');const [create,setCreate]=React.useState(false);const [edit,setEdit]=React.useState<Tournament|null>(null);const [playersEdit,setPlayersEdit]=React.useState<Tournament|null>(null);const [guard,setGuard]=React.useState<{action:'edit'|'delete'|'fixtures';t:Tournament}|null>(null);const [toast,setToast]=React.useState('');const [themePickerOpen,setThemePickerOpen]=React.useState(false);
  const [imageEditor,setImageEditor]=React.useState<ImageEditorState|null>(null);
+ React.useEffect(()=>{
+  const onRouteNavigate=(event:Event)=>{
+   const key=(event as CustomEvent<string>).detail;
+   if(key) setActive(key);
+  };
+  window.addEventListener('tgs:navigate',onRouteNavigate);
+  return()=>window.removeEventListener('tgs:navigate',onRouteNavigate);
+ },[]);
+ React.useEffect(()=>{
+  const page=routeForKey(active);
+  const target=page.path;
+  if(window.location.pathname!==target) window.history.pushState({tgsPage:active},'',target);
+ },[active]);
  const openImageEditor=React.useCallback((editor:ImageEditorState)=>setImageEditor(editor),[]);
  React.useEffect(()=>{document.documentElement.dataset.theme=theme;localStorage.setItem('tgs_theme',theme)},[theme]);React.useEffect(()=>{document.documentElement.dataset.gamingTheme=gamingTheme;localStorage.setItem('tgs_gaming_theme',gamingTheme)},[gamingTheme]);React.useEffect(()=>{const bg=localStorage.getItem('tgs_background');document.documentElement.style.setProperty('--tgs-custom-background',bg?`url("${bg}")`:'none')},[]);React.useEffect(()=>{const serialized=JSON.stringify(tournaments);localStorage.setItem('tgs_tournaments',serialized);try{const session=JSON.parse(localStorage.getItem('tgs_session')||'null');if(session?.email)localStorage.setItem(`tgs_tournaments::${String(session.email).trim().toLowerCase()}`,serialized);localStorage.setItem('tgs_tournaments_backup',serialized)}catch{}},[tournaments]);
  const nav=[['Dashboard',BarChart3],['Tournaments',Trophy],['Players',Users],['Matches',Swords],['Reports',BarChart3]] as const;const logout=()=>{localStorage.removeItem('tgs_session');setUser(null);setAuthMode('login')};const updateTournament=(id:number,fn:(t:Tournament)=>Tournament)=>setTournaments(ts=>ts.map(t=>t.id===id?fn(t):t));
