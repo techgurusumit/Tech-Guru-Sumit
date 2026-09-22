@@ -7,6 +7,7 @@ import { initShareManager } from './share-manager';
 import './styles.css';
 import './score-modern.css';
 import { TermsPage, PrivacyPage } from './LegalPages';
+import { installPageUrlRouting } from './route-sync';
 
 const root=document.getElementById('root')!;
 const path=window.location.pathname;
@@ -31,4 +32,5 @@ if(isTerms){
     </React.StrictMode>
   );
   initShareManager();
+  installPageUrlRouting();
 }
