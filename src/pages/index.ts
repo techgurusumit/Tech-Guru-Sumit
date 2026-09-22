@@ -24,7 +24,7 @@ export function routeForKey(key: string) {
 }
 
 export function routeForPath(pathname: string) {
-  const normalized = pathname.replace(/\\/+$/, '') || '/';
+  const normalized = pathname.replace(/\/+$/, '') || '/';
   if (normalized === '/') return DashboardPage;
   return PAGE_ROUTES.find(page => page.path === normalized) ?? DashboardPage;
 }
