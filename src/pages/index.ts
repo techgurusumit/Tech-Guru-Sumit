@@ -5,6 +5,8 @@ import MatchesPage from './MatchesPage';
 import ReportsPage from './ReportsPage';
 import SettingsPage from './SettingsPage';
 
+export const FixturesEditorPage = { key: 'FixturesEditor', path: '/fixtures', label: 'FixturesEditor' } as const;
+
 export const PAGE_ROUTES = [
   DashboardPage,
   TournamentsPage,
@@ -12,6 +14,7 @@ export const PAGE_ROUTES = [
   MatchesPage,
   ReportsPage,
   SettingsPage,
+  FixturesEditorPage,
 ] as const;
 
 export type PageKey = typeof PAGE_ROUTES[number]['key'];
