@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './TournamentApp';
+import ManagerApp from './ManagerApp';
 import ResetPasswordPage from './ResetPasswordPage';
 import { mountPublicShare } from './PublicShareApp';
 import { initShareManager } from './share-manager';
@@ -15,6 +16,8 @@ const isPublicShare=params.has('share');
 const isRecovery=window.location.hash.includes('type=recovery')||params.get('type')==='recovery';
 const isTerms=path === '/terms' || path === '/terms/';
 const isPrivacy=path === '/privacy' || path === '/privacy/';
+const managerPaths=['/','/tournaments','/players','/fixtures','/scorecards','/reports','/games','/settings'];
+const isManager=managerPaths.includes(path);
 
 if(isTerms){
   ReactDOM.createRoot(root).render(<TermsPage />);
@@ -24,11 +27,11 @@ if(isTerms){
   ReactDOM.createRoot(root).render(<React.StrictMode><ResetPasswordPage/></React.StrictMode>);
 }else if(isPublicShare){
   mountPublicShare();
-}else{
-  ReactDOM.createRoot(root).render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  );
+}else if(path==='/legacy'){
+  ReactDOM.createRoot(root).render(<React.StrictMode><App/></React.StrictMode>);
   initShareManager();
+}else if(isManager){
+  ReactDOM.createRoot(root).render(<React.StrictMode><ManagerApp/></React.StrictMode>);
+}else{
+  ReactDOM.createRoot(root).render(<React.StrictMode><ManagerApp/></React.StrictMode>);
 }
